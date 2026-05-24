@@ -1,0 +1,269 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// User & Role Management
+enum Role {
+  STUDENT
+  ADMIN
+  INSTRUCTOR
+}
+
+model User {
+  id              String            @id @default(uuid())
+  email           String            @unique
+  name            String
+  passwordHash    String
+  role            Role              @default(STUDENT)
+  xp              Int               @default(0)
+  level           Int               @default(1)
+  avatarUrl       String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  
+  // Relations
+  enrollments     Enrollment[]
+  progress        UserProgress[]
+  forumPosts      ForumPost[]
+  forumComments   ForumComment[]
+  codeAttempts    CodeAttempt[]
+  containerSessions ContainerSession[]
+  registrations   TournamentRegistration[]
+  achievements    UserAchievement[]
+}
+
+// Course Management
+model Course {
+  id          String       @id @default(uuid())
+  title       String
+  description String
+  isPublished Boolean      @default(false)
+  imageUrl    String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  
+  // Relations
+  modules     Module[]
+  enrollments Enrollment[]
+}
+
+model Enrollment {
+  id          String    @id @default(uuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId    String
+  course      Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  enrolledAt  DateTime  @default(now())
+  progressPct Float     @default(0.0)
+
+  @@unique([userId, courseId])
+}
+
+model Module {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  order       Int
+  courseId    String
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons     Lesson[]
+}
+
+enum LessonType {
+  TEXT
+  VIDEO
+  LAB
+}
+
+model Lesson {
+  id          String         @id @default(uuid())
+  title       String
+  description String
+  content     String
+  order       Int
+  type        LessonType     @default(TEXT)
+  moduleId    String
+  module      Module         @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  labId       String?        // Associated lab if type == LAB
+  lab         Lab?           @relation(fields: [labId], references: [id])
+  
+  // Relations
+  progress    UserProgress[]
+}
+
+model UserProgress {
+  id          String    @id @default(uuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lessonId    String
+  lesson      Lesson    @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  isCompleted Boolean   @default(false)
+  completedAt DateTime?
+
+  @@unique([userId, lessonId])
+}
+
+// Interactive Code Labs
+model Lab {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  instructions String
+  baseImage   String   @default("node:18-alpine")
+  defaultCode String   // Boilerplate code shown to user
+  testCode    String   // Unit tests run to validate user code
+  difficulty  String   @default("EASY")
+  xpReward    Int      @default(50)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  lessons     Lesson[]
+  attempts    CodeAttempt[]
+  containerSessions ContainerSession[]
+}
+
+model ContainerSession {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  labId       String
+  lab         Lab      @relation(fields: [labId], references: [id], onDelete: Cascade)
+  containerId String
+  status      String   @default("RUNNING") // RUNNING, STOPPED, FAILED
+  port        Int
+  createdAt   DateTime @default(now())
+  expiresAt   DateTime
+}
+
+enum AttemptStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  ERROR
+}
+
+model CodeAttempt {
+  id          String        @id @default(uuid())
+  userId      String
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  labId       String
+  lab         Lab           @relation(fields: [labId], references: [id], onDelete: Cascade)
+  code        String
+  status      AttemptStatus @default(PENDING)
+  feedback    String?       // JSON feedback from test runner (passed/failed tests)
+  runTimeMs   Int           @default(0)
+  createdAt   DateTime      @default(now())
+}
+
+// Forums
+model ForumPost {
+  id          String         @id @default(uuid())
+  title       String
+  content     String
+  authorId    String
+  author      User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  upvotes     Int            @default(0)
+  category    String         @default("GENERAL")
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  
+  // Relations
+  comments    ForumComment[]
+}
+
+model ForumComment {
+  id          String    @id @default(uuid())
+  content     String
+  postId      String
+  post        ForumPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  authorId    String
+  author      User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+// Tournaments
+enum TournamentType {
+  THEMATIC
+  NON_THEMATIC
+}
+
+enum TournamentStatus {
+  UPCOMING
+  ONGOING
+  COMPLETED
+}
+
+model Tournament {
+  id          String           @id @default(uuid())
+  title       String
+  description String
+  type        TournamentType   @default(NON_THEMATIC)
+  status      TournamentStatus @default(UPCOMING)
+  startTime   DateTime
+  endTime     DateTime
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  // Relations
+  registrations TournamentRegistration[]
+  matches       Match[]
+}
+
+model TournamentRegistration {
+  id            String     @id @default(uuid())
+  userId        String
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tournamentId  String
+  tournament    Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  registeredAt  DateTime   @default(now())
+  score         Int        @default(0)
+
+  @@unique([userId, tournamentId])
+}
+
+model Match {
+  id            String     @id @default(uuid())
+  tournamentId  String
+  tournament    Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  round         Int
+  player1Id     String
+  player2Id     String
+  winnerId      String?
+  status        String     @default("PENDING") // PENDING, ONGOING, COMPLETED
+  score1        Int        @default(0)
+  score2        Int        @default(0)
+  createdAt     DateTime   @default(now())
+}
+
+// Gamification / Achievements
+model Achievement {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  badgeUrl    String
+  xpReward    Int      @default(100)
+  metric      String   // e.g., "LABS_COMPLETED", "TOURNAMENTS_WON", "FORUM_UPVOTES"
+  threshold   Int      @default(1)
+  createdAt   DateTime @default(now())
+  
+  // Relations
+  users       UserAchievement[]
+}
+
+model UserAchievement {
+  id            String      @id @default(uuid())
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievementId String
+  achievement   Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+  earnedAt      DateTime    @default(now())
+
+  @@unique([userId, achievementId])
+}

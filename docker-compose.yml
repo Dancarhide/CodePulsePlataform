@@ -1,0 +1,204 @@
+version: '3.8'
+
+services:
+  # Database service
+  postgres:
+    image: postgres:15-alpine
+    container_name: codepulse-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: codepulse_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - codepulse-network
+
+  # Cache and session storage
+  redis:
+    image: redis:7-alpine
+    container_name: codepulse-redis
+    restart: always
+    ports:
+      - "6380:6379"
+    volumes:
+      - redisdata:/data
+    networks:
+      - codepulse-network
+
+  # Event broker for asynchronous communication
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: codepulse-rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"   # AMQP protocol port
+      - "15672:15672" # Management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmqdata:/var/lib/rabbitmq
+    networks:
+      - codepulse-network
+
+  # API Gateway
+  api-gateway:
+    build:
+      context: .
+      dockerfile: ./apps/api-gateway/Dockerfile
+    container_name: codepulse-api-gateway
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - AUTH_SERVICE_URL=http://auth-service:8001
+      - COURSE_SERVICE_URL=http://course-service:8002
+      - FORUM_SERVICE_URL=http://forum-service:8003
+      - LAB_SERVICE_URL=http://lab-service:8004
+      - TOURNAMENT_SERVICE_URL=http://tournament-service:8005
+      - ACHIEVEMENT_SERVICE_URL=http://achievement-service:8006
+    depends_on:
+      - postgres
+      - redis
+      - rabbitmq
+    networks:
+      - codepulse-network
+
+  # Web Frontend
+  web:
+    build:
+      context: .
+      dockerfile: ./apps/web/Dockerfile
+    container_name: codepulse-web
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_GATEWAY_URL=http://localhost:8000
+    depends_on:
+      - api-gateway
+    networks:
+      - codepulse-network
+
+  # Microservices
+  auth-service:
+    build:
+      context: ./apps/auth-service
+      dockerfile: Dockerfile
+    container_name: codepulse-auth-service
+    restart: always
+    ports:
+      - "8001:8001"
+    environment:
+      - PORT=8001
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/codepulse_db?schema=auth
+      - REDIS_URL=redis://redis:6379/0
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - codepulse-network
+
+  course-service:
+    build:
+      context: .
+      dockerfile: ./apps/course-service/Dockerfile
+    container_name: codepulse-course-service
+    restart: always
+    ports:
+      - "8002:8002"
+    environment:
+      - PORT=8002
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/codepulse_db?schema=course
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
+    depends_on:
+      - postgres
+      - rabbitmq
+    networks:
+      - codepulse-network
+
+  forum-service:
+    build:
+      context: .
+      dockerfile: ./apps/forum-service/Dockerfile
+    container_name: codepulse-forum-service
+    restart: always
+    ports:
+      - "8003:8003"
+    environment:
+      - PORT=8003
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/codepulse_db?schema=forum
+    depends_on:
+      - postgres
+    networks:
+      - codepulse-network
+
+  lab-service:
+    build:
+      context: ./apps/lab-service
+      dockerfile: Dockerfile
+    container_name: codepulse-lab-service
+    restart: always
+    ports:
+      - "8004:8004"
+    environment:
+      - PORT=8004
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/codepulse_db?schema=lab
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - postgres
+    networks:
+      - codepulse-network
+
+  tournament-service:
+    build:
+      context: ./apps/tournament-service
+      dockerfile: Dockerfile
+    container_name: codepulse-tournament-service
+    restart: always
+    ports:
+      - "8005:8005"
+    environment:
+      - PORT=8005
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/codepulse_db?schema=tournament
+      - REDIS_URL=redis://redis:6379/1
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - codepulse-network
+
+  achievement-service:
+    build:
+      context: .
+      dockerfile: ./apps/achievement-service/Dockerfile
+    container_name: codepulse-achievement-service
+    restart: always
+    ports:
+      - "8006:8006"
+    environment:
+      - PORT=8006
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/codepulse_db?schema=achievement
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
+    depends_on:
+      - postgres
+      - rabbitmq
+    networks:
+      - codepulse-network
+
+volumes:
+  pgdata:
+  redisdata:
+  rabbitmqdata:
+
+networks:
+  codepulse-network:
+    driver: bridge
