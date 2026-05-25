@@ -199,6 +199,11 @@ export default function RegisterComponent({
   const [regAvatarSeed, setRegAvatarSeed] = useState('codepulse');
   const [avatarLoading, setAvatarLoading] = useState(false);
 
+  // Estados para verificación de correo en el registro
+  const [registerCode, setRegisterCode] = useState('');
+  const [generatedRegisterCode, setGeneratedRegisterCode] = useState('');
+  const [isSending, setIsSending] = useState(false);
+
   // Estados para mostrar/ocultar contraseñas
   const [showRegPassword, setShowRegPassword] = useState(false);
   const [showRegConfirmPassword, setShowRegConfirmPassword] = useState(false);
@@ -274,7 +279,7 @@ export default function RegisterComponent({
   };
 
   // Manejo del Paso 1: Validación de Datos Personales
-  const handleRegisterStep1 = (e: React.FormEvent) => {
+  const handleRegisterStep1 = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!regNombre || !regApellido1 || !regCorreo || !regPassword || !regConfirmPassword) {
@@ -308,11 +313,74 @@ export default function RegisterComponent({
       return;
     }
 
-    setAlert(null);
-    setRegisterStep(2);
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    setGeneratedRegisterCode(code);
+    setIsSending(true);
+    setAlert({ type: 'info', message: 'Enviando código de verificación...' });
+
+    try {
+      const response = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: regCorreo,
+          subject: 'Verifica tu correo electrónico - CodePulse',
+          title: 'Verificación de Correo',
+          message: `¡Hola ${regNombre}! Gracias por registrarte en CodePulse Platform. Para completar tu registro, ingresa el siguiente código de verificación:`,
+          code: code
+        })
+      });
+      const result = await response.json();
+      if (result.success) {
+        if (result.simulated) {
+          setAlert({
+            type: 'info',
+            message: `Código de verificación enviado (Simulado). Código: ${code}`
+          });
+        } else {
+          setAlert({
+            type: 'success',
+            message: `Código de verificación enviado a tu correo electrónico.`
+          });
+        }
+        setRegisterStep(2);
+      } else {
+        setAlert({
+          type: 'error',
+          message: `Error al enviar el correo: ${result.error || 'Inténtalo de nuevo'}. (Código simulado: ${code})`
+        });
+        setRegisterStep(2);
+      }
+    } catch (err: any) {
+      console.error("Error sending register verification email:", err);
+      setAlert({
+        type: 'error',
+        message: `No se pudo conectar con el servidor de correo. (Código simulado: ${code})`
+      });
+      setRegisterStep(2);
+    } finally {
+      setIsSending(false);
+    }
   };
 
-  // Paso 2: Omitir verificación simulada
+  // Paso 2: Verificar el código de registro ingresado por el usuario
+  const handleRegisterStep2 = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!registerCode) {
+      setAlert({ type: 'error', message: 'Por favor, introduce el código de verificación.' });
+      return;
+    }
+
+    if (registerCode === generatedRegisterCode) {
+      setAlert({ type: 'success', message: 'Código verificado con éxito. Personaliza tu perfil.' });
+      setRegisterStep(3);
+    } else {
+      setAlert({ type: 'error', message: 'El código de verificación es incorrecto. Inténtalo de nuevo.' });
+    }
+  };
+
+  // Paso 2: Omitir verificación (Fallback)
   const handleRegisterStep2Skip = () => {
     setAlert({ type: 'info', message: 'Simulación: Correo verificado con éxito.' });
     setTimeout(() => {
@@ -529,8 +597,8 @@ export default function RegisterComponent({
             </div>
           </div>
 
-          <button type="submit" className="btn-submit">
-            CONTINUAR <ArrowRight size={16} />
+          <button type="submit" className="btn-submit" disabled={isSending}>
+            {isSending ? 'ENVIANDO...' : 'CONTINUAR'} <ArrowRight size={16} />
           </button>
 
           <div className="signup-prompt" style={{ marginBottom: 0 }}>
@@ -542,41 +610,57 @@ export default function RegisterComponent({
         </form>
       )}
 
-      {/* PASO 2: VERIFICACIÓN DE CORREO (SIMULADA) */}
+      {/* PASO 2: VERIFICACIÓN DE CORREO */}
       {registerStep === 2 && (
-        <div style={{ textAlign: 'center', padding: '1rem 0' }}>
+        <form onSubmit={handleRegisterStep2}>
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem', color: '#a066ff' }}>
-            <Mail size={64} style={{ animation: 'pulse 2s infinite' }} />
+            <Mail size={48} style={{ animation: 'pulse 2s infinite' }} />
           </div>
           
-          <h3 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '1rem', color: '#ffffff' }}>
+          <h3 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '0.5rem', color: '#ffffff', textAlign: 'center' }}>
             Verifica tu correo electrónico
           </h3>
           
-          <p style={{ color: '#ccc', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: '2rem' }}>
-            Hemos enviado un enlace de confirmación a la dirección <strong style={{ color: '#ffffff' }}>{regCorreo}</strong>.
-            Por favor, abre tu correo y sigue las instrucciones para activar tu cuenta.
+          <p style={{ color: '#ccc', fontSize: '0.875rem', lineHeight: 1.5, marginBottom: '1.5rem', textAlign: 'center' }}>
+            Hemos enviado un código de verificación a la dirección <strong style={{ color: '#ffffff' }}>{regCorreo}</strong>.
+            Ingrésalo abajo para continuar.
           </p>
 
-          <div className="alert-container alert-info" style={{ textAlign: 'left', marginBottom: '2rem' }}>
-            <Info size={20} style={{ flexShrink: 0, marginTop: '2px' }} />
-            <div>
-              <strong style={{ display: 'block', marginBottom: '0.25rem' }}>Simulación Activa</strong>
-              La funcionalidad real de envío y validación de correos se implementará en etapas futuras. Puedes omitir esta validación para continuar.
-            </div>
+          <div className="form-group">
+            <label className="form-label">CÓDIGO DE VERIFICACIÓN (6 DÍGITOS) *</label>
+            <input
+              type="text"
+              maxLength={6}
+              className="form-input"
+              placeholder="Ej. 123456"
+              style={{ textAlign: 'center', letterSpacing: '0.25em', fontSize: '1.2rem', fontWeight: 'bold' }}
+              value={registerCode}
+              onChange={(e) => setRegisterCode(e.target.value)}
+              required
+            />
           </div>
 
-          <button onClick={handleRegisterStep2Skip} className="btn-submit">
-            OMITIR Y CONTINUAR <ArrowRight size={16} />
+          <button type="submit" className="btn-submit">
+            VERIFICAR CÓDIGO <ArrowRight size={16} />
           </button>
 
           <button 
+            type="button" 
+            onClick={handleRegisterStep2Skip} 
+            className="btn-secondary"
+            style={{ borderColor: '#6b7280', color: '#9ca3af' }}
+          >
+            OMITIR Y CONTINUAR (SIMULACIÓN)
+          </button>
+
+          <button 
+            type="button"
             onClick={() => setRegisterStep(1)} 
             className="btn-secondary"
           >
             <ArrowLeft size={16} /> VOLVER AL PASO 1
           </button>
-        </div>
+        </form>
       )}
 
       {/* PASO 3: USERNAME Y AVATAR */}

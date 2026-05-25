@@ -25,12 +25,14 @@ export default function ForgotPasswordComponent({
   const [forgotPassword, setForgotPassword] = useState('');
   const [forgotConfirmPassword, setForgotConfirmPassword] = useState('');
 
+  const [isSending, setIsSending] = useState(false);
+
 
   const [showForgotNewPassword, setShowForgotNewPassword] = useState(false);
   const [showForgotConfirmPassword, setShowForgotConfirmPassword] = useState(false);
 
   // Paso 1: Validar correo y enviar código (aun no envia codigo)
-  const handleForgotStep1 = (e: React.FormEvent) => {
+  const handleForgotStep1 = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!forgotEmail) {
@@ -47,13 +49,52 @@ export default function ForgotPasswordComponent({
       if (userExists) {
         const code = Math.floor(100000 + Math.random() * 900000).toString();
         setGeneratedCode(code);
+        setIsSending(true);
+        setAlert({ type: 'info', message: 'Enviando código de verificación...' });
 
-        setAlert({
-          type: 'info',
-          message: `Código enviado. Introduce el código en la pantalla. (Código simulado: ${code})`
-        });
-
-        setForgotStep(2);
+        try {
+          const response = await fetch('/api/send-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              to: forgotEmail,
+              subject: 'Recuperación de contraseña - CodePulse',
+              title: 'Recuperar Contraseña',
+              message: 'Hemos recibido una solicitud para restablecer tu contraseña. Utiliza el siguiente código para completar el proceso:',
+              code: code
+            })
+          });
+          const result = await response.json();
+          if (result.success) {
+            if (result.simulated) {
+              setAlert({
+                type: 'info',
+                message: `Código enviado (Modo Simulación). Código: ${code}`
+              });
+            } else {
+              setAlert({
+                type: 'success',
+                message: `Hemos enviado un correo electrónico con el código de verificación.`
+              });
+            }
+            setForgotStep(2);
+          } else {
+            setAlert({
+              type: 'error',
+              message: `Error al enviar el correo: ${result.error || 'Inténtalo de nuevo'}. (Código simulado: ${code})`
+            });
+            setForgotStep(2);
+          }
+        } catch (err: any) {
+          console.error("Error sending email:", err);
+          setAlert({
+            type: 'error',
+            message: `No se pudo conectar con el servidor de correo. (Código simulado: ${code})`
+          });
+          setForgotStep(2);
+        } finally {
+          setIsSending(false);
+        }
       } else {
         setAlert({ type: 'error', message: 'La dirección de correo electrónico no está registrada.' });
       }
@@ -166,8 +207,8 @@ export default function ForgotPasswordComponent({
             />
           </div>
 
-          <button type="submit" className="btn-submit">
-            ENVIAR CÓDIGO <ArrowRight size={16} />
+          <button type="submit" className="btn-submit" disabled={isSending}>
+            {isSending ? 'ENVIANDO...' : 'ENVIAR CÓDIGO'} <ArrowRight size={16} />
           </button>
 
           <button

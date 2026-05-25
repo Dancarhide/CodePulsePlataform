@@ -178,6 +178,36 @@ export default function LoginComponent() {
           Creada por:<br />
           <strong>Omega Dev</strong><br />
           <strong>Dancar Dev</strong>
+          <div style={{ marginTop: '1.5rem' }}>
+            <button 
+              onClick={() => {
+                localStorage.removeItem('codepulse_users');
+                localStorage.removeItem('codepulse_active_session');
+                window.location.reload();
+              }}
+              style={{
+                background: 'rgba(239, 68, 68, 0.15)',
+                border: '1px solid rgba(239, 68, 68, 0.4)',
+                color: '#fca5a5',
+                padding: '6px 12px',
+                borderRadius: '8px',
+                fontSize: '0.75rem',
+                cursor: 'pointer',
+                fontWeight: 600,
+                transition: 'all 0.2s'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(239, 68, 68, 0.25)';
+                e.currentTarget.style.borderColor = '#ef4444';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(239, 68, 68, 0.15)';
+                e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.4)';
+              }}
+            >
+              LIMPIAR STORAGE (MOCK DB)
+            </button>
+          </div>
         </div>
       </div>
 
