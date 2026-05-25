@@ -8,6 +8,7 @@
     "build": "tsc -b"
   },
   "devDependencies": {
+    "@types/node": "^20.19.41",
     "typescript": "^5.0.0"
   }
 }
