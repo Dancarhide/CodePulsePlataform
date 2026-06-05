@@ -7,263 +7,371 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// User & Role Management
-enum Role {
-  STUDENT
-  ADMIN
-  INSTRUCTOR
+// ==========================================
+// 1. CORE, SEGURIDAD & AUTENTICACIÓN
+// ==========================================
+
+enum EnumRol {
+  estudiante
+  instructor
+  admin
+  auditor
 }
 
-model User {
-  id              String            @id @default(uuid())
-  email           String            @unique
-  name            String
-  passwordHash    String
-  role            Role              @default(STUDENT)
-  xp              Int               @default(0)
-  level           Int               @default(1)
-  avatarUrl       String?
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  
-  // Relations
-  enrollments     Enrollment[]
-  progress        UserProgress[]
-  forumPosts      ForumPost[]
-  forumComments   ForumComment[]
-  codeAttempts    CodeAttempt[]
-  containerSessions ContainerSession[]
-  registrations   TournamentRegistration[]
-  achievements    UserAchievement[]
+enum EnumEstadoUsuario {
+  activo
+  suspendido
+  inactivo
 }
 
-// Course Management
-model Course {
-  id          String       @id @default(uuid())
-  title       String
-  description String
-  isPublished Boolean      @default(false)
-  imageUrl    String?
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  
-  // Relations
-  modules     Module[]
-  enrollments Enrollment[]
+model usuarios {
+  id             String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  nombres        String            @unique @db.VarChar(50)
+  apellido1      String            @unique @db.VarChar(50)
+  apellido2      String?           @unique @db.VarChar(50)
+  nombre_usuario String            @unique @db.VarChar(50)
+  correo         String            @unique @db.VarChar(255)
+  password_hash  String            @db.VarChar(255)
+  xp             Int               @default(0)
+  nivel          Int               @default(1)
+  biografia      String?
+  avatar_url     String?           @db.VarChar(512)
+  rol            EnumRol           @default(estudiante)
+  estado         EnumEstadoUsuario @default(activo)
+  mfa_secreto    String?           @db.VarChar(128)
+  fecha_registro DateTime          @default(now())
+  actualizado_en DateTime?         @default(now()) @updatedAt
+
+  sesiones_tokens    sesiones_tokens[]
+  auditoria_accesos  auditoria_accesos[]
+  logros_usuario     logros_usuario[]
+  cursos_impartidos  cursos[]             @relation("InstructorCursos")
+  intentos_examen    intentos_examen[]    @relation("UsuarioIntentos")
+  revisiones_examen  intentos_examen[]    @relation("AdminValidaciones")
+  inscripciones      inscripciones[]
+  progreso_lecciones progreso_lecciones[]
+  certificados       certificados[]
+  entregas_lab       entregas_lab[]
+  hilos_foro         hilos_foro[]
+  comentarios        comentarios[]
+  reacciones         reacciones[]
 }
 
-model Enrollment {
-  id          String    @id @default(uuid())
-  userId      String
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  courseId    String
-  course      Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  enrolledAt  DateTime  @default(now())
-  progressPct Float     @default(0.0)
+model sesiones_tokens {
+  id               String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id_usuario       String   @db.Uuid
+  refresh_token    String   @unique @db.VarChar(512)
+  ip_address       String?  @db.VarChar(45)
+  user_agent       String?  @db.VarChar(512)
+  es_valido        Boolean  @default(true)
+  fecha_expiracion DateTime
+  creado_en        DateTime @default(now())
 
-  @@unique([userId, courseId])
+  usuario usuarios @relation(fields: [id_usuario], references: [id])
 }
 
-model Module {
-  id          String   @id @default(uuid())
-  title       String
-  description String
-  order       Int
-  courseId    String
-  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  lessons     Lesson[]
+model auditoria_accesos {
+  id         BigInt   @id @default(autoincrement())
+  id_usuario String?  @db.Uuid
+  accion     String   @db.VarChar(100)
+  detalles   String?
+  ip_address String?  @db.VarChar(45)
+  fecha      DateTime @default(now())
+
+  usuario usuarios? @relation(fields: [id_usuario], references: [id])
 }
 
-enum LessonType {
-  TEXT
-  VIDEO
-  LAB
+// ==========================================
+// 2. GAMIFICACIÓN
+// ==========================================
+
+enum EnumCategoriaLogro {
+  Cursos
+  Laboratorios
+  Comunidad
 }
 
-model Lesson {
-  id          String         @id @default(uuid())
-  title       String
-  description String
-  content     String
-  order       Int
-  type        LessonType     @default(TEXT)
-  moduleId    String
-  module      Module         @relation(fields: [moduleId], references: [id], onDelete: Cascade)
-  labId       String?        // Associated lab if type == LAB
-  lab         Lab?           @relation(fields: [labId], references: [id])
-  
-  // Relations
-  progress    UserProgress[]
+model logros {
+  id          String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  nombre      String             @db.VarChar(100)
+  descripcion String
+  puntos_xp   Int
+  categoria   EnumCategoriaLogro
+  icono_url   String?            @db.VarChar(512)
+
+  logros_usuario logros_usuario[]
 }
 
-model UserProgress {
-  id          String    @id @default(uuid())
-  userId      String
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  lessonId    String
-  lesson      Lesson    @relation(fields: [lessonId], references: [id], onDelete: Cascade)
-  isCompleted Boolean   @default(false)
-  completedAt DateTime?
+model logros_usuario {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id_usuario      String   @db.Uuid
+  id_logro        String   @db.Uuid
+  fecha_obtencion DateTime @default(now())
 
-  @@unique([userId, lessonId])
+  usuario usuarios @relation(fields: [id_usuario], references: [id])
+  logro   logros   @relation(fields: [id_logro], references: [id])
+
+  @@unique([id_usuario, id_logro])
 }
 
-// Interactive Code Labs
-model Lab {
-  id          String   @id @default(uuid())
-  title       String
-  description String
-  instructions String
-  baseImage   String   @default("node:18-alpine")
-  defaultCode String   // Boilerplate code shown to user
-  testCode    String   // Unit tests run to validate user code
-  difficulty  String   @default("EASY")
-  xpReward    Int      @default(50)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
-  // Relations
-  lessons     Lesson[]
-  attempts    CodeAttempt[]
-  containerSessions ContainerSession[]
+// ==========================================
+// 3. ACADEMIA (Cursos, Módulos, Exámenes y Sistema de Aprobación Admin)
+// ==========================================
+
+enum EnumNivel {
+  principiante
+  intermedio
+  avanzado
 }
 
-model ContainerSession {
-  id          String   @id @default(uuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  labId       String
-  lab         Lab      @relation(fields: [labId], references: [id], onDelete: Cascade)
-  containerId String
-  status      String   @default("RUNNING") // RUNNING, STOPPED, FAILED
-  port        Int
-  createdAt   DateTime @default(now())
-  expiresAt   DateTime
+model cursos {
+  id                  String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  titulo              String    @db.VarChar(150)
+  slug                String    @unique @db.VarChar(150)
+  descripcion         String
+  nivel               EnumNivel
+  imagen_portada_url  String?   @db.VarChar(512)
+  publicado           Boolean   @default(false)
+  id_instructor_autor String    @db.Uuid
+  creado_en           DateTime  @default(now())
+  eliminado_en        DateTime?
+
+  instructor    usuarios        @relation("InstructorCursos", fields: [id_instructor_autor], references: [id])
+  modulos       modulos[]
+  inscripciones inscripciones[]
+  certificados  certificados[]
 }
 
-enum AttemptStatus {
-  PENDING
-  SUCCESS
-  FAILED
-  ERROR
+model modulos {
+  id       String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id_curso String @db.Uuid
+  orden    Int
+  titulo   String @db.VarChar(150)
+
+  curso     cursos      @relation(fields: [id_curso], references: [id])
+  lecciones lecciones[]
 }
 
-model CodeAttempt {
-  id          String        @id @default(uuid())
-  userId      String
-  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  labId       String
-  lab         Lab           @relation(fields: [labId], references: [id], onDelete: Cascade)
-  code        String
-  status      AttemptStatus @default(PENDING)
-  feedback    String?       // JSON feedback from test runner (passed/failed tests)
-  runTimeMs   Int           @default(0)
-  createdAt   DateTime      @default(now())
+enum EnumLeccion {
+  video
+  lectura
+  quiz
+  examen
 }
 
-// Forums
-model ForumPost {
-  id          String         @id @default(uuid())
-  title       String
-  content     String
-  authorId    String
-  author      User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  upvotes     Int            @default(0)
-  category    String         @default("GENERAL")
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
-  
-  // Relations
-  comments    ForumComment[]
+model lecciones {
+  id                        String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id_modulo                 String      @db.Uuid
+  orden                     Int
+  titulo                    String      @db.VarChar(150)
+  tipo                      EnumLeccion
+  contenido_url             String?
+  duracion_estimada_minutos Int?        @default(0)
+
+  modulo             modulos              @relation(fields: [id_modulo], references: [id])
+  examen             examenes?
+  progreso_lecciones progreso_lecciones[]
 }
 
-model ForumComment {
-  id          String    @id @default(uuid())
-  content     String
-  postId      String
-  post        ForumPost @relation(fields: [postId], references: [id], onDelete: Cascade)
-  authorId    String
-  author      User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+model examenes {
+  id                              String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id_leccion                      String  @unique @db.Uuid
+  calificacion_minima_aprobatoria Float   @default(80.0)
+  tiempo_limite_minutos           Int?    @default(60)
+  requiere_revision_manual        Boolean @default(false)
+
+  leccion         lecciones         @relation(fields: [id_leccion], references: [id])
+  preguntas       preguntas[]
+  intentos_examen intentos_examen[]
 }
 
-// Tournaments
-enum TournamentType {
-  THEMATIC
-  NON_THEMATIC
+model preguntas {
+  id        String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id_examen String @db.Uuid
+  enunciado String
+  puntos    Int?   @default(1)
+
+  examen            examenes            @relation(fields: [id_examen], references: [id])
+  opciones_pregunta opciones_pregunta[]
 }
 
-enum TournamentStatus {
-  UPCOMING
-  ONGOING
-  COMPLETED
+model opciones_pregunta {
+  id           String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id_pregunta  String  @db.Uuid
+  texto_opcion String
+  es_correcta  Boolean @default(false)
+
+  pregunta preguntas @relation(fields: [id_pregunta], references: [id])
 }
 
-model Tournament {
-  id          String           @id @default(uuid())
-  title       String
-  description String
-  type        TournamentType   @default(NON_THEMATIC)
-  status      TournamentStatus @default(UPCOMING)
-  startTime   DateTime
-  endTime     DateTime
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
-
-  // Relations
-  registrations TournamentRegistration[]
-  matches       Match[]
+enum EnumEstadoExamen {
+  en_progreso
+  enviado
+  en_revision
+  calificado
 }
 
-model TournamentRegistration {
-  id            String     @id @default(uuid())
-  userId        String
-  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tournamentId  String
-  tournament    Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
-  registeredAt  DateTime   @default(now())
-  score         Int        @default(0)
+model intentos_examen {
+  id                           String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id_usuario                   String           @db.Uuid
+  id_examen                    String           @db.Uuid
+  calificacion_obtenida        Float?
+  aprobado                     Boolean          @default(false)
+  estado_intento               EnumEstadoExamen @default(en_progreso)
+  fecha_inicio                 DateTime         @default(now())
+  fecha_finalizacion           DateTime?
+  id_administrador_validador   String?          @db.Uuid
+  retroalimentacion_instructor String?
+  fecha_revision               DateTime?
 
-  @@unique([userId, tournamentId])
+  usuario                 usuarios      @relation("UsuarioIntentos", fields: [id_usuario], references: [id])
+  examen                  examenes      @relation(fields: [id_examen], references: [id])
+  administrador_validador usuarios?     @relation("AdminValidaciones", fields: [id_administrador_validador], references: [id])
+  certificados            certificados?
 }
 
-model Match {
-  id            String     @id @default(uuid())
-  tournamentId  String
-  tournament    Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
-  round         Int
-  player1Id     String
-  player2Id     String
-  winnerId      String?
-  status        String     @default("PENDING") // PENDING, ONGOING, COMPLETED
-  score1        Int        @default(0)
-  score2        Int        @default(0)
-  createdAt     DateTime   @default(now())
+model inscripciones {
+  id                  String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id_usuario          String    @db.Uuid
+  id_curso            String    @db.Uuid
+  progreso_porcentaje Float     @default(0)
+  completado          Boolean   @default(false)
+  fecha_inicio        DateTime  @default(now())
+  fecha_completado    DateTime?
+
+  usuario    usuarios     @relation(fields: [id_usuario], references: [id])
+  curso      cursos       @relation(fields: [id_curso], references: [id])
+  constancia constancias?
+
+  @@unique([id_usuario, id_curso])
 }
 
-// Gamification / Achievements
-model Achievement {
-  id          String   @id @default(uuid())
-  title       String
-  description String
-  badgeUrl    String
-  xpReward    Int      @default(100)
-  metric      String   // e.g., "LABS_COMPLETED", "TOURNAMENTS_WON", "FORUM_UPVOTES"
-  threshold   Int      @default(1)
-  createdAt   DateTime @default(now())
-  
-  // Relations
-  users       UserAchievement[]
+model progreso_lecciones {
+  id               String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id_usuario       String   @db.Uuid
+  id_leccion       String   @db.Uuid
+  completado       Boolean  @default(false)
+  fecha_completado DateTime @default(now())
+
+  usuario usuarios  @relation(fields: [id_usuario], references: [id])
+  leccion lecciones @relation(fields: [id_leccion], references: [id])
+
+  @@unique([id_usuario, id_leccion])
 }
 
-model UserAchievement {
-  id            String      @id @default(uuid())
-  userId        String
-  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  achievementId String
-  achievement   Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
-  earnedAt      DateTime    @default(now())
+model constancias {
+  id               String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id_inscripcion   String   @unique @db.Uuid
+  folio_constancia String   @unique @db.VarChar(100)
+  fecha_emision    DateTime @default(now())
+  codigo_qr_link   String   @db.VarChar(512)
 
-  @@unique([userId, achievementId])
+  inscripcion inscripciones @relation(fields: [id_inscripcion], references: [id])
+}
+
+model certificados {
+  id                String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id_intento_examen String   @unique @db.Uuid
+  id_usuario        String   @db.Uuid
+  id_curso          String   @db.Uuid
+  folio_certificado String   @unique @db.VarChar(100)
+  fecha_emision     DateTime @default(now())
+  codigo_qr_link    String   @db.VarChar(512)
+
+  intento_examen intentos_examen @relation(fields: [id_intento_examen], references: [id])
+  usuario        usuarios        @relation(fields: [id_usuario], references: [id])
+  curso          cursos          @relation(fields: [id_curso], references: [id])
+
+  @@unique([id_usuario, id_curso])
+}
+
+// ==========================================
+// 4. LABORATORIOS
+// ==========================================
+
+model laboratorios {
+  id                     String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  titulo                 String    @db.VarChar(150)
+  dificultad             EnumNivel
+  instrucciones_markdown String
+  boilerplate_repo_url   String?   @db.VarChar(512)
+  timeout_segundos       Int       @default(30)
+  memoria_limite_mb      Int       @default(512)
+  activo                 Boolean   @default(true)
+
+  entregas_lab entregas_lab[]
+}
+
+enum EnumResultado {
+  exito
+  error_compilacion
+  error_ejecucion
+  timeout
+}
+
+model entregas_lab {
+  id               String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id_lab           String        @db.Uuid
+  id_usuario       String        @db.Uuid
+  hash_codigo      String?       @db.VarChar(64)
+  resultado        EnumResultado
+  tiempo_ejecucion Float
+  memoria_usada    Int
+  logs_salida      String?
+  fecha_entrega    DateTime      @default(now())
+
+  laboratorio laboratorios @relation(fields: [id_lab], references: [id])
+  usuario     usuarios     @relation(fields: [id_usuario], references: [id])
+}
+
+// ==========================================
+// 5. COMUNIDAD (Foro y Redes)
+// ==========================================
+
+enum EnumModeracion {
+  aprobado
+  pendiente
+  rechazado
+}
+
+model hilos_foro {
+  id                String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  titulo            String         @db.VarChar(200)
+  slug              String         @unique @db.VarChar(200)
+  id_autor          String         @db.Uuid
+  etiquetas         String[]       @db.VarChar(50)
+  votos_conteo      Int            @default(0)
+  estado_moderacion EnumModeracion @default(aprobado)
+  fecha_creacion    DateTime       @default(now())
+  eliminado_en      DateTime?
+
+  autor       usuarios      @relation(fields: [id_autor], references: [id])
+  comentarios comentarios[]
+}
+
+model comentarios {
+  id                String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id_hilo           String         @db.Uuid
+  id_autor          String         @db.Uuid
+  contenido         String
+  es_solucion       Boolean        @default(false)
+  estado_moderacion EnumModeracion @default(aprobado)
+  fecha             DateTime       @default(now())
+  eliminado_en      DateTime?
+
+  hilo       hilos_foro   @relation(fields: [id_hilo], references: [id])
+  autor      usuarios     @relation(fields: [id_autor], references: [id])
+  reacciones reacciones[]
+}
+
+model reacciones {
+  id_usuario     String   @db.Uuid
+  id_comentario  String   @db.Uuid
+  tipo_reaccion  String   @db.VarChar(30)
+  fecha_reaccion DateTime @default(now())
+
+  usuario    usuarios    @relation(fields: [id_usuario], references: [id])
+  comentario comentarios @relation(fields: [id_comentario], references: [id])
+
+  @@unique([id_usuario, id_comentario])
 }
