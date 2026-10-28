@@ -40,3 +40,4 @@ export function createSimpleToken(payload: Record<string, any>): string {
     .digest('base64url');
   return `${header}.${body}.${signature}`;
 }
+

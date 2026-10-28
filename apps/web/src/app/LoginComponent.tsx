@@ -132,13 +132,6 @@ export default function LoginComponent() {
           {/* Mensajes de Alerta */}
           {alert && (
             <div className={`alert-container alert-${alert.type}`}>
-              {alert.type === 'error' ? (
-                <AlertCircle size={20} style={{ flexShrink: 0 }} />
-              ) : alert.type === 'success' ? (
-                <CheckCircle size={20} style={{ flexShrink: 0 }} />
-              ) : (
-                <Info size={20} style={{ flexShrink: 0 }} />
-              )}
               <span>{alert.message}</span>
             </div>
           )}

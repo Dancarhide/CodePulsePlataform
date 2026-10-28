@@ -22,3 +22,4 @@ export async function POST(request: Request) {
     return NextResponse.json({ detail: 'Error al verificar correo.' }, { status: 500 });
   }
 }
+
