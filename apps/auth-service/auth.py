@@ -9,15 +9,18 @@ from prisma import Prisma
 
 
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 #Aqui voy a poner la seguridad mau por si la vez esto es seguridad y funciones Helpers
 
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = os.environ.get("SECRET_KEY") or os.environ.get("JWT_SECRET")
 
 if not SECRET_KEY:
     raise RuntimeError("CRÍTICO: No se encontró la variable SECRET_KEY en el entorno.")
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
- 
+import bcrypt
 
 #Mi algoritmo Hash y el tiempo de expiración del Token
 ALGORITHM = "HS256"
@@ -25,11 +28,15 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7
 
 #Función para encriptar una contraseña Esta cosita es para el register
 def get_password_hash(password: str) -> str:
-    return pwd_context.hash(password)
+    pwd_bytes = password.encode('utf-8')[:72]
+    salt = bcrypt.gensalt()
+    return bcrypt.hashpw(pwd_bytes, salt).decode('utf-8')
 
 #Función para verificar si la contraseña del login coincide con la de la BD 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return pwd_context.verify(plain_password, hashed_password)
+    pwd_bytes = plain_password.encode('utf-8')[:72]
+    hashed_bytes = hashed_password.encode('utf-8')
+    return bcrypt.checkpw(pwd_bytes, hashed_bytes)
 
 
 # Genera el token que le devolvemos al usuario

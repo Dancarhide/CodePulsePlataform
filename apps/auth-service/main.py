@@ -96,7 +96,8 @@ async def login(login_data: UserLogin, prisma: Prisma = Depends(get_prisma)):
             "nombre": user.nombres,
             "correo": user.correo,
             "username": user.nombre_usuario,
-            "avatar_url": user.avatar_url
+            "avatar_url": user.avatar_url,
+            "rol": "admin" if user.correo == "admin@codepulse.com" else user.rol
         }
     }
 

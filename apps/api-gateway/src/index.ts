@@ -9,12 +9,12 @@ const app = express();
 const PORT = process.env.PORT || 8000;
 
 // Configurations for Microservices endpoints
-const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL || 'http://localhost:8001';
-const COURSE_SERVICE_URL = process.env.COURSE_SERVICE_URL || 'http://localhost:8002';
-const FORUM_SERVICE_URL = process.env.FORUM_SERVICE_URL || 'http://localhost:8003';
-const LAB_SERVICE_URL = process.env.LAB_SERVICE_URL || 'http://localhost:8004';
-const TOURNAMENT_SERVICE_URL = process.env.TOURNAMENT_SERVICE_URL || 'http://localhost:8005';
-const ACHIEVEMENT_SERVICE_URL = process.env.ACHIEVEMENT_SERVICE_URL || 'http://localhost:8006';
+const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL || 'http://127.0.0.1:8001';
+const COURSE_SERVICE_URL = process.env.COURSE_SERVICE_URL || 'http://127.0.0.1:8002';
+const FORUM_SERVICE_URL = process.env.FORUM_SERVICE_URL || 'http://127.0.0.1:8003';
+const LAB_SERVICE_URL = process.env.LAB_SERVICE_URL || 'http://127.0.0.1:8004';
+const TOURNAMENT_SERVICE_URL = process.env.TOURNAMENT_SERVICE_URL || 'http://127.0.0.1:8005';
+const ACHIEVEMENT_SERVICE_URL = process.env.ACHIEVEMENT_SERVICE_URL || 'http://127.0.0.1:8006';
 
 app.use(cors());
 

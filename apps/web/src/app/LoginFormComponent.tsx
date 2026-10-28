@@ -67,6 +67,7 @@ export default function LoginFormComponent({
         username: data.user.username,
         avatarStyle: 'avataaars', // Podría venir del backend
         avatarSeed: '', // Si la DB devuelve el URL completo, no se necesita el seed aquí o se extrae.
+        rol: data.user.rol,
       };
       
       // Guardamos el token en localStorage para futuras peticiones (simulación de sesión)

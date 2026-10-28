@@ -1,0 +1,868 @@
+/* =========================================================
+   AMBER STUDIO REPLICA - PURPLE & RED EDITION (CODEPULSE)
+   ========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+.amber-shell {
+  min-height: 100vh;
+  width: 100%;
+  background-color: #06020c;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+/* --- STICKY NAVBAR (Purple & Red) --- */
+.amber-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 4rem;
+  background: rgba(6, 2, 12, 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(168, 85, 247, 0.2);
+}
+
+.amber-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  color: #ffffff;
+}
+
+.amber-brand-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.65rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.amber-brand-accent {
+  background: linear-gradient(90deg, #a855f7, #ef4444);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.amber-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+}
+
+.amber-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2.25rem;
+}
+
+.amber-nav-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.4rem 0;
+  color: #d4d4d8;
+  text-decoration: none;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  transition: color 0.2s ease;
+}
+
+.amber-nav-link:hover,
+.amber-nav-link.active {
+  color: #f43f5e;
+}
+
+.amber-nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #9333ea, #ef4444);
+}
+
+.amber-user-zone {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.amber-user-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #a1a1aa;
+}
+
+.amber-admin-badge {
+  padding: 0.15rem 0.5rem;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  border-radius: 3px;
+  background: rgba(225, 29, 72, 0.2);
+  color: #fb7185;
+  border: 1px solid rgba(168, 85, 247, 0.55);
+}
+
+/* Rectangular Gradient-Border Button (Purple + Red) */
+.amber-rect-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.5rem;
+  background: #080310;
+  color: #ffffff;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-image: linear-gradient(90deg, #9333ea, #e11d48, #ef4444) 1;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.amber-rect-btn:hover {
+  background: linear-gradient(90deg, rgba(147, 51, 234, 0.25), rgba(225, 29, 72, 0.25));
+  box-shadow: 0 0 22px rgba(225, 29, 72, 0.35);
+}
+
+.amber-main {
+  flex: 1;
+  width: 100%;
+  padding-top: 68px;
+}
+
+/* =========================================================
+   1. HERO SECTION (3D Faceted Purple-Red Crystal)
+   ========================================================= */
+.amber-crystal-hero {
+  position: relative;
+  min-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 3rem 1.5rem 5rem;
+  background: radial-gradient(circle at 50% 22%, rgba(225, 29, 72, 0.24) 0%, rgba(126, 34, 206, 0.18) 34%, #06020c 70%);
+  overflow: hidden;
+}
+
+.amber-crystal-wrap {
+  position: relative;
+  width: 340px;
+  height: 290px;
+  margin-bottom: -1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: crystalFloat 6s ease-in-out infinite;
+}
+
+@keyframes crystalFloat {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-12px) rotate(2deg);
+  }
+}
+
+.amber-crystal-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: clamp(2.6rem, 5.5vw, 4.75rem);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: #ffffff;
+  margin: 0 0 1rem 0;
+  z-index: 2;
+  text-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+}
+
+.amber-crystal-sub {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: clamp(1.15rem, 2vw, 1.55rem);
+  font-weight: 400;
+  line-height: 1.45;
+  color: #d4d4d8;
+  max-width: 720px;
+  margin: 0 auto 2.5rem;
+  z-index: 2;
+}
+
+/* =========================================================
+   2. SCROLL-SCALING VIDEO REEL SECTION
+   ========================================================= */
+.amber-reel-section {
+  position: relative;
+  padding: 2rem 2rem 6rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(circle at 50% 15%, rgba(147, 51, 234, 0.22) 0%, rgba(225, 29, 72, 0.1) 35%, #06020c 68%);
+}
+
+.amber-reel-frame {
+  position: relative;
+  width: 100%;
+  max-width: 1320px;
+  height: 76vh;
+  min-height: 460px;
+  border-radius: 22px;
+  overflow: hidden;
+  border: 1px solid rgba(168, 85, 247, 0.35);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.85), 0 0 60px rgba(225, 29, 72, 0.18);
+  transition: transform 0.12s ease-out, border-radius 0.2s ease-out;
+  will-change: transform;
+  background: #070512;
+}
+
+.amber-reel-video-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.68) contrast(1.1);
+}
+
+.amber-reel-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 60%, rgba(147, 51, 234, 0.2), rgba(6, 2, 12, 0.74));
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2rem 2.5rem;
+}
+
+.amber-reel-header {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.amber-reel-badge-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #9333ea, #e11d48);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  color: #ffffff;
+}
+
+.amber-reel-center {
+  margin: auto;
+  text-align: center;
+  position: relative;
+}
+
+.amber-reel-headline {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: clamp(2.4rem, 5vw, 4.5rem);
+  font-weight: 700;
+  line-height: 1.05;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
+}
+
+.amber-reel-play-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: rgba(15, 7, 28, 0.7);
+  backdrop-filter: blur(8px);
+  border: 2px solid rgba(244, 63, 94, 0.75);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.25s ease, background 0.25s ease;
+}
+
+.amber-reel-play-btn:hover {
+  transform: translate(-50%, -50%) scale(1.1);
+  background: linear-gradient(135deg, #9333ea, #e11d48);
+}
+
+/* =========================================================
+   3. LATEST ON CODEPULSE (3-Column Rounded Card Frame)
+   ========================================================= */
+.amber-latest-section {
+  max-width: 1320px;
+  margin: 0 auto 6rem;
+  padding: 0 2rem;
+}
+
+.amber-latest-box {
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  border-radius: 16px;
+  padding: 4rem 3.5rem;
+  background: radial-gradient(circle at 50% 0%, rgba(225, 29, 72, 0.14) 0%, rgba(126, 34, 206, 0.12) 35%, rgba(8, 3, 16, 0.96) 75%);
+}
+
+.amber-section-big-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: clamp(2.4rem, 4.2vw, 3.8rem);
+  font-weight: 700;
+  text-align: center;
+  margin: 0 0 3rem 0;
+  color: #ffffff;
+}
+
+.amber-latest-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2.5rem;
+}
+
+.amber-latest-cat {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #f43f5e;
+  margin-bottom: 0.85rem;
+}
+
+.amber-latest-thumb {
+  width: 100%;
+  height: 175px;
+  border-radius: 22px;
+  border: 1px solid rgba(168, 85, 247, 0.45);
+  overflow: hidden;
+  margin-bottom: 1.35rem;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.amber-latest-card-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.55rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: #ffffff;
+  margin: 0 0 0.75rem 0;
+}
+
+.amber-latest-card-desc {
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: #a1a1aa;
+  margin: 0 0 1.25rem 0;
+}
+
+.amber-read-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #c084fc;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.amber-read-more:hover {
+  color: #f43f5e;
+}
+
+/* =========================================================
+   4. WHITE SECTION: IT & TECHNOLOGIES (2 HILERAS / 2 ROWS)
+   ========================================================= */
+.amber-industry-white {
+  background-color: #ffffff;
+  color: #090d16;
+  padding: 5.5rem 0;
+  overflow: hidden;
+}
+
+.amber-industry-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: clamp(2.4rem, 4.5vw, 3.9rem);
+  font-weight: 700;
+  text-align: center;
+  color: #090d16;
+  margin: 0 0 3.5rem 0;
+}
+
+.amber-marquee-wrapper {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-top: 1px solid #eceff4;
+  border-bottom: 1px solid #eceff4;
+  display: flex;
+  flex-direction: column;
+}
+
+.amber-marquee-row {
+  display: flex;
+  width: max-content;
+  border-bottom: 1px solid #eceff4;
+}
+
+.amber-marquee-row:last-child {
+  border-bottom: none;
+}
+
+.amber-marquee-row-left {
+  animation: amberScrollLeft 28s linear infinite;
+}
+
+.amber-marquee-row-right {
+  animation: amberScrollRight 30s linear infinite;
+}
+
+.amber-marquee-wrapper:hover .amber-marquee-row {
+  animation-play-state: paused;
+}
+
+@keyframes amberScrollLeft {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes amberScrollRight {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.amber-tech-cell {
+  width: 280px;
+  height: 175px;
+  border-right: 1px solid #eceff4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  padding: 1.5rem;
+  background: #ffffff;
+  text-align: center;
+  transition: background 0.2s ease;
+}
+
+.amber-tech-cell:hover {
+  background: #fdf2f8;
+}
+
+.amber-tech-name {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #1e293b;
+}
+
+.amber-tech-sub {
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* =========================================================
+   5. OUR RECENT WORK -> SHOWCASE DE CURSOS INTERACTIVO
+   ========================================================= */
+.amber-courses-showcase {
+  position: relative;
+  min-height: 86vh;
+  padding: 5rem 3rem 4.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #06020c;
+  overflow: hidden;
+}
+
+.amber-course-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  transition: background 0.5s ease;
+}
+
+.amber-showcase-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1320px;
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.amber-showcase-banner {
+  position: relative;
+  max-width: 920px;
+  margin: 1.5rem auto 2.5rem;
+  padding: 3.5rem 2.5rem;
+  border-radius: 24px;
+  background: rgba(10, 4, 20, 0.6);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(168, 85, 247, 0.25);
+}
+
+.amber-arrow-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  background: transparent;
+  border: none;
+  color: #e11d48;
+  cursor: pointer;
+  padding: 1rem;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.amber-arrow-btn:hover {
+  color: #c084fc;
+  transform: translateY(-50%) scale(1.15);
+}
+
+.amber-arrow-left {
+  left: 1.5rem;
+}
+
+.amber-arrow-right {
+  right: 1.5rem;
+}
+
+.amber-course-thumbs-row {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(220px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 1280px;
+}
+
+.amber-course-thumb-card {
+  height: 150px;
+  border-radius: 20px;
+  padding: 1.35rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  cursor: pointer;
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.amber-course-thumb-card.active {
+  border-color: #f43f5e;
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(225, 29, 72, 0.38);
+}
+
+/* =========================================================
+   6. A GLOBAL COMMUNITY OF ARTISANS -> COMUNIDAD LATAM (Morado y Rojo)
+   ========================================================= */
+.amber-latam-section {
+  position: relative;
+  min-height: 92vh;
+  padding: 6rem 2rem 6.5rem;
+  background: radial-gradient(circle at 50% 55%, rgba(225, 29, 72, 0.22) 0%, rgba(126, 34, 206, 0.18) 38%, #06020c 72%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.amber-globe-backdrop {
+  position: absolute;
+  top: 54%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 680px;
+  height: 680px;
+  pointer-events: none;
+  z-index: 1;
+  animation: amberGlobePulse 16s ease-in-out infinite;
+}
+
+@keyframes amberGlobePulse {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.04) rotate(3deg);
+  }
+}
+
+.amber-latam-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1180px;
+  text-align: center;
+}
+
+.amber-latam-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2.5rem;
+  margin-top: 3.5rem;
+}
+
+.amber-latam-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.amber-latam-country {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: clamp(1.55rem, 2.3vw, 2.1rem);
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: 0.03em;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.9);
+  transition: color 0.2s ease, transform 0.2s ease;
+  cursor: default;
+}
+
+.amber-latam-country:hover {
+  color: #f43f5e;
+  transform: scale(1.06);
+}
+
+/* Inner pages container (/cursos, /cms) */
+.amber-inner-container {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 3.5rem 2.5rem 5rem;
+}
+
+.amber-section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(168, 85, 247, 0.2);
+}
+
+.amber-kicker {
+  display: inline-block;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #f43f5e;
+  margin-bottom: 0.4rem;
+}
+
+.amber-section-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 2.2rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.amber-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.amber-card {
+  background: #0b0516;
+  border: 1px solid rgba(168, 85, 247, 0.26);
+  border-radius: 16px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 220px;
+  transition: all 0.25s ease;
+}
+
+.amber-card:hover {
+  border-color: #e11d48;
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(225, 29, 72, 0.2);
+}
+
+.amber-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.amber-card-num {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: #c084fc;
+}
+
+.amber-card-tag {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+  background: rgba(225, 29, 72, 0.16);
+  color: #fb7185;
+}
+
+.amber-card-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.45rem;
+  font-weight: 700;
+  margin: 0 0 0.6rem 0;
+  color: #ffffff;
+}
+
+.amber-card-desc {
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: #a1a1aa;
+  margin: 0;
+}
+
+/* =========================================================
+   7. COMPLETE STUDIO FOOTER (PIE DE PÁGINA MORADO & ROJO)
+   ========================================================= */
+.amber-footer {
+  border-top: 1px solid rgba(168, 85, 247, 0.24);
+  background: linear-gradient(180deg, #080311 0%, #040108 100%);
+  padding: 4.5rem 4rem 2.25rem;
+  color: #a1a1aa;
+}
+
+.amber-footer-top {
+  max-width: 1320px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr 1fr;
+  gap: 3rem;
+  padding-bottom: 3.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.amber-footer-brand-desc {
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: #9ca3af;
+  margin: 1rem 0 1.5rem;
+  max-width: 340px;
+}
+
+.amber-footer-col-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #f43f5e;
+  margin: 0 0 1.15rem 0;
+}
+
+.amber-footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.amber-footer-link {
+  color: #d4d4d8;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s ease;
+}
+
+.amber-footer-link:hover {
+  color: #c084fc;
+}
+
+.amber-footer-bottom {
+  max-width: 1320px;
+  margin: 2rem auto 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.88rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #71717a;
+}
+
+@media (max-width: 900px) {
+  .amber-navbar {
+    padding: 1rem 1.5rem;
+  }
+  .amber-course-thumbs-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .amber-latam-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .amber-footer-top {
+    grid-template-columns: 1fr 1fr;
+  }
+}
