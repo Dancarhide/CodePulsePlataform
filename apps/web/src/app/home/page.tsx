@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import DashboardComponent from '../DashboardComponent';
 import CodePulseReelComponent from './CodePulseReelComponent';
+import { HeroQuantumCrystal, RotatingLatamPlanet } from './HeroCrystalAndGlobe';
 
 export default function HomePage() {
   const reelSectionRef = useRef<HTMLDivElement | null>(null);
@@ -167,45 +168,10 @@ export default function HomePage() {
   return (
     <DashboardComponent>
       {/* =========================================================
-          1. HERO SECTION CON CRISTAL FACETADO MORADO Y ROJO
+          1. HERO SECTION CON CRISTAL 3D ANIMADO (FRAMER MOTION)
          ========================================================= */}
       <section className="amber-crystal-hero">
-        <div className="amber-crystal-wrap" aria-hidden="true">
-          <svg width="310" height="270" viewBox="0 0 320 280" fill="none">
-            <defs>
-              <linearGradient id="purpleRedFacet1" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#fb7185" />
-                <stop offset="45%" stopColor="#e11d48" />
-                <stop offset="100%" stopColor="#4c1d95" />
-              </linearGradient>
-              <linearGradient id="purpleRedFacet2" x1="100%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="#c084fc" />
-                <stop offset="55%" stopColor="#7e22ce" />
-                <stop offset="100%" stopColor="#1e052d" />
-              </linearGradient>
-              <linearGradient id="purpleRedFacet3" x1="0%" y1="100%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#3b0764" />
-                <stop offset="60%" stopColor="#be123c" />
-                <stop offset="100%" stopColor="#fda4af" />
-              </linearGradient>
-              <linearGradient id="purpleRedGlow" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#ef4444" stopOpacity="0.85" />
-                <stop offset="50%" stopColor="#e11d48" stopOpacity="0.65" />
-                <stop offset="100%" stopColor="#9333ea" stopOpacity="0.85" />
-              </linearGradient>
-            </defs>
-            {/* Resplandor trasero morado/rojo */}
-            <circle cx="160" cy="135" r="105" fill="url(#purpleRedGlow)" opacity="0.26" filter="blur(24px)" />
-            {/* Polígonos del cristal facetado */}
-            <polygon points="85,15 215,10 255,75 155,95 65,65" fill="url(#purpleRedFacet1)" stroke="#fda4af" strokeWidth="0.6" />
-            <polygon points="65,65 155,95 135,195 75,160" fill="url(#purpleRedFacet2)" stroke="#c084fc" strokeWidth="0.6" />
-            <polygon points="155,95 255,75 225,180 135,195" fill="url(#purpleRedFacet3)" stroke="#fb7185" strokeWidth="0.7" />
-            <polygon points="75,160 135,195 160,255 95,215" fill="#2e1065" stroke="#9333ea" strokeWidth="0.6" />
-            <polygon points="135,195 225,180 160,255" fill="url(#purpleRedFacet2)" stroke="#f43f5e" strokeWidth="0.6" />
-            {/* Destello prismático */}
-            <line x1="232" y1="35" x2="256" y2="75" stroke="#fecdd3" strokeWidth="5" strokeLinecap="round" />
-          </svg>
-        </div>
+        <HeroQuantumCrystal />
 
         <h1 className="amber-crystal-title">
           Evolucionando la Ciencia y el Arte del Código
@@ -395,67 +361,10 @@ export default function HomePage() {
       </section>
 
       {/* =========================================================
-          6. COMUNIDAD LATAM CON GLOBO MORADO Y ROJO (Todos los países)
+          6. COMUNIDAD LATAM CON PLANETA 3D GIRATORIO (Todos los países)
          ========================================================= */}
       <section className="amber-latam-section">
-        <div className="amber-globe-backdrop" aria-hidden="true">
-          <svg width="680" height="680" viewBox="0 0 680 680" fill="none">
-            <defs>
-              <radialGradient id="globeCorePurpleRed" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor="#e11d48" stopOpacity="0.4" />
-                <stop offset="50%" stopColor="#7e22ce" stopOpacity="0.26" />
-                <stop offset="85%" stopColor="#2e1065" stopOpacity="0.08" />
-                <stop offset="100%" stopColor="#000000" stopOpacity="0" />
-              </radialGradient>
-            </defs>
-
-            {/* Esfera luminosa central morado/rojo */}
-            <circle cx="340" cy="360" r="265" fill="url(#globeCorePurpleRed)" />
-            <circle cx="340" cy="360" r="250" stroke="#e11d48" strokeOpacity="0.38" strokeWidth="1.2" strokeDasharray="4 6" />
-            <circle cx="340" cy="360" r="205" stroke="#a855f7" strokeOpacity="0.28" strokeWidth="1" />
-            <ellipse cx="340" cy="360" rx="250" ry="110" stroke="#f43f5e" strokeOpacity="0.24" strokeWidth="1" transform="rotate(-22 340 360)" />
-            <ellipse cx="340" cy="360" rx="125" ry="250" stroke="#a855f7" strokeOpacity="0.24" strokeWidth="1" transform="rotate(15 340 360)" />
-
-            {/* Silueta estilizada de América Latina */}
-            <path
-              d="M220 210 L265 225 L290 265 L325 280 L355 310 L425 350 L445 410 L395 485 L355 565 L330 585 L320 510 L310 420 L285 355 L265 295 L230 250 Z"
-              fill="#9333ea"
-              fillOpacity="0.2"
-              stroke="#f43f5e"
-              strokeWidth="1.5"
-            />
-
-            {/* Red de nodos de constelación */}
-            <g stroke="#c084fc" strokeOpacity="0.48" strokeWidth="1">
-              <line x1="220" y1="210" x2="290" y2="265" />
-              <line x1="265" y1="225" x2="345" y2="205" />
-              <line x1="290" y1="265" x2="355" y2="310" />
-              <line x1="355" y1="310" x2="425" y2="350" />
-              <line x1="355" y1="310" x2="310" y2="420" />
-              <line x1="425" y1="350" x2="395" y2="485" />
-              <line x1="310" y1="420" x2="395" y2="485" />
-              <line x1="395" y1="485" x2="355" y2="565" />
-              <line x1="310" y1="420" x2="330" y2="585" />
-              <line x1="220" y1="210" x2="155" y2="285" />
-              <line x1="155" y1="285" x2="265" y2="295" />
-              <line x1="425" y1="350" x2="505" y2="310" />
-              <line x1="395" y1="485" x2="485" y2="455" />
-            </g>
-
-            {/* Puntos brillantes de cada capital/nodo */}
-            {[
-              [220, 210], [265, 225], [290, 265], [325, 280], [355, 310],
-              [425, 350], [445, 410], [395, 485], [355, 565], [330, 585],
-              [310, 420], [285, 355], [265, 295], [155, 285], [345, 205],
-              [505, 310], [485, 455], [205, 385], [375, 255], [415, 285]
-            ].map(([cx, cy], i) => (
-              <g key={i}>
-                <circle cx={cx} cy={cy} r="5.5" fill="#f43f5e" opacity="0.45" />
-                <circle cx={cx} cy={cy} r="2.5" fill="#ffffff" />
-              </g>
-            ))}
-          </svg>
-        </div>
+        <RotatingLatamPlanet />
 
         <div className="amber-latam-content">
           <h2 className="amber-section-big-title" style={{ marginBottom: '0.5rem' }}>
