@@ -25,6 +25,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import DashboardComponent from '../DashboardComponent';
+import CodePulseReelComponent from './CodePulseReelComponent';
 
 export default function HomePage() {
   const reelSectionRef = useRef<HTMLDivElement | null>(null);
@@ -220,62 +221,10 @@ export default function HomePage() {
       </section>
 
       {/* =========================================================
-          2. VIDEO REEL QUE CRECE AL ACERCARSE Y SE REDUCE AL ALEJARSE
+          2. SHOWREEL ANIMADO CON FRAMER MOTION (CRECE AL ACERCARSE Y SE REDUCE AL ALEJARSE)
          ========================================================= */}
       <section ref={reelSectionRef} className="amber-reel-section">
-        <div
-          className="amber-reel-frame"
-          style={{
-            transform: `scale(${videoScale})`,
-          }}
-        >
-          <video
-            ref={videoRef}
-            className="amber-reel-video-bg"
-            autoPlay
-            muted
-            loop
-            playsInline
-            poster="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1600&q=80"
-          >
-            <source
-              src="https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-the-earth-29350-large.mp4"
-              type="video/mp4"
-            />
-          </video>
-
-          <div className="amber-reel-overlay">
-            <div className="amber-reel-header">
-              <div className="amber-reel-badge-icon">CP</div>
-              <div>
-                <div style={{ fontWeight: 700, fontSize: '1.05rem', color: '#ffffff' }}>
-                  CodePulse Engineering Reel • 2026
-                </div>
-                <div style={{ fontSize: '0.8rem', color: '#d4d4d8' }}>CodePulse Studio</div>
-              </div>
-            </div>
-
-            <div className="amber-reel-center">
-              <h2 className="amber-reel-headline">
-                CodePulse es una red global <br />
-                de formación en tecnologías TI
-              </h2>
-              <button
-                type="button"
-                onClick={toggleVideoPlay}
-                className="amber-reel-play-btn"
-                aria-label={isPlaying ? 'Pausar video' : 'Reproducir video'}
-              >
-                {isPlaying ? <Pause size={30} /> : <Play size={30} style={{ marginLeft: '4px' }} />}
-              </button>
-            </div>
-
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', color: '#a1a1aa' }}>
-              <span>SCROLL INTERACTIVO • ZOOM DINÁMICO</span>
-              <span>FULL HD // 60 FPS</span>
-            </div>
-          </div>
-        </div>
+        <CodePulseReelComponent videoScale={videoScale} />
       </section>
 
       {/* =========================================================
