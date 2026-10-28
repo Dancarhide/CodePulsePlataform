@@ -2,591 +2,743 @@
 
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Play,
-  Pause,
-  Code2,
-  Layers,
-  ShieldCheck,
-  Terminal,
-  Trophy,
-  MessageSquare,
-  Sparkles,
-  CheckCircle2,
-  Cpu,
-  Lock,
-  Server,
-} from 'lucide-react';
+import { Play, Pause, RotateCcw, Smartphone, Monitor, Cloud, Shield, Users } from 'lucide-react';
 
 interface CodePulseReelProps {
   videoScale: number;
 }
 
-const SCENE_DURATION_MS = 4600;
+const TOTAL_DURATION_MS = 16000; // 16 segundos exactos
+const TICK_MS = 33; // ~30 FPS
 
 export default function CodePulseReelComponent({ videoScale }: CodePulseReelProps) {
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [sceneIndex, setSceneIndex] = useState(0);
-
-  const scenes = [
-    {
-      id: 'intro',
-      badge: '01 // CODEPULSE PLATAFORM',
-      title: 'VEN A APRENDER EL FUTURO TI',
-      subtitle: 'La plataforma interactiva donde dominas la ingeniería moderna en la práctica.',
-    },
-    {
-      id: 'pillars',
-      badge: '02 // ECOSISTEMA INTERACTIVO',
-      title: 'LABORATORIOS • TORNEOS • FORO',
-      subtitle: 'Entrena en contenedores en vivo, compite por XP y resuelve dudas con toda la comunidad.',
-    },
-    {
-      id: 'dev',
-      badge: '03 // ESPECIALIDAD PRINCIPAL',
-      title: 'DESARROLLO DE SOFTWARE',
-      subtitle: 'Full-Stack Web, Backend de alto rendimiento, APIs modernas, algoritmos y estructuras de datos.',
-    },
-    {
-      id: 'arch',
-      badge: '04 // SISTEMAS ESCALABLES',
-      title: 'ARQUITECTURA DE SOFTWARE',
-      subtitle: 'Microservicios distribuidos, API Gateways, diseño de bases de datos, Cloud y alta disponibilidad.',
-    },
-    {
-      id: 'cyber',
-      badge: '05 // SEGURIDAD & TECNOLOGÍAS AVANZADAS',
-      title: 'CIBERSEGURIDAD Y MÁS',
-      subtitle: 'Auditoría ofensiva/defensiva, criptografía, protección cloud, Inteligencia Artificial y DevOps.',
-    },
-  ];
+  const [elapsedMs, setElapsedMs] = useState<number>(0);
+  const [isPlaying, setIsPlaying] = useState<boolean>(true);
+  const [isVertical916, setIsVertical916] = useState<boolean>(false);
 
   useEffect(() => {
     if (!isPlaying) return;
-    const interval = setInterval(() => {
-      setSceneIndex((prev) => (prev + 1) % scenes.length);
-    }, SCENE_DURATION_MS);
-    return () => clearInterval(interval);
-  }, [isPlaying, scenes.length]);
+    const timer = setInterval(() => {
+      setElapsedMs((prev) => (prev + TICK_MS) % TOTAL_DURATION_MS);
+    }, TICK_MS);
+    return () => clearInterval(timer);
+  }, [isPlaying]);
+
+  const currentSec = elapsedMs / 1000;
+
+  // Determinar escena activa según la línea de tiempo (0-3s, 3-6s, 6-10s, 10-16s)
+  const getActiveScene = () => {
+    if (currentSec < 3) return 1; // 00:00 - 00:03 (El Quiebre)
+    if (currentSec < 6) return 2; // 00:03 - 00:06 (El Reto)
+    if (currentSec < 10) return 3; // 00:06 - 00:10 (La Solución - Tarjetas Flotantes)
+    return 4; // 00:10 - 00:16 (Identidad y Llamado a la Acción)
+  };
+
+  const activeScene = getActiveScene();
+
+  // Formatear tiempo 00:SS:FF (30 FPS)
+  const formatTimecode = (ms: number) => {
+    const secs = Math.floor(ms / 1000);
+    const frames = Math.floor(((ms % 1000) / 1000) * 30);
+    const sStr = String(secs).padStart(2, '0');
+    const fStr = String(frames).padStart(2, '0');
+    return `00:${sStr}:${fStr}`;
+  };
+
+  const jumpToSecond = (sec: number) => {
+    setElapsedMs(sec * 1000);
+  };
 
   return (
     <div
-      className="amber-reel-frame"
       style={{
-        transform: `scale(${videoScale})`,
-        background:
-          'radial-gradient(circle at 20% 20%, rgba(147, 51, 234, 0.28) 0%, rgba(225, 29, 72, 0.22) 45%, #06020d 90%)',
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
       }}
     >
-      {/* Fondo animado de partículas y rejilla cibernética con Framer Motion */}
+      {/* Barra superior de control de vista (16:9 Dashboard vs 9:16 Vertical 1080x1920) */}
       <div
         style={{
-          position: 'absolute',
-          inset: 0,
-          overflow: 'hidden',
-          pointerEvents: 'none',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.75rem',
+          marginBottom: '1rem',
+          zIndex: 10,
         }}
       >
-        {/* Esferas de luz en movimiento continuo */}
-        <motion.div
-          animate={{
-            x: [0, 90, -60, 0],
-            y: [0, -50, 60, 0],
-            scale: [1, 1.25, 0.95, 1],
-          }}
-          transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
+        <button
+          type="button"
+          onClick={() => setIsVertical916(false)}
           style={{
-            position: 'absolute',
-            top: '10%',
-            left: '18%',
-            width: '380px',
-            height: '380px',
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(168, 85, 247, 0.32) 0%, transparent 70%)',
-            filter: 'blur(35px)',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.4rem',
+            padding: '0.45rem 0.9rem',
+            borderRadius: '6px',
+            fontFamily: 'monospace',
+            fontSize: '0.75rem',
+            fontWeight: 700,
+            letterSpacing: '0.08em',
+            cursor: 'pointer',
+            background: !isVertical916 ? 'rgba(34, 211, 238, 0.16)' : 'rgba(5, 6, 8, 0.8)',
+            color: !isVertical916 ? '#22d3ee' : '#9ca3af',
+            border: !isVertical916 ? '1px solid #22d3ee' : '1px solid rgba(255,255,255,0.12)',
           }}
-        />
-        <motion.div
-          animate={{
-            x: [0, -100, 70, 0],
-            y: [0, 70, -40, 0],
-            scale: [1, 1.15, 1.3, 1],
-          }}
-          transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          <Monitor size={14} /> MODO CONSOLA PANORÁMICO
+        </button>
+        <button
+          type="button"
+          onClick={() => setIsVertical916(true)}
           style={{
-            position: 'absolute',
-            bottom: '8%',
-            right: '15%',
-            width: '420px',
-            height: '420px',
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(225, 29, 72, 0.3) 0%, transparent 70%)',
-            filter: 'blur(40px)',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.4rem',
+            padding: '0.45rem 0.9rem',
+            borderRadius: '6px',
+            fontFamily: 'monospace',
+            fontSize: '0.75rem',
+            fontWeight: 700,
+            letterSpacing: '0.08em',
+            cursor: 'pointer',
+            background: isVertical916 ? 'rgba(34, 211, 238, 0.16)' : 'rgba(5, 6, 8, 0.8)',
+            color: isVertical916 ? '#22d3ee' : '#9ca3af',
+            border: isVertical916 ? '1px solid #22d3ee' : '1px solid rgba(255,255,255,0.12)',
           }}
-        />
+        >
+          <Smartphone size={14} /> FORMATO REEL 9:16 (1080×1920)
+        </button>
+      </div>
 
-        {/* Malla de fondo estilo estudio */}
+      {/* Contenedor Principal del Video HUD */}
+      <div
+        className="amber-reel-frame"
+        style={{
+          transform: `scale(${videoScale})`,
+          backgroundColor: '#050608',
+          maxWidth: isVertical916 ? '430px' : '1320px',
+          height: isVertical916 ? '764px' : '76vh',
+          minHeight: isVertical916 ? '720px' : '480px',
+          borderRadius: '18px',
+          border: '1px solid rgba(34, 211, 238, 0.28)',
+          boxShadow:
+            '0 30px 90px rgba(0, 0, 0, 0.95), 0 0 45px rgba(34, 211, 238, 0.12)',
+          transition: 'max-width 0.35s ease, height 0.35s ease, transform 0.12s ease-out',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
+        {/* 1. TEXTURA SUTIL DE GRID CUADRICULADO TENUE Y GRANO CINEMATOGRÁFICO */}
         <div
           style={{
             position: 'absolute',
             inset: 0,
-            backgroundImage:
-              'linear-gradient(rgba(168, 85, 247, 0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(225, 29, 72, 0.07) 1px, transparent 1px)',
-            backgroundSize: '48px 48px',
-            maskImage: 'radial-gradient(circle at 50% 50%, black 40%, transparent 90%)',
+            backgroundImage: `
+              linear-gradient(rgba(34, 211, 238, 0.045) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(34, 211, 238, 0.045) 1px, transparent 1px)
+            `,
+            backgroundSize: '36px 36px',
+            pointerEvents: 'none',
           }}
         />
-      </div>
-
-      {/* Overlay con Header, Escena Central Animada y Controles Inferiores */}
-      <div className="amber-reel-overlay" style={{ background: 'rgba(5, 2, 10, 0.35)' }}>
-        {/* Encabezado del Showreel */}
-        <div
-          className="amber-reel-header"
-          style={{ justifyContent: 'space-between', width: '100%', zIndex: 5 }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
-            <div className="amber-reel-badge-icon">CP</div>
-            <div>
-              <div style={{ fontWeight: 700, fontSize: '1.05rem', color: '#ffffff' }}>
-                CodePulse Plataform • Official Showreel
-              </div>
-              <div style={{ fontSize: '0.8rem', color: '#d4d4d8' }}>
-                Laboratorios • Torneos • Foro
-              </div>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => setIsPlaying((prev) => !prev)}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              padding: '0.5rem 1rem',
-              borderRadius: '999px',
-              background: 'rgba(15, 7, 28, 0.78)',
-              border: '1px solid rgba(244, 63, 94, 0.5)',
-              color: '#ffffff',
-              fontFamily: 'Rajdhani, sans-serif',
-              fontWeight: 700,
-              fontSize: '0.9rem',
-              letterSpacing: '0.08em',
-              cursor: 'pointer',
-            }}
-          >
-            {isPlaying ? <Pause size={15} /> : <Play size={15} />}
-            {isPlaying ? 'PAUSAR REEL' : 'REPRODUCIR'}
-          </button>
-        </div>
-
-        {/* Escenario Central Multicámara con AnimatePresence */}
         <div
           style={{
-            position: 'relative',
-            flex: 1,
+            position: 'absolute',
+            inset: 0,
+            background:
+              'radial-gradient(circle at 50% 50%, rgba(34, 211, 238, 0.06) 0%, rgba(5, 6, 8, 0.92) 78%)',
+            pointerEvents: 'none',
+          }}
+        />
+
+        {/* Líneas de esquina tácticas HUD */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 14,
+            left: 14,
+            width: 18,
+            height: 18,
+            borderTop: '2px solid #22d3ee',
+            borderLeft: '2px solid #22d3ee',
+            pointerEvents: 'none',
+          }}
+        />
+        <div
+          style={{
+            position: 'absolute',
+            top: 14,
+            right: 14,
+            width: 18,
+            height: 18,
+            borderTop: '2px solid #22d3ee',
+            borderRight: '2px solid #22d3ee',
+            pointerEvents: 'none',
+          }}
+        />
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 14,
+            left: 14,
+            width: 18,
+            height: 18,
+            borderBottom: '2px solid #22d3ee',
+            borderLeft: '2px solid #22d3ee',
+            pointerEvents: 'none',
+          }}
+        />
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 14,
+            right: 14,
+            width: 18,
+            height: 18,
+            borderBottom: '2px solid #22d3ee',
+            borderRight: '2px solid #22d3ee',
+            pointerEvents: 'none',
+          }}
+        />
+
+        {/* 2. ESQUINAS CON INDICADORES HUD TÉCNICOS FIJOS */}
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            padding: isVertical916 ? '1.6rem 1.4rem' : '2rem 2.5rem',
             display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '100%',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
             zIndex: 4,
-            padding: '1rem 0',
           }}
         >
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={scenes[sceneIndex].id}
-              initial={{ opacity: 0, y: 28, scale: 0.94, filter: 'blur(8px)' }}
-              animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
-              exit={{ opacity: 0, y: -24, scale: 1.04, filter: 'blur(8px)' }}
-              transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-              style={{
-                width: '100%',
-                maxWidth: '980px',
-                textAlign: 'center',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-              }}
-            >
-              {/* Etiqueta superior animada */}
-              <motion.span
-                initial={{ opacity: 0, letterSpacing: '0.05em' }}
-                animate={{ opacity: 1, letterSpacing: '0.22em' }}
-                transition={{ duration: 0.6 }}
-                style={{
-                  fontFamily: 'Rajdhani, sans-serif',
-                  fontSize: '0.9rem',
-                  fontWeight: 800,
-                  color: '#fb7185',
-                  textTransform: 'uppercase',
-                  marginBottom: '0.6rem',
-                  padding: '0.25rem 0.9rem',
-                  borderRadius: '999px',
-                  background: 'rgba(225, 29, 72, 0.16)',
-                  border: '1px solid rgba(244, 63, 94, 0.35)',
-                }}
-              >
-                {scenes[sceneIndex].badge}
-              </motion.span>
-
-              {/* Título Principal de la Escena */}
-              <h2
-                style={{
-                  fontFamily: 'Rajdhani, sans-serif',
-                  fontSize: 'clamp(2.2rem, 4.8vw, 4.2rem)',
-                  fontWeight: 800,
-                  lineHeight: 1.05,
-                  margin: '0.25rem 0 0.75rem',
-                  background: 'linear-gradient(90deg, #ffffff 0%, #e9d5ff 50%, #fda4af 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                }}
-              >
-                {scenes[sceneIndex].title}
-              </h2>
-
-              <p
-                style={{
-                  fontSize: 'clamp(0.95rem, 1.6vw, 1.2rem)',
-                  color: '#d4d4d8',
-                  maxWidth: '680px',
-                  margin: '0 auto 1.75rem',
-                  lineHeight: 1.5,
-                }}
-              >
-                {scenes[sceneIndex].subtitle}
-              </p>
-
-              {/* GRÁFICOS INTERACTIVOS ESPECÍFICOS DE CADA ESCENA */}
-
-              {/* ESCENA 1: CODEPULSE PLATAFORM - VEN A APRENDER */}
-              {sceneIndex === 0 && (
-                <div
-                  style={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    justifyContent: 'center',
-                    gap: '1rem',
-                    marginTop: '0.5rem',
-                  }}
-                >
-                  {[
-                    { label: 'Desarrollo de Software', icon: <Code2 size={18} color="#c084fc" /> },
-                    { label: 'Arquitectura de Software', icon: <Layers size={18} color="#fb7185" /> },
-                    { label: 'Ciberseguridad', icon: <ShieldCheck size={18} color="#c084fc" /> },
-                    { label: 'IA, Cloud y Más', icon: <Sparkles size={18} color="#fb7185" /> },
-                  ].map((pill, i) => (
-                    <motion.div
-                      key={pill.label}
-                      initial={{ opacity: 0, y: 15 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.15 + i * 0.1 }}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.6rem',
-                        padding: '0.75rem 1.25rem',
-                        borderRadius: '14px',
-                        background: 'rgba(14, 7, 26, 0.85)',
-                        border: '1px solid rgba(168, 85, 247, 0.4)',
-                        boxShadow: '0 8px 25px rgba(0,0,0,0.45)',
-                        fontWeight: 700,
-                        fontSize: '0.92rem',
-                      }}
-                    >
-                      {pill.icon}
-                      <span>{pill.label}</span>
-                    </motion.div>
-                  ))}
-                </div>
-              )}
-
-              {/* ESCENA 2: LABORATORIOS • TORNEOS • FORO */}
-              {sceneIndex === 1 && (
-                <div
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(3, minmax(190px, 250px))',
-                    gap: '1.15rem',
-                    width: '100%',
-                    justifyContent: 'center',
-                  }}
-                >
-                  {[
-                    {
-                      title: 'LABORATORIOS',
-                      sub: 'Ejecución de código en vivo y contenedores aislados',
-                      icon: <Terminal size={26} color="#f43f5e" />,
-                    },
-                    {
-                      title: 'TORNEOS',
-                      sub: 'Competencias globales, hackathons y ranking XP',
-                      icon: <Trophy size={26} color="#c084fc" />,
-                    },
-                    {
-                      title: 'FORO',
-                      sub: 'Comunidad colaborativa de desarrolladores LATAM',
-                      icon: <MessageSquare size={26} color="#f43f5e" />,
-                    },
-                  ].map((card, i) => (
-                    <motion.div
-                      key={card.title}
-                      initial={{ opacity: 0, scale: 0.88 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 0.12 + i * 0.12 }}
-                      style={{
-                        padding: '1.25rem',
-                        borderRadius: '16px',
-                        background:
-                          'linear-gradient(145deg, rgba(30, 11, 54, 0.85), rgba(60, 7, 28, 0.75))',
-                        border: '1px solid rgba(244, 63, 94, 0.4)',
-                        textAlign: 'left',
-                      }}
-                    >
-                      <div style={{ marginBottom: '0.6rem' }}>{card.icon}</div>
-                      <div
-                        style={{
-                          fontFamily: 'Rajdhani, sans-serif',
-                          fontWeight: 800,
-                          fontSize: '1.25rem',
-                          color: '#ffffff',
-                        }}
-                      >
-                        {card.title}
-                      </div>
-                      <div style={{ fontSize: '0.8rem', color: '#d4d4d8', marginTop: '0.25rem' }}>
-                        {card.sub}
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              )}
-
-              {/* ESCENA 3: DESARROLLO DE SOFTWARE (Terminal animada) */}
-              {sceneIndex === 2 && (
-                <motion.div
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  style={{
-                    width: '100%',
-                    maxWidth: '640px',
-                    background: 'rgba(8, 4, 16, 0.92)',
-                    border: '1px solid rgba(168, 85, 247, 0.45)',
-                    borderRadius: '16px',
-                    padding: '1.15rem 1.4rem',
-                    textAlign: 'left',
-                    fontFamily: 'monospace',
-                    fontSize: '0.86rem',
-                    boxShadow: '0 16px 40px rgba(0,0,0,0.65)',
-                  }}
-                >
-                  <div style={{ display: 'flex', gap: '6px', marginBottom: '0.75rem' }}>
-                    <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#ef4444' }} />
-                    <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#a855f7' }} />
-                    <span style={{ width: 10, height: 10, borderRadius: '50%', background: '#ec4899' }} />
-                    <span style={{ marginLeft: '0.5rem', color: '#a1a1aa', fontSize: '0.75rem' }}>
-                      codepulse-lab // fullstack-engine.ts
-                    </span>
-                  </div>
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.15 }}
-                    style={{ color: '#c084fc' }}
-                  >
-                    {`> const stack = ['Next.js', 'FastAPI', 'TypeScript', 'PostgreSQL'];`}
-                  </motion.div>
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.35 }}
-                    style={{ color: '#fda4af', marginTop: '0.35rem' }}
-                  >
-                    {`> await CodePulse.deployLab({ mode: 'production', tests: 42 });`}
-                  </motion.div>
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.6 }}
-                    style={{
-                      color: '#f43f5e',
-                      marginTop: '0.55rem',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.4rem',
-                      fontWeight: 700,
-                    }}
-                  >
-                    <CheckCircle2 size={16} /> COMPILACIÓN EXITOSA • 42/42 TESTS SUPERADOS (+250 XP)
-                  </motion.div>
-                </motion.div>
-              )}
-
-              {/* ESCENA 4: ARQUITECTURA DE SOFTWARE (Nodos conectados) */}
-              {sceneIndex === 3 && (
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '0.85rem',
-                    flexWrap: 'wrap',
-                  }}
-                >
-                  {[
-                    { name: 'API Gateway', sub: 'Balanceo & Proxy', icon: <Server size={22} color="#c084fc" /> },
-                    { name: 'Microservicios', sub: 'Auth • Cursos • Labs', icon: <Layers size={22} color="#fb7185" /> },
-                    { name: 'Cloud & DB', sub: 'PostgreSQL Distribuido', icon: <Cpu size={22} color="#c084fc" /> },
-                  ].map((node, i) => (
-                    <React.Fragment key={node.name}>
-                      <motion.div
-                        initial={{ opacity: 0, scale: 0.85 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: i * 0.18 }}
-                        style={{
-                          padding: '1rem 1.35rem',
-                          borderRadius: '14px',
-                          background: 'rgba(15, 6, 30, 0.9)',
-                          border: '1px solid rgba(168, 85, 247, 0.5)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '0.75rem',
-                        }}
-                      >
-                        {node.icon}
-                        <div style={{ textAlign: 'left' }}>
-                          <div style={{ fontWeight: 800, fontSize: '0.95rem' }}>{node.name}</div>
-                          <div style={{ fontSize: '0.75rem', color: '#a1a1aa' }}>{node.sub}</div>
-                        </div>
-                      </motion.div>
-                      {i < 2 && (
-                        <motion.div
-                          animate={{ opacity: [0.3, 1, 0.3], scaleX: [0.9, 1.1, 0.9] }}
-                          transition={{ duration: 1.5, repeat: Infinity }}
-                          style={{
-                            width: '36px',
-                            height: '3px',
-                            background: 'linear-gradient(90deg, #9333ea, #e11d48)',
-                            borderRadius: '4px',
-                          }}
-                        />
-                      )}
-                    </React.Fragment>
-                  ))}
-                </div>
-              )}
-
-              {/* ESCENA 5: CIBERSEGURIDAD Y MÁS */}
-              {sceneIndex === 4 && (
-                <div
-                  style={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    justifyContent: 'center',
-                    gap: '1rem',
-                  }}
-                >
-                  {[
-                    { title: 'Pentesting & OWASP', desc: 'Auditoría de vulnerabilidades web', icon: <ShieldCheck size={22} color="#f43f5e" /> },
-                    { title: 'Criptografía & JWT', desc: 'Protección de identidades y tokens', icon: <Lock size={22} color="#c084fc" /> },
-                    { title: 'IA, Cloud & DevOps', desc: 'Automatización, Docker y LLMs', icon: <Sparkles size={22} color="#f43f5e" /> },
-                  ].map((sec, i) => (
-                    <motion.div
-                      key={sec.title}
-                      initial={{ opacity: 0, y: 15 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.1 + i * 0.14 }}
-                      style={{
-                        padding: '1rem 1.35rem',
-                        borderRadius: '14px',
-                        background: 'rgba(20, 6, 28, 0.88)',
-                        border: '1px solid rgba(225, 29, 72, 0.45)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.8rem',
-                        textAlign: 'left',
-                      }}
-                    >
-                      {sec.icon}
-                      <div>
-                        <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#ffffff' }}>
-                          {sec.title}
-                        </div>
-                        <div style={{ fontSize: '0.78rem', color: '#d4d4d8' }}>{sec.desc}</div>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              )}
-            </motion.div>
-          </AnimatePresence>
-        </div>
-
-        {/* Barra inferior con selectores de escena y progreso en vivo */}
-        <div style={{ width: '100%', zIndex: 5 }}>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: `repeat(${scenes.length}, 1fr)`,
-              gap: '0.6rem',
-              marginBottom: '0.6rem',
-            }}
-          >
-            {scenes.map((s, idx) => {
-              const active = idx === sceneIndex;
-              return (
-                <button
-                  key={s.id}
-                  type="button"
-                  onClick={() => setSceneIndex(idx)}
-                  style={{
-                    background: 'rgba(255, 255, 255, 0.12)',
-                    height: '5px',
-                    borderRadius: '999px',
-                    border: 'none',
-                    padding: 0,
-                    overflow: 'hidden',
-                    cursor: 'pointer',
-                    position: 'relative',
-                  }}
-                  aria-label={s.title}
-                >
-                  {active && (
-                    <motion.div
-                      key={`bar-${sceneIndex}-${isPlaying}`}
-                      initial={{ width: '0%' }}
-                      animate={{ width: isPlaying ? '100%' : '100%' }}
-                      transition={{
-                        duration: isPlaying ? SCENE_DURATION_MS / 1000 : 0,
-                        ease: 'linear',
-                      }}
-                      style={{
-                        height: '100%',
-                        background: 'linear-gradient(90deg, #a855f7, #e11d48)',
-                      }}
-                    />
-                  )}
-                </button>
-              );
-            })}
-          </div>
-
+          {/* HUD Superior */}
           <div
             style={{
               display: 'flex',
+              alignItems: 'flex-start',
               justifyContent: 'space-between',
-              fontSize: '0.76rem',
-              color: '#a1a1aa',
-              fontFamily: 'Rajdhani, sans-serif',
-              letterSpacing: '0.1em',
+              gap: '0.75rem',
+              fontFamily: 'monospace',
+              fontSize: isVertical916 ? '0.68rem' : '0.76rem',
+              letterSpacing: '0.12em',
             }}
           >
-            <span>CODEPULSE PLATAFORM // VEN A APRENDER</span>
-            <span>
-              ESCENA 0{sceneIndex + 1} / 0{scenes.length} • FRAMER MOTION ENGINE
-            </span>
+            <div>
+              <div style={{ color: '#22d3ee', fontWeight: 700 }}>
+                SYSTEM.LINK // CODEPULSE
+              </div>
+              <div style={{ color: '#64748b', fontSize: '0.66rem', marginTop: '2px' }}>
+                NODE_CLUSTER: LATAM_MAINNET // 1080x1920 @ 30FPS
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <div
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                  padding: '0.25rem 0.65rem',
+                  background: 'rgba(16, 185, 129, 0.1)',
+                  border: '1px solid rgba(16, 185, 129, 0.35)',
+                  borderRadius: '4px',
+                  color: '#10b981',
+                  fontWeight: 700,
+                }}
+              >
+                <motion.span
+                  animate={{ opacity: [1, 0.2, 1] }}
+                  transition={{ duration: 0.9, repeat: Infinity, ease: 'linear' }}
+                  style={{
+                    width: '7px',
+                    height: '7px',
+                    borderRadius: '50%',
+                    backgroundColor: '#10b981',
+                    display: 'inline-block',
+                  }}
+                />
+                <span>STATUS: 200_OK</span>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setIsPlaying((p) => !p)}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '30px',
+                  height: '30px',
+                  borderRadius: '4px',
+                  background: 'rgba(34, 211, 238, 0.12)',
+                  border: '1px solid rgba(34, 211, 238, 0.4)',
+                  color: '#22d3ee',
+                  cursor: 'pointer',
+                }}
+                title={isPlaying ? 'Pausar' : 'Reproducir'}
+              >
+                {isPlaying ? <Pause size={14} /> : <Play size={14} />}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setElapsedMs(0)}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '30px',
+                  height: '30px',
+                  borderRadius: '4px',
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                  color: '#e2e8f0',
+                  cursor: 'pointer',
+                }}
+                title="Reiniciar 00:00"
+              >
+                <RotateCcw size={14} />
+              </button>
+            </div>
+          </div>
+
+          {/* =========================================================
+              ESCENARIO CENTRAL SINCRONIZADO (00:00 - 00:16)
+             ========================================================= */}
+          <div
+            style={{
+              flex: 1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              position: 'relative',
+              width: '100%',
+            }}
+          >
+            <AnimatePresence mode="wait">
+              {/* SEGUNDO 00:00 - 00:03 (EL QUIEBRE) */}
+              {activeScene === 1 && (
+                <motion.div
+                  key="scene-quiebre"
+                  initial={{ opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, x: -18 }}
+                  transition={{ duration: 0.22, ease: 'easeOut' }}
+                  style={{
+                    textAlign: 'center',
+                    maxWidth: '760px',
+                    padding: '0 1rem',
+                  }}
+                >
+                  {/* Badge técnico: [ STATUS: OUT_OF_SYLLABUS ] */}
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.92 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.18, ease: 'easeOut' }}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      fontFamily: 'monospace',
+                      fontSize: isVertical916 ? '0.78rem' : '0.9rem',
+                      fontWeight: 700,
+                      letterSpacing: '0.16em',
+                      color: '#22d3ee',
+                      background: 'rgba(34, 211, 238, 0.08)',
+                      border: '1px solid rgba(34, 211, 238, 0.4)',
+                      padding: '0.45rem 1rem',
+                      borderRadius: '4px',
+                      marginBottom: '1.5rem',
+                    }}
+                  >
+                    <span>[ STATUS: OUT_OF_SYLLABUS ]</span>
+                    <motion.span
+                      animate={{ opacity: [1, 0, 1] }}
+                      transition={{ duration: 0.65, repeat: Infinity }}
+                      style={{
+                        display: 'inline-block',
+                        width: '8px',
+                        height: '15px',
+                        backgroundColor: '#22d3ee',
+                      }}
+                    />
+                  </motion.div>
+
+                  {/* Texto cinético de impacto */}
+                  <motion.h2
+                    initial={{ opacity: 0, y: 18 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.25, delay: 0.12, ease: 'easeOut' }}
+                    style={{
+                      fontFamily: 'Rajdhani, sans-serif',
+                      fontSize: isVertical916
+                        ? 'clamp(2.1rem, 5vw, 2.7rem)'
+                        : 'clamp(2.8rem, 5.2vw, 4.6rem)',
+                      fontWeight: 700,
+                      lineHeight: 1.08,
+                      margin: 0,
+                      background: 'linear-gradient(180deg, #ffffff 0%, #94a3b8 100%)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                    }}
+                  >
+                    La universidad te dio las bases.
+                  </motion.h2>
+                </motion.div>
+              )}
+
+              {/* SEGUNDO 00:03 - 00:06 (EL RETO) */}
+              {activeScene === 2 && (
+                <motion.div
+                  key="scene-reto"
+                  initial={{ opacity: 0, x: 24, skewX: -8 }}
+                  animate={{ opacity: 1, x: [ -6, 4, 0 ], skewX: 0 }}
+                  exit={{ opacity: 0, scale: 0.96 }}
+                  transition={{ duration: 0.2, ease: 'easeOut' }}
+                  style={{
+                    textAlign: 'center',
+                    maxWidth: '880px',
+                    padding: '0 1rem',
+                  }}
+                >
+                  {/* Subtítulo superior monoespaciado */}
+                  <div
+                    style={{
+                      fontFamily: 'monospace',
+                      fontSize: isVertical916 ? '0.78rem' : '0.92rem',
+                      fontWeight: 700,
+                      letterSpacing: '0.2em',
+                      color: '#22d3ee',
+                      marginBottom: '1rem',
+                    }}
+                  >
+                    LEVEL_REQUIREMENT: PRODUCTION
+                  </div>
+
+                  {/* Tipografía pesada y expansiva */}
+                  <motion.h2
+                    initial={{ scale: 0.92, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 0.2, ease: 'easeOut' }}
+                    style={{
+                      fontFamily: 'Rajdhani, sans-serif',
+                      fontSize: isVertical916
+                        ? 'clamp(2.4rem, 6vw, 3.1rem)'
+                        : 'clamp(3.2rem, 6vw, 5.2rem)',
+                      fontWeight: 800,
+                      letterSpacing: '0.04em',
+                      lineHeight: 1,
+                      color: '#ffffff',
+                      margin: '0 0 1rem 0',
+                      textShadow: '0 0 30px rgba(34, 211, 238, 0.25)',
+                    }}
+                  >
+                    LA INDUSTRIA PIDE MÁS.
+                  </motion.h2>
+
+                  <motion.p
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.25, delay: 0.22, ease: 'easeOut' }}
+                    style={{
+                      fontFamily: 'Inter, sans-serif',
+                      fontSize: isVertical916 ? '1.1rem' : '1.45rem',
+                      fontWeight: 500,
+                      background: 'linear-gradient(90deg, #ffffff 0%, #9ca3af 100%)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      margin: 0,
+                    }}
+                  >
+                    Y nadie debería descifrarlo solo.
+                  </motion.p>
+                </motion.div>
+              )}
+
+              {/* SEGUNDO 00:06 - 00:10 (LA SOLUCIÓN - TARJETAS FLOTANTES) */}
+              {activeScene === 3 && (
+                <motion.div
+                  key="scene-solucion"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0, y: -16 }}
+                  transition={{ duration: 0.2 }}
+                  style={{
+                    width: '100%',
+                    maxWidth: isVertical916 ? '380px' : '1020px',
+                    display: 'grid',
+                    gridTemplateColumns: isVertical916
+                      ? '1fr'
+                      : 'repeat(3, minmax(240px, 1fr))',
+                    gap: '1.1rem',
+                    padding: '0 0.5rem',
+                  }}
+                >
+                  {[
+                    {
+                      tag: '[CLOUD]',
+                      desc: 'Despliegues reales y arquitecturas escalables.',
+                      icon: <Cloud size={22} color="#22d3ee" />,
+                    },
+                    {
+                      tag: '[NETWORKING]',
+                      desc: 'Infraestructura, seguridad y protocolos.',
+                      icon: <Shield size={22} color="#22d3ee" />,
+                    },
+                    {
+                      tag: '[COMMUNITY]',
+                      desc: 'Resolución colectiva sin barreras.',
+                      icon: <Users size={22} color="#22d3ee" />,
+                    },
+                  ].map((card, idx) => (
+                    <motion.div
+                      key={card.tag}
+                      initial={{ opacity: 0, y: 36, scale: 0.9 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      transition={{
+                        type: 'spring',
+                        stiffness: 260,
+                        damping: 20,
+                        delay: idx * 0.14,
+                      }}
+                      style={{
+                        background: 'rgba(11, 15, 23, 0.78)',
+                        backdropFilter: 'blur(12px)',
+                        border: '1px solid rgba(34, 211, 238, 0.45)',
+                        boxShadow:
+                          '0 12px 32px rgba(0, 0, 0, 0.65), inset 0 0 20px rgba(34, 211, 238, 0.06)',
+                        borderRadius: '10px',
+                        padding: isVertical916 ? '1.1rem 1.25rem' : '1.65rem 1.5rem',
+                        textAlign: 'left',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '0.65rem',
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                        }}
+                      >
+                        <span
+                          style={{
+                            fontFamily: 'monospace',
+                            fontSize: '0.9rem',
+                            fontWeight: 800,
+                            letterSpacing: '0.12em',
+                            color: '#22d3ee',
+                          }}
+                        >
+                          {card.tag}
+                        </span>
+                        {card.icon}
+                      </div>
+                      <p
+                        style={{
+                          margin: 0,
+                          fontSize: isVertical916 ? '0.92rem' : '1.02rem',
+                          lineHeight: 1.5,
+                          color: '#f1f5f9',
+                          fontWeight: 500,
+                        }}
+                      >
+                        {card.desc}
+                      </p>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              )}
+
+              {/* SEGUNDO 00:10 - 00:16 (IDENTIDAD Y LLAMADO A LA ACCIÓN) */}
+              {activeScene === 4 && (
+                <motion.div
+                  key="scene-cta"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.25 }}
+                  style={{
+                    position: 'relative',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    textAlign: 'center',
+                    padding: '0 1rem',
+                  }}
+                >
+                  {/* Onda de choque circular (pulso de radar) desde el centro */}
+                  {[0, 1].map((ring) => (
+                    <motion.div
+                      key={ring}
+                      initial={{ width: 40, height: 40, opacity: 0.75 }}
+                      animate={{ width: 560, height: 560, opacity: 0 }}
+                      transition={{
+                        duration: 2.4,
+                        repeat: Infinity,
+                        delay: ring * 1.1,
+                        ease: 'easeOut',
+                      }}
+                      style={{
+                        position: 'absolute',
+                        borderRadius: '50%',
+                        border: '1.5px solid #22d3ee',
+                        pointerEvents: 'none',
+                      }}
+                    />
+                  ))}
+
+                  {/* Revelación del título principal: CODEPULSE con PULSE en cian neón brillante */}
+                  <motion.h2
+                    initial={{ scale: 0.88, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 0.25, ease: 'easeOut' }}
+                    style={{
+                      fontFamily: 'Rajdhani, sans-serif',
+                      fontSize: isVertical916
+                        ? 'clamp(2.8rem, 8vw, 3.6rem)'
+                        : 'clamp(3.8rem, 7vw, 6rem)',
+                      fontWeight: 800,
+                      letterSpacing: '0.14em',
+                      margin: '0 0 0.4rem 0',
+                      color: '#ffffff',
+                      lineHeight: 1,
+                    }}
+                  >
+                    CODE
+                    <span
+                      style={{
+                        color: '#22d3ee',
+                        textShadow: '0 0 28px rgba(34, 211, 238, 0.75)',
+                      }}
+                    >
+                      PULSE
+                    </span>
+                  </motion.h2>
+
+                  {/* Subtítulo */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.25, delay: 0.15 }}
+                    style={{
+                      fontFamily: 'Inter, sans-serif',
+                      fontSize: isVertical916 ? '1rem' : '1.25rem',
+                      fontWeight: 500,
+                      letterSpacing: '0.08em',
+                      textTransform: 'uppercase',
+                      color: '#cbd5e1',
+                      marginBottom: '2rem',
+                    }}
+                  >
+                    Comunidad Privada de Desarrolladores
+                  </motion.div>
+
+                  {/* Botón flotante estilizado con efecto glow */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 14 }}
+                    animate={{
+                      opacity: 1,
+                      y: [0, -4, 0],
+                    }}
+                    transition={{
+                      opacity: { duration: 0.25, delay: 0.28 },
+                      y: { duration: 2, repeat: Infinity, ease: 'easeInOut' },
+                    }}
+                    style={{
+                      padding: isVertical916 ? '0.85rem 1.4rem' : '1rem 2.2rem',
+                      borderRadius: '8px',
+                      background: 'rgba(34, 211, 238, 0.12)',
+                      border: '1.5px solid #22d3ee',
+                      boxShadow:
+                        '0 0 28px rgba(34, 211, 238, 0.45), inset 0 0 12px rgba(34, 211, 238, 0.2)',
+                      fontFamily: 'monospace',
+                      fontSize: isVertical916 ? '0.8rem' : '0.95rem',
+                      fontWeight: 800,
+                      letterSpacing: '0.14em',
+                      color: '#ffffff',
+                    }}
+                  >
+                    ACCESO VÍA WHATSAPP — LINK EN BIO
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* HUD Inferior: Coordenadas de red + Línea de tiempo de 16s */}
+          <div style={{ width: '100%' }}>
+            {/* Barra de tiempo interactiva dividida en los 4 bloques (0-3s, 3-6s, 6-10s, 10-16s) */}
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: '3fr 3fr 4fr 6fr',
+                gap: '6px',
+                marginBottom: '0.75rem',
+              }}
+            >
+              {[
+                { label: '00:00 QUIEBRE', start: 0, end: 3 },
+                { label: '00:03 RETO', start: 3, end: 6 },
+                { label: '00:06 SOLUCIÓN', start: 6, end: 10 },
+                { label: '00:10 IDENTIDAD', start: 10, end: 16 },
+              ].map((seg) => {
+                const segDuration = seg.end - seg.start;
+                const progress = Math.max(
+                  0,
+                  Math.min(100, ((currentSec - seg.start) / segDuration) * 100)
+                );
+                return (
+                  <button
+                    key={seg.label}
+                    type="button"
+                    onClick={() => jumpToSecond(seg.start)}
+                    style={{
+                      background: 'rgba(255, 255, 255, 0.1)',
+                      height: '5px',
+                      borderRadius: '3px',
+                      border: 'none',
+                      padding: 0,
+                      overflow: 'hidden',
+                      cursor: 'pointer',
+                    }}
+                    title={seg.label}
+                  >
+                    <div
+                      style={{
+                        width: `${progress}%`,
+                        height: '100%',
+                        backgroundColor: '#22d3ee',
+                        boxShadow: '0 0 10px #22d3ee',
+                      }}
+                    />
+                  </button>
+                );
+              })}
+            </div>
+
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                fontFamily: 'monospace',
+                fontSize: isVertical916 ? '0.65rem' : '0.74rem',
+                letterSpacing: '0.1em',
+                color: '#64748b',
+              }}
+            >
+              <span>NET.COORD // 19.4326° N, 99.1332° W</span>
+              <span style={{ color: '#22d3ee', fontWeight: 700 }}>
+                TIMECODE // {formatTimecode(elapsedMs)} / 00:16:00
+              </span>
+            </div>
           </div>
         </div>
       </div>
