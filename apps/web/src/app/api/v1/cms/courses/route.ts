@@ -9,6 +9,7 @@ async function ensureCmsSchema() {
     await neonQuery(`ALTER TABLE cursos ADD COLUMN IF NOT EXISTS categoria VARCHAR(100) DEFAULT 'Desarrollo de Software';`);
     await neonQuery(`ALTER TABLE cursos ALTER COLUMN imagen_portada_url TYPE TEXT;`);
     await neonQuery(`ALTER TABLE lecciones ADD COLUMN IF NOT EXISTS contenido_bloques JSONB DEFAULT '[]'::jsonb;`);
+    await neonQuery(`ALTER TABLE lecciones ADD COLUMN IF NOT EXISTS configuracion_pagina JSONB DEFAULT '{}'::jsonb;`);
     schemaInitialized = true;
   } catch (err) {
     console.warn('Schema check warning:', err);
@@ -83,6 +84,12 @@ export async function GET(request: Request) {
               : typeof l.contenido_bloques === 'string'
               ? JSON.parse(l.contenido_bloques)
               : [],
+            configuracion_pagina:
+              l.configuracion_pagina && typeof l.configuracion_pagina === 'object'
+                ? l.configuracion_pagina
+                : typeof l.configuracion_pagina === 'string'
+                ? JSON.parse(l.configuracion_pagina)
+                : {},
           })),
       }));
 
@@ -229,10 +236,11 @@ export async function POST(request: Request) {
           ? lec.tipo
           : 'lectura';
         const bloquesJson = JSON.stringify(lec.contenido_bloques || []);
+        const pageConfigJson = JSON.stringify(lec.configuracion_pagina || {});
 
         await neonQuery(
-          `INSERT INTO lecciones (id_modulo, orden, titulo, tipo, duracion_estimada_minutos, contenido_bloques)
-           VALUES ($1::uuid, $2, $3, $4::"EnumLeccion", $5, $6::jsonb);`,
+          `INSERT INTO lecciones (id_modulo, orden, titulo, tipo, duracion_estimada_minutos, contenido_bloques, configuracion_pagina)
+           VALUES ($1::uuid, $2, $3, $4::"EnumLeccion", $5, $6::jsonb, $7::jsonb);`,
           [
             modId,
             lIdx + 1,
@@ -240,6 +248,7 @@ export async function POST(request: Request) {
             validTipo,
             Number(lec.duracion_estimada_minutos) || 10,
             bloquesJson,
+            pageConfigJson,
           ]
         );
       }

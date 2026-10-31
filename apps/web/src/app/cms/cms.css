@@ -251,23 +251,69 @@
 }
 
 .cms-page-sheet {
-  max-width: 840px;
+  max-width: 860px;
   margin: 0 auto;
   background: #0b0617;
-  border: 1px solid rgba(168, 85, 247, 0.2);
+  border: 1px solid rgba(168, 85, 247, 0.22);
   border-radius: 20px;
   padding: 2.5rem 2.75rem;
   box-shadow: 0 24px 70px rgba(0, 0, 0, 0.65);
   min-height: 72vh;
+  transition: max-width 0.25s ease, background 0.25s ease;
+}
+
+.cms-page-sheet.wide {
+  max-width: 1140px;
+}
+
+.cms-page-sheet.full {
+  max-width: 100%;
+}
+
+.cms-page-sheet.pattern-grid {
+  background-image:
+    linear-gradient(rgba(168, 85, 247, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(168, 85, 247, 0.06) 1px, transparent 1px);
+  background-size: 30px 30px;
+}
+
+.cms-page-sheet.pattern-dots {
+  background-image: radial-gradient(rgba(168, 85, 247, 0.16) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+.cms-blocks-flow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 0.9rem;
+}
+
+.cms-flow-w-100 { width: 100%; }
+.cms-flow-w-75  { width: calc(75% - 0.45rem); }
+.cms-flow-w-66  { width: calc(66.666% - 0.45rem); }
+.cms-flow-w-50  { width: calc(50% - 0.45rem); }
+.cms-flow-w-33  { width: calc(33.333% - 0.6rem); }
+.cms-flow-w-25  { width: calc(25% - 0.68rem); }
+
+@media (max-width: 820px) {
+  .cms-flow-w-75,
+  .cms-flow-w-66,
+  .cms-flow-w-50,
+  .cms-flow-w-33,
+  .cms-flow-w-25 {
+    width: 100%;
+  }
 }
 
 .cms-block-wrapper {
   position: relative;
-  padding: 0.75rem;
-  margin: 0.55rem -0.75rem;
+  padding: 0.65rem;
   border-radius: 12px;
   border: 1.5px solid transparent;
   cursor: pointer;
+  box-sizing: border-box;
+  min-width: 0;
   transition: border-color 0.15s ease, background 0.15s ease;
 }
 
@@ -374,6 +420,40 @@
 .cms-color-swatch.active {
   border-color: #ffffff;
   transform: scale(1.12);
+}
+
+.cms-inspector-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem;
+  padding: 0.3rem;
+  border-radius: 10px;
+  background: #120924;
+  border: 1px solid rgba(168, 85, 247, 0.25);
+  margin-bottom: 1.1rem;
+}
+
+.cms-inspector-tab {
+  padding: 0.48rem 0.5rem;
+  border-radius: 7px;
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.cms-inspector-tab.active {
+  background: linear-gradient(90deg, rgba(147, 51, 234, 0.4), rgba(225, 29, 72, 0.35));
+  color: #ffffff;
+}
+
+.cms-range {
+  width: 100%;
+  accent-color: #f43f5e;
+  cursor: pointer;
 }
 
 @media (max-width: 1100px) {

@@ -16,6 +16,7 @@ import {
 import DashboardComponent from '../../DashboardComponent';
 import CmsBlockRenderer from '../../cms/CmsBlockRenderer';
 import { CmsCourse, CmsLesson } from '../../cms/CmsBlockTypes';
+import '../../cms/cms.css';
 
 interface FlatLessonRef {
   modIdx: number;
@@ -312,12 +313,27 @@ export default function CourseStudentViewerPage() {
 
           {/* HOJA PRINCIPAL DE LECCIÓN */}
           <section
+            className={`cms-page-sheet ${
+              activeItem?.lesson.configuracion_pagina?.maxWidth === 'wide'
+                ? 'wide'
+                : activeItem?.lesson.configuracion_pagina?.maxWidth === 'full'
+                ? 'full'
+                : ''
+            } ${
+              activeItem?.lesson.configuracion_pagina?.pattern === 'grid'
+                ? 'pattern-grid'
+                : activeItem?.lesson.configuracion_pagina?.pattern === 'dots'
+                ? 'pattern-dots'
+                : ''
+            }`}
             style={{
-              background: '#0b0617',
-              border: '1px solid rgba(168, 85, 247, 0.22)',
-              borderRadius: '22px',
-              padding: '2.5rem 2.75rem',
-              boxShadow: '0 24px 64px rgba(0,0,0,0.55)',
+              margin: 0,
+              maxWidth: '100%',
+              backgroundColor:
+                activeItem?.lesson.configuracion_pagina?.sheetBg || '#0b0617',
+              borderColor:
+                activeItem?.lesson.configuracion_pagina?.accentBorder ||
+                'rgba(168, 85, 247, 0.22)',
               minWidth: 0,
             }}
           >
@@ -380,10 +396,15 @@ export default function CourseStudentViewerPage() {
                   </div>
                 </div>
 
-                {/* Contenido Rico de Bloques */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.4rem' }}>
+                {/* Contenido Rico de Bloques (Soporta Columnas Libre / Flex Flow) */}
+                <div className="cms-blocks-flow" style={{ gap: '1.25rem' }}>
                   {(activeItem.lesson.contenido_bloques || []).map((block) => (
-                    <CmsBlockRenderer key={block.id} block={block} />
+                    <div
+                      key={block.id}
+                      className={`cms-flow-w-${block.style?.boxWidth || 100}`}
+                    >
+                      <CmsBlockRenderer block={block} />
+                    </div>
                   ))}
                 </div>
 

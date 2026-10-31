@@ -14,7 +14,19 @@ export type BlockType =
   | 'list'
   | 'quote'
   | 'quiz'
-  | 'divider';
+  | 'divider'
+  // Nuevos bloques de libertad creativa e interactividad:
+  | 'canvas_free'
+  | 'tabs'
+  | 'accordion'
+  | 'steps'
+  | 'stats'
+  | 'terminal'
+  | 'flashcards'
+  | 'architecture'
+  | 'badges'
+  | 'cta_buttons'
+  | 'embed';
 
 export type TextAlign = 'left' | 'center' | 'right' | 'justify';
 
@@ -24,53 +36,210 @@ export interface ColumnItem {
   accent?: string;
 }
 
+export interface TabItem {
+  label: string;
+  title?: string;
+  content: string;
+  code?: string;
+}
+
+export interface AccordionItem {
+  title: string;
+  content: string;
+}
+
+export interface StepItem {
+  badge: string;
+  title: string;
+  content: string;
+}
+
+export interface StatItem {
+  value: string;
+  label: string;
+  accent?: string;
+}
+
+export interface TerminalLine {
+  type: 'cmd' | 'out' | 'success' | 'warn';
+  text: string;
+}
+
+export interface FlashcardItem {
+  front: string;
+  back: string;
+  tag?: string;
+}
+
+export interface ArchNode {
+  title: string;
+  subtitle?: string;
+  accent?: string;
+}
+
+export interface BadgeChip {
+  label: string;
+  color: string;
+}
+
+export interface CtaButtonItem {
+  label: string;
+  url: string;
+  variant: 'gradient' | 'outline' | 'glass' | 'white';
+}
+
+export type CanvasElementKind = 'text' | 'box' | 'badge' | 'circle' | 'image' | 'line';
+
+export interface CanvasElement {
+  id: string;
+  kind: CanvasElementKind;
+  x: number; // % horizontal (0 - 95)
+  y: number; // % vertical (0 - 92)
+  w: number; // % width (8 - 100)
+  h: number; // px height
+  rotation?: number; // deg (-180 a 180)
+  zIndex?: number;
+  text?: string;
+  bg?: string;
+  color?: string;
+  borderColor?: string;
+  borderRadius?: number;
+  fontSize?: number;
+  fontWeight?: number;
+  textAlign?: TextAlign;
+  imageUrl?: string;
+  opacity?: number;
+}
+
+export interface BlockBoxStyle {
+  boxWidth?: 25 | 33 | 50 | 66 | 75 | 100;
+  paddingY?: number;
+  paddingX?: number;
+  marginY?: number;
+  bgCustom?: string;
+  useGradientBg?: boolean;
+  bgGradient2?: string;
+  bgAngle?: number;
+  borderWidth?: number;
+  borderStyle?: 'solid' | 'dashed' | 'dotted';
+  borderColor?: string;
+  borderRadius?: number;
+  shadowPreset?: 'none' | 'soft' | 'deep' | 'glow-purple' | 'glow-red' | 'glow-cyan';
+  fontFamily?: 'sans' | 'display' | 'mono' | 'serif';
+  fontSizePx?: number;
+  fontWeight?: number;
+  letterSpacing?: number;
+  lineHeight?: number;
+  textTransform?: 'none' | 'uppercase' | 'capitalize';
+  entranceAnim?: 'none' | 'fade-up' | 'zoom' | 'slide-left';
+}
+
+export interface LessonPageSettings {
+  maxWidth?: 'standard' | 'wide' | 'full'; // 840px | 1120px | 100%
+  sheetBg?: string;
+  pattern?: 'none' | 'grid' | 'dots';
+  accentBorder?: string;
+}
+
 export interface CmsBlock {
   id: string;
   type: BlockType;
+  style?: BlockBoxStyle;
+
   // Text & Typography
   text?: string;
   subtitle?: string;
   align?: TextAlign;
   color?: string;
   bgColor?: string;
-  gradientText?: string; // 'none' | 'purple-red' | 'cyan-blue' | 'gold'
+  gradientText?: string; // 'none' | 'purple-red' | 'cyan-blue' | 'gold' | 'emerald'
   fontSize?: 'sm' | 'md' | 'lg' | 'xl';
+
   // Banner (Canva Card)
   bannerGradient?: string;
   badgeText?: string;
   buttonText?: string;
   buttonUrl?: string;
+
   // Table
   headers?: string[];
   rows?: string[][];
   tableAccent?: string;
   striped?: boolean;
+
   // Columns
   columns?: ColumnItem[];
+
   // Callout
   calloutVariant?: 'info' | 'tip' | 'warning' | 'danger';
   calloutTitle?: string;
+
   // Code
   language?: string;
   filename?: string;
   code?: string;
+
   // Image / Video
   mediaUrl?: string;
   caption?: string;
-  widthPercent?: number; // 40, 65, 85, 100
+  widthPercent?: number;
   rounded?: boolean;
+
   // List
   listStyle?: 'bullet' | 'number' | 'check';
   items?: string[];
+
   // Quote
   author?: string;
+
   // Quiz
   question?: string;
   options?: string[];
   correctIndex?: number;
   explanation?: string;
+
   // Divider
-  dividerStyle?: 'line' | 'gradient' | 'space';
+  dividerStyle?: 'line' | 'gradient' | 'space' | 'dots';
+
+  // --- Nuevos Bloques Avanzados ---
+  // Lienzo Libre estilo Canva
+  canvasHeight?: number;
+  canvasBg?: string;
+  canvasGrid?: boolean;
+  canvasElements?: CanvasElement[];
+
+  // Tabs
+  tabs?: TabItem[];
+
+  // Accordion
+  accordions?: AccordionItem[];
+
+  // Steps / Roadmap
+  steps?: StepItem[];
+
+  // Stats / KPIs
+  stats?: StatItem[];
+
+  // Terminal HUD
+  terminalTitle?: string;
+  terminalLines?: TerminalLine[];
+
+  // Flashcards 3D
+  flashcards?: FlashcardItem[];
+
+  // Architecture Diagram
+  archDirection?: 'horizontal' | 'vertical';
+  archNodes?: ArchNode[];
+
+  // Badges / Chips
+  badges?: BadgeChip[];
+
+  // CTA Buttons
+  ctaButtons?: CtaButtonItem[];
+
+  // Embed / Iframe
+  embedUrl?: string;
+  embedHeight?: number;
 }
 
 export interface CmsLesson {
@@ -80,6 +249,7 @@ export interface CmsLesson {
   tipo: 'lectura' | 'video' | 'quiz' | 'examen';
   duracion_estimada_minutos: number;
   contenido_bloques: CmsBlock[];
+  configuracion_pagina?: LessonPageSettings;
 }
 
 export interface CmsModule {
@@ -137,7 +307,7 @@ export function createDefaultBlock(type: BlockType): CmsBlock {
       return {
         id,
         type,
-        text: 'Escribe aquí el contenido explicativo de tu lección. Puedes detallar conceptos teóricos, ejemplos del mundo real y pasos prácticos para el estudiante.',
+        text: 'Escribe aquí el contenido explicativo de tu lección. Puedes usar **negritas**, *cursivas*, ==resaltados==, `código inline` o [enlaces](https://codepulseplataform.dev) libremente.',
         align: 'left',
         color: '#cbd5e1',
         fontSize: 'md',
@@ -227,7 +397,8 @@ export function createDefaultBlock(type: BlockType): CmsBlock {
       return {
         id,
         type,
-        mediaUrl: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1200&q=80',
+        mediaUrl:
+          'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1200&q=80',
         caption: 'Diagrama ilustrativo de arquitectura de software moderna.',
         widthPercent: 100,
         rounded: true,
@@ -245,8 +416,8 @@ export function createDefaultBlock(type: BlockType): CmsBlock {
         type,
         listStyle: 'check',
         items: [
-          'Comprender el flujo completo de una petición HTTP segura.',
-          'Diseñar esquemas escalables en PostgreSQL.',
+          'Comprender el flujo completo de una petición **HTTP segura**.',
+          'Diseñar esquemas escalables en `PostgreSQL`.',
           'Desplegar servicios listos para producción.',
         ],
       };
@@ -264,7 +435,8 @@ export function createDefaultBlock(type: BlockType): CmsBlock {
         question: '¿Qué código de estado HTTP indica que un recurso fue creado exitosamente?',
         options: ['200 OK', '201 Created', '204 No Content', '401 Unauthorized'],
         correctIndex: 1,
-        explanation: 'El código 201 Created confirma que la petición tuvo éxito y se creó un nuevo recurso en el servidor.',
+        explanation:
+          'El código 201 Created confirma que la petición tuvo éxito y se creó un nuevo recurso en el servidor.',
       };
     case 'divider':
       return {
@@ -272,6 +444,234 @@ export function createDefaultBlock(type: BlockType): CmsBlock {
         type,
         dividerStyle: 'gradient',
       };
+    case 'canvas_free':
+      return {
+        id,
+        type,
+        canvasHeight: 380,
+        canvasBg: 'radial-gradient(circle at 20% 20%, rgba(147, 51, 234, 0.25), #080412 75%)',
+        canvasGrid: true,
+        canvasElements: [
+          {
+            id: 'el_1',
+            kind: 'badge',
+            x: 6,
+            y: 10,
+            w: 34,
+            h: 34,
+            zIndex: 3,
+            text: 'DISEÑO LIBRE // CANVA MODE',
+            bg: 'rgba(244, 63, 94, 0.22)',
+            color: '#fda4af',
+            borderColor: '#f43f5e',
+            borderRadius: 999,
+            fontSize: 12,
+            fontWeight: 800,
+            textAlign: 'center',
+          },
+          {
+            id: 'el_2',
+            kind: 'text',
+            x: 6,
+            y: 26,
+            w: 58,
+            h: 90,
+            zIndex: 4,
+            text: 'Arrastra, rota y diseña elementos donde quieras',
+            bg: 'transparent',
+            color: '#ffffff',
+            borderColor: 'transparent',
+            borderRadius: 8,
+            fontSize: 28,
+            fontWeight: 800,
+            textAlign: 'left',
+          },
+          {
+            id: 'el_3',
+            kind: 'box',
+            x: 62,
+            y: 22,
+            w: 32,
+            h: 170,
+            rotation: -3,
+            zIndex: 2,
+            text: 'Tarjeta Flotante\n\nColoca diagramas, notas visuales, insignias o imágenes con total libertad.',
+            bg: 'rgba(18, 9, 36, 0.88)',
+            color: '#e2e8f0',
+            borderColor: '#a855f7',
+            borderRadius: 16,
+            fontSize: 14,
+            fontWeight: 500,
+            textAlign: 'left',
+          },
+          {
+            id: 'el_4',
+            kind: 'circle',
+            x: 72,
+            y: 55,
+            w: 20,
+            h: 110,
+            zIndex: 1,
+            text: '',
+            bg: 'radial-gradient(circle, rgba(244,63,94,0.45) 0%, transparent 70%)',
+            color: '#ffffff',
+            borderColor: 'transparent',
+            borderRadius: 999,
+          },
+        ],
+      };
+    case 'tabs':
+      return {
+        id,
+        type,
+        tabs: [
+          {
+            label: 'Concepto',
+            title: '¿Cómo funciona internamente?',
+            content:
+              'Divide información densa en pestañas limpias para que el estudiante explore cada enfoque sin saturar la pantalla.',
+          },
+          {
+            label: 'Implementación',
+            title: 'Ejemplo en Producción',
+            content: 'Puedes acompañar cada pestaña con código fuente opcional:',
+            code: `export async function handler(req: Request) {\n  return Response.json({ ok: true });\n}`,
+          },
+          {
+            label: 'Buenas Prácticas',
+            title: 'Recomendaciones de Seguridad',
+            content:
+              'Valida siempre los headers de entrada, aplica rate-limiting y registra trazas de auditoría.',
+          },
+        ],
+      };
+    case 'accordion':
+      return {
+        id,
+        type,
+        accordions: [
+          {
+            title: '¿Cuándo conviene usar arquitectura de microservicios?',
+            content:
+              'Cuando distintos dominios del sistema requieren escalar, desplegarse o evolucionar de manera independiente.',
+          },
+          {
+            title: '¿Cómo proteger credenciales y secretos en la nube?',
+            content:
+              'Utiliza gestores de secretos cifrados, rotación periódica de llaves y variables de entorno de servidor.',
+          },
+        ],
+      };
+    case 'steps':
+      return {
+        id,
+        type,
+        steps: [
+          {
+            badge: 'FASE 01',
+            title: 'Modelado de Dominio y Base de Datos',
+            content: 'Define entidades, relaciones, llaves foráneas e índices estratégicos.',
+          },
+          {
+            badge: 'FASE 02',
+            title: 'Construcción de Endpoints y Seguridad JWT',
+            content: 'Implementa rutas autenticadas, control de roles (RBAC) y validación de payloads.',
+          },
+          {
+            badge: 'FASE 03',
+            title: 'Despliegue Continuo (CI/CD)',
+            content: 'Automatiza pruebas, compilación y publicación en la nube con cero tiempo de caída.',
+          },
+        ],
+      };
+    case 'stats':
+      return {
+        id,
+        type,
+        stats: [
+          { value: '99.99%', label: 'Disponibilidad SLA', accent: '#c084fc' },
+          { value: '< 18ms', label: 'Latencia P95 en API', accent: '#f43f5e' },
+          { value: 'AES-256', label: 'Estándar de Cifrado', accent: '#22d3ee' },
+        ],
+      };
+    case 'terminal':
+      return {
+        id,
+        type,
+        terminalTitle: 'root@codepulse-prod:~',
+        terminalLines: [
+          { type: 'cmd', text: 'docker compose up -d --build api-gateway' },
+          { type: 'out', text: '[+] Building 2.4s (12/12) FINISHED' },
+          { type: 'success', text: '✔ Container codepulse-gateway-1  Started  0.4s' },
+          { type: 'cmd', text: 'curl -I https://codepulseplataform.dev/api/health' },
+          { type: 'success', text: 'HTTP/2 200 OK — latency: 14ms' },
+        ],
+      };
+    case 'flashcards':
+      return {
+        id,
+        type,
+        flashcards: [
+          {
+            tag: 'ARQUITECTURA',
+            front: '¿Qué significa Idempotencia en una API REST?',
+            back: 'Que realizar múltiples peticiones idénticas produce exactamente el mismo efecto en el estado del servidor que hacer una sola (ej. GET, PUT, DELETE).',
+          },
+          {
+            tag: 'CIBERSEGURIDAD',
+            front: '¿Qué previene el hashing con Bcrypt + Salt?',
+            back: 'Impide ataques de diccionario y Rainbow Tables, asegurando que dos contraseñas iguales generen hashes completamente distintos.',
+          },
+        ],
+      };
+    case 'architecture':
+      return {
+        id,
+        type,
+        archDirection: 'horizontal',
+        archNodes: [
+          { title: 'Cliente Web', subtitle: 'Next.js 14 App', accent: '#c084fc' },
+          { title: 'API Serverless', subtitle: 'Auth & RBAC JWT', accent: '#f43f5e' },
+          { title: 'Neon Cloud DB', subtitle: 'PostgreSQL + JSONB', accent: '#22d3ee' },
+        ],
+      };
+    case 'badges':
+      return {
+        id,
+        type,
+        align: 'left',
+        badges: [
+          { label: 'TypeScript 5', color: '#38bdf8' },
+          { label: 'Next.js 14', color: '#c084fc' },
+          { label: 'PostgreSQL', color: '#10b981' },
+          { label: 'OWASP Top 10', color: '#f43f5e' },
+        ],
+      };
+    case 'cta_buttons':
+      return {
+        id,
+        type,
+        align: 'left',
+        ctaButtons: [
+          {
+            label: 'Abrir Repositorio Base',
+            url: 'https://github.com',
+            variant: 'gradient',
+          },
+          {
+            label: 'Descargar Guía PDF',
+            url: '#',
+            variant: 'outline',
+          },
+        ],
+      };
+    case 'embed':
+      return {
+        id,
+        type,
+        embedUrl: 'https://stackblitz.com/edit/nextjs?embed=1&view=preview',
+        embedHeight: 420,
+        caption: 'Laboratorio interactivo embebido (StackBlitz / CodePen / Figma).',
+      };
   }
 }
-
