@@ -135,8 +135,9 @@ model cursos {
   titulo              String    @db.VarChar(150)
   slug                String    @unique @db.VarChar(150)
   descripcion         String
+  categoria           String?   @db.VarChar(100)
   nivel               EnumNivel
-  imagen_portada_url  String?   @db.VarChar(512)
+  imagen_portada_url  String?
   publicado           Boolean   @default(false)
   id_instructor_autor String    @db.Uuid
   creado_en           DateTime  @default(now())
@@ -172,6 +173,7 @@ model lecciones {
   titulo                    String      @db.VarChar(150)
   tipo                      EnumLeccion
   contenido_url             String?
+  contenido_bloques         Json?
   duracion_estimada_minutos Int?        @default(0)
 
   modulo             modulos              @relation(fields: [id_modulo], references: [id])

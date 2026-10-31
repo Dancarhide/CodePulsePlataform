@@ -10,10 +10,11 @@ import './dashboard.css';
 interface DashboardProps {
   user?: UserProfile;
   onLogout?: () => void;
+  hideFooter?: boolean;
   children?: React.ReactNode;
 }
 
-export default function DashboardComponent({ user: propUser, onLogout, children }: DashboardProps) {
+export default function DashboardComponent({ user: propUser, onLogout, hideFooter, children }: DashboardProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [user, setUser] = useState<UserProfile | null>(propUser || null);
@@ -83,7 +84,8 @@ export default function DashboardComponent({ user: propUser, onLogout, children 
         <div className="amber-nav-right">
           <nav className="amber-nav-links">
             {navItems.map((item) => {
-              const isActive = pathname === item.href;
+              const isActive =
+                pathname === item.href || pathname?.startsWith(`${item.href}/`);
               return (
                 <Link
                   key={item.href}
@@ -113,7 +115,8 @@ export default function DashboardComponent({ user: propUser, onLogout, children 
       <main className="amber-main">{children}</main>
 
       {/* Pie de Página Completo estilo Amber Studio */}
-      <footer className="amber-footer">
+      {!hideFooter && (
+        <footer className="amber-footer">
         <div className="amber-footer-top">
           <div>
             <Link href="/home" className="amber-brand">
@@ -170,6 +173,7 @@ export default function DashboardComponent({ user: propUser, onLogout, children 
           <span>LATINOAMÉRICA • TODOS LOS DERECHOS RESERVADOS</span>
         </div>
       </footer>
+      )}
     </div>
   );
 }
