@@ -8,6 +8,7 @@ async function ensureCmsSchema() {
   try {
     await neonQuery(`ALTER TABLE cursos ADD COLUMN IF NOT EXISTS categoria VARCHAR(100) DEFAULT 'Desarrollo de Software';`);
     await neonQuery(`ALTER TABLE cursos ALTER COLUMN imagen_portada_url TYPE TEXT;`);
+    await neonQuery(`ALTER TABLE cursos ADD COLUMN IF NOT EXISTS configuracion_curso JSONB DEFAULT '{}'::jsonb;`);
     await neonQuery(`ALTER TABLE lecciones ADD COLUMN IF NOT EXISTS contenido_bloques JSONB DEFAULT '[]'::jsonb;`);
     await neonQuery(`ALTER TABLE lecciones ADD COLUMN IF NOT EXISTS configuracion_pagina JSONB DEFAULT '{}'::jsonb;`);
     await neonQuery(`ALTER TABLE lecciones ADD COLUMN IF NOT EXISTS formato_unidad VARCHAR(30) DEFAULT 'leccion';`);
@@ -18,6 +19,19 @@ async function ensureCmsSchema() {
   } catch (err) {
     console.warn('Schema check warning:', err);
   }
+}
+
+function parseJsonObject(val: any): Record<string, any> {
+  if (val && typeof val === 'object' && !Array.isArray(val)) return val;
+  if (typeof val === 'string') {
+    try {
+      const parsed = JSON.parse(val);
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch {
+      return {};
+    }
+  }
+  return {};
 }
 
 async function getOrCreateAdminAuthorId(): Promise<string> {
@@ -57,6 +71,7 @@ export async function GET(request: Request) {
       }
 
       const course = courseRows[0];
+      const configuracionCurso = parseJsonObject(course.configuracion_curso);
 
       const { rows: modules } = await neonQuery(
         `SELECT * FROM modulos WHERE id_curso = $1 ORDER BY orden ASC;`,
@@ -84,49 +99,56 @@ export async function GET(request: Request) {
             orden: l.orden,
             tipo: l.tipo,
             formato_unidad: l.formato_unidad || (l.tipo === 'examen' ? 'examen' : 'leccion'),
-            peso_puntos: Number(l.peso_puntos) || (l.formato_unidad === 'examen' ? 50 : l.formato_unidad === 'laboratorio' ? 30 : 10),
+            peso_puntos:
+              Number(l.peso_puntos) ||
+              (l.formato_unidad === 'examen' ? 50 : l.formato_unidad === 'laboratorio' ? 30 : 10),
             duracion_estimada_minutos: l.duracion_estimada_minutos || 10,
             contenido_bloques: Array.isArray(l.contenido_bloques)
               ? l.contenido_bloques
               : typeof l.contenido_bloques === 'string'
               ? JSON.parse(l.contenido_bloques)
               : [],
-            configuracion_pagina:
-              l.configuracion_pagina && typeof l.configuracion_pagina === 'object'
-                ? l.configuracion_pagina
-                : typeof l.configuracion_pagina === 'string'
-                ? JSON.parse(l.configuracion_pagina)
-                : {},
-            configuracion_actividad:
-              l.configuracion_actividad && typeof l.configuracion_actividad === 'object'
-                ? l.configuracion_actividad
-                : typeof l.configuracion_actividad === 'string'
-                ? JSON.parse(l.configuracion_actividad)
-                : {},
+            configuracion_pagina: parseJsonObject(l.configuracion_pagina),
+            configuracion_actividad: parseJsonObject(l.configuracion_actividad),
           })),
       }));
 
       return NextResponse.json({
         course: {
           ...course,
+          configuracion_curso: configuracionCurso,
           modulos: structuredModules,
         },
       });
     }
 
-    // Listar todos los cursos (con conteo de módulos y lecciones)
+    // Listar cursos con métricas completas para administración y catálogo
     const whereClause = publishedOnly
-      ? `WHERE c.eliminado_en IS NULL AND c.publicado = true`
+      ? `WHERE c.eliminado_en IS NULL
+           AND COALESCE(c.configuracion_curso->>'visibilidad', 'publico') = 'publico'
+           AND (
+             (c.publicado = true AND COALESCE(c.configuracion_curso->>'estado_curso', 'publicado') = 'publicado')
+             OR COALESCE(c.configuracion_curso->>'estado_curso', '') = 'proximamente'
+           )`
       : `WHERE c.eliminado_en IS NULL`;
 
-    const { rows: courses } = await neonQuery(
+    const { rows: rawCourses } = await neonQuery(
       `SELECT c.*,
               (SELECT COUNT(*)::int FROM modulos m WHERE m.id_curso = c.id) AS total_modulos,
-              (SELECT COUNT(*)::int FROM lecciones l INNER JOIN modulos m ON m.id = l.id_modulo WHERE m.id_curso = c.id) AS total_lecciones
+              (SELECT COUNT(*)::int FROM lecciones l INNER JOIN modulos m ON m.id = l.id_modulo WHERE m.id_curso = c.id) AS total_lecciones,
+              (SELECT COUNT(*)::int FROM lecciones l INNER JOIN modulos m ON m.id = l.id_modulo WHERE m.id_curso = c.id AND (l.formato_unidad = 'examen' OR l.tipo = 'examen')) AS total_examenes,
+              (SELECT COUNT(*)::int FROM lecciones l INNER JOIN modulos m ON m.id = l.id_modulo WHERE m.id_curso = c.id AND l.formato_unidad = 'laboratorio') AS total_laboratorios,
+              (SELECT COALESCE(SUM(COALESCE(l.peso_puntos, 10)), 0)::int FROM lecciones l INNER JOIN modulos m ON m.id = l.id_modulo WHERE m.id_curso = c.id) AS total_puntos,
+              (SELECT COALESCE(SUM(COALESCE(l.duracion_estimada_minutos, 10)), 0)::int FROM lecciones l INNER JOIN modulos m ON m.id = l.id_modulo WHERE m.id_curso = c.id) AS duracion_total_minutos
          FROM cursos c
          ${whereClause}
         ORDER BY c.creado_en DESC;`
     );
+
+    const courses = rawCourses.map((c) => ({
+      ...c,
+      configuracion_curso: parseJsonObject(c.configuracion_curso),
+    }));
 
     return NextResponse.json({ courses });
   } catch (error: any) {
@@ -151,6 +173,7 @@ export async function POST(request: Request) {
       nivel = 'principiante',
       imagen_portada_url = null,
       publicado = false,
+      configuracion_curso = {},
       modulos = [],
     } = body;
 
@@ -165,10 +188,19 @@ export async function POST(request: Request) {
       ? nivel
       : 'principiante';
 
+    const cleanConfig = parseJsonObject(configuracion_curso);
+    const resolvedPublished = Boolean(publicado);
+    // Sincronizar estado_curso con el switch de publicado si venían desalineados
+    if (resolvedPublished && (!cleanConfig.estado_curso || cleanConfig.estado_curso === 'borrador' || cleanConfig.estado_curso === 'pausado')) {
+      cleanConfig.estado_curso = 'publicado';
+    } else if (!resolvedPublished && cleanConfig.estado_curso === 'publicado') {
+      cleanConfig.estado_curso = 'borrador';
+    }
+
+    const configJson = JSON.stringify(cleanConfig);
     let courseId = id as string | undefined;
 
     if (courseId) {
-      // Actualizar curso existente
       await neonQuery(
         `UPDATE cursos
             SET titulo = $1,
@@ -177,8 +209,9 @@ export async function POST(request: Request) {
                 categoria = $4,
                 nivel = $5::"EnumNivel",
                 imagen_portada_url = $6,
-                publicado = $7
-          WHERE id = $8;`,
+                publicado = $7,
+                configuracion_curso = $8::jsonb
+          WHERE id = $9;`,
         [
           titulo,
           slug,
@@ -186,7 +219,8 @@ export async function POST(request: Request) {
           categoria,
           validNivel,
           imagen_portada_url,
-          Boolean(publicado),
+          cleanConfig.estado_curso === 'publicado',
+          configJson,
           courseId,
         ]
       );
@@ -204,7 +238,6 @@ export async function POST(request: Request) {
       );
       await neonQuery(`DELETE FROM modulos WHERE id_curso = $1;`, [courseId]);
     } else {
-      // Verificar que el slug sea único
       const { rows: existingSlug } = await neonQuery(
         `SELECT id FROM cursos WHERE slug = $1 LIMIT 1;`,
         [slug]
@@ -214,8 +247,8 @@ export async function POST(request: Request) {
 
       const authorId = await getOrCreateAdminAuthorId();
       const { rows: inserted } = await neonQuery(
-        `INSERT INTO cursos (titulo, slug, descripcion, categoria, nivel, imagen_portada_url, publicado, id_instructor_autor)
-         VALUES ($1, $2, $3, $4, $5::"EnumNivel", $6, $7, $8::uuid)
+        `INSERT INTO cursos (titulo, slug, descripcion, categoria, nivel, imagen_portada_url, publicado, configuracion_curso, id_instructor_autor)
+         VALUES ($1, $2, $3, $4, $5::"EnumNivel", $6, $7, $8::jsonb, $9::uuid)
          RETURNING id;`,
         [
           titulo,
@@ -224,7 +257,8 @@ export async function POST(request: Request) {
           categoria,
           validNivel,
           imagen_portada_url,
-          Boolean(publicado),
+          cleanConfig.estado_curso === 'publicado',
+          configJson,
           authorId,
         ]
       );
@@ -296,6 +330,168 @@ export async function POST(request: Request) {
   }
 }
 
+export async function PATCH(request: Request) {
+  try {
+    await ensureCmsSchema();
+    const body = await request.json();
+    const { id, action } = body;
+
+    if (!id) {
+      return NextResponse.json({ detail: 'ID de curso requerido.' }, { status: 400 });
+    }
+
+    const { rows: existingRows } = await neonQuery(
+      `SELECT * FROM cursos WHERE id = $1::uuid AND eliminado_en IS NULL LIMIT 1;`,
+      [id]
+    );
+
+    if (existingRows.length === 0) {
+      return NextResponse.json({ detail: 'Curso no encontrado.' }, { status: 404 });
+    }
+
+    const current = existingRows[0];
+    const currentCfg = parseJsonObject(current.configuracion_curso);
+
+    // Acción rápida: Duplicar curso completo como Borrador
+    if (action === 'duplicate') {
+      const suffix = Math.floor(100 + Math.random() * 900);
+      const cloneSlug = `${current.slug}-copia-${suffix}`.slice(0, 145);
+      const cloneCfg = {
+        ...currentCfg,
+        estado_curso: 'borrador',
+        destacado: false,
+      };
+
+      const { rows: clonedCourse } = await neonQuery(
+        `INSERT INTO cursos (titulo, slug, descripcion, categoria, nivel, imagen_portada_url, publicado, configuracion_curso, id_instructor_autor)
+         VALUES ($1, $2, $3, $4, $5::"EnumNivel", $6, false, $7::jsonb, $8::uuid)
+         RETURNING id;`,
+        [
+          `${current.titulo} (Copia)`,
+          cloneSlug,
+          current.descripcion || '',
+          current.categoria || 'Desarrollo de Software',
+          current.nivel || 'intermedio',
+          current.imagen_portada_url || null,
+          JSON.stringify(cloneCfg),
+          current.id_instructor_autor,
+        ]
+      );
+      const newCourseId = String(clonedCourse[0].id);
+
+      const { rows: mods } = await neonQuery(
+        `SELECT * FROM modulos WHERE id_curso = $1::uuid ORDER BY orden ASC;`,
+        [id]
+      );
+
+      for (const m of mods) {
+        const { rows: newModRows } = await neonQuery(
+          `INSERT INTO modulos (id_curso, orden, titulo)
+           VALUES ($1::uuid, $2, $3)
+           RETURNING id;`,
+          [newCourseId, m.orden, m.titulo]
+        );
+        const newModId = String(newModRows[0].id);
+
+        const { rows: lecs } = await neonQuery(
+          `SELECT * FROM lecciones WHERE id_modulo = $1::uuid ORDER BY orden ASC;`,
+          [m.id]
+        );
+
+        for (const l of lecs) {
+          const newStableKey = `clone_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+          await neonQuery(
+            `INSERT INTO lecciones (id_modulo, orden, titulo, tipo, duracion_estimada_minutos, contenido_bloques, configuracion_pagina, formato_unidad, peso_puntos, clave_estable, configuracion_actividad)
+             VALUES ($1::uuid, $2, $3, $4::"EnumLeccion", $5, $6::jsonb, $7::jsonb, $8, $9, $10, $11::jsonb);`,
+            [
+              newModId,
+              l.orden,
+              l.titulo,
+              l.tipo || 'lectura',
+              l.duracion_estimada_minutos || 10,
+              JSON.stringify(l.contenido_bloques || []),
+              JSON.stringify(parseJsonObject(l.configuracion_pagina)),
+              l.formato_unidad || 'leccion',
+              Number(l.peso_puntos) || 10,
+              newStableKey,
+              JSON.stringify(parseJsonObject(l.configuracion_actividad)),
+            ]
+          );
+        }
+      }
+
+      return NextResponse.json({
+        success: true,
+        id: newCourseId,
+        message: 'Curso duplicado como borrador.',
+      });
+    }
+
+    // Actualización rápida de estado, visibilidad o configuración general sin tocar el temario
+    const incomingCfg = body.configuracion_curso ? parseJsonObject(body.configuracion_curso) : {};
+    const nextCfg = {
+      ...currentCfg,
+      ...incomingCfg,
+    };
+
+    if (body.estado_curso) {
+      nextCfg.estado_curso = body.estado_curso;
+    } else if (typeof body.publicado === 'boolean' && !incomingCfg.estado_curso) {
+      nextCfg.estado_curso = body.publicado ? 'publicado' : 'borrador';
+    }
+
+    const nextPublicado = nextCfg.estado_curso === 'publicado';
+    const nextTitulo = body.titulo ?? current.titulo;
+    const nextSlug = body.slug ?? current.slug;
+    const nextDesc = body.descripcion ?? current.descripcion;
+    const nextCategoria = body.categoria ?? current.categoria ?? 'Desarrollo de Software';
+    const nextNivel = ['principiante', 'intermedio', 'avanzado'].includes(body.nivel)
+      ? body.nivel
+      : current.nivel || 'intermedio';
+    const nextCover =
+      body.imagen_portada_url !== undefined ? body.imagen_portada_url : current.imagen_portada_url;
+
+    const { rows: updated } = await neonQuery(
+      `UPDATE cursos
+          SET titulo = $1,
+              slug = $2,
+              descripcion = $3,
+              categoria = $4,
+              nivel = $5::"EnumNivel",
+              imagen_portada_url = $6,
+              publicado = $7,
+              configuracion_curso = $8::jsonb
+        WHERE id = $9::uuid
+        RETURNING *;`,
+      [
+        nextTitulo,
+        nextSlug,
+        nextDesc,
+        nextCategoria,
+        nextNivel,
+        nextCover,
+        nextPublicado,
+        JSON.stringify(nextCfg),
+        id,
+      ]
+    );
+
+    return NextResponse.json({
+      success: true,
+      course: {
+        ...updated[0],
+        configuracion_curso: parseJsonObject(updated[0].configuracion_curso),
+      },
+    });
+  } catch (error: any) {
+    console.error('CMS PATCH error:', error);
+    return NextResponse.json(
+      { detail: error.message || 'Error al actualizar configuración del curso.' },
+      { status: 500 }
+    );
+  }
+}
+
 export async function DELETE(request: Request) {
   try {
     await ensureCmsSchema();
@@ -317,4 +513,3 @@ export async function DELETE(request: Request) {
     );
   }
 }
-

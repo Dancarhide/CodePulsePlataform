@@ -331,6 +331,33 @@ export interface CmsModule {
   lecciones: CmsLesson[];
 }
 
+export type CourseStatus =
+  | 'publicado'
+  | 'borrador'
+  | 'pausado'
+  | 'proximamente'
+  | 'archivado';
+
+export type CourseVisibility = 'publico' | 'privado_link' | 'solo_miembros';
+
+export interface CourseGovernanceConfig {
+  estado_curso?: CourseStatus;
+  visibilidad?: CourseVisibility;
+  destacado?: boolean;
+  inscripciones_abiertas?: boolean;
+  navegacion_secuencial?: boolean;
+  otorga_certificado?: boolean;
+  porcentaje_minimo_certificado?: number;
+  horas_curriculares?: number;
+  instructor_nombre?: string;
+  instructor_rol?: string;
+  etiquetas?: string[];
+  requisitos_previos?: string;
+  codigo_acceso?: string;
+  mensaje_pausa?: string;
+  color_acento?: string;
+}
+
 export interface CmsCourse {
   id?: string;
   titulo: string;
@@ -340,9 +367,41 @@ export interface CmsCourse {
   nivel: 'principiante' | 'intermedio' | 'avanzado';
   imagen_portada_url: string;
   publicado: boolean;
+  creado_en?: string;
+  configuracion_curso?: CourseGovernanceConfig;
   total_modulos?: number;
   total_lecciones?: number;
+  total_examenes?: number;
+  total_laboratorios?: number;
+  total_puntos?: number;
+  duracion_total_minutos?: number;
   modulos: CmsModule[];
+}
+
+export function resolveCourseGovernance(course: Partial<CmsCourse>): Required<CourseGovernanceConfig> {
+  const cfg = course.configuracion_curso || {};
+  const fallbackStatus: CourseStatus = course.publicado ? 'publicado' : 'borrador';
+  const estado = cfg.estado_curso || fallbackStatus;
+
+  return {
+    estado_curso: estado,
+    visibilidad: cfg.visibilidad || 'publico',
+    destacado: Boolean(cfg.destacado),
+    inscripciones_abiertas: cfg.inscripciones_abiertas !== false,
+    navegacion_secuencial: Boolean(cfg.navegacion_secuencial),
+    otorga_certificado: cfg.otorga_certificado !== false,
+    porcentaje_minimo_certificado: Number(cfg.porcentaje_minimo_certificado) || 100,
+    horas_curriculares: Number(cfg.horas_curriculares) || 0,
+    instructor_nombre: cfg.instructor_nombre || 'Equipo Ingeniería CodePulse',
+    instructor_rol: cfg.instructor_rol || 'Arquitectura & Desarrollo',
+    etiquetas: Array.isArray(cfg.etiquetas) ? cfg.etiquetas : [],
+    requisitos_previos: cfg.requisitos_previos || '',
+    codigo_acceso: cfg.codigo_acceso || '',
+    mensaje_pausa:
+      cfg.mensaje_pausa ||
+      'Este curso se encuentra temporalmente en mantenimiento y actualización de contenidos. Vuelve pronto.',
+    color_acento: cfg.color_acento || '#9333ea',
+  };
 }
 
 export function createDefaultBlock(type: BlockType): CmsBlock {

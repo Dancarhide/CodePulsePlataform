@@ -67,12 +67,15 @@ import {
   CmsCourse,
   CmsLesson,
   CmsModule,
+  CourseGovernanceConfig,
+  CourseStatus,
   LessonPageSettings,
   TextAlign,
   UnitFormat,
   createDefaultBlock,
   createDefaultExamConfig,
   createDefaultLabConfig,
+  resolveCourseGovernance,
 } from './CmsBlockTypes';
 import CmsBlockRenderer from './CmsBlockRenderer';
 import {
@@ -656,11 +659,41 @@ export default function CmsStudioEditor({
     }
   };
 
+  const courseGov = resolveCourseGovernance(course);
+  const [tagDraft, setTagDraft] = useState('');
+
+  const updateGovernance = (patch: Partial<CourseGovernanceConfig>) => {
+    commitCourseChange((prev) => {
+      const merged: CourseGovernanceConfig = {
+        ...resolveCourseGovernance(prev),
+        ...(prev.configuracion_curso || {}),
+        ...patch,
+      };
+      const isPub = merged.estado_curso === 'publicado';
+      return {
+        ...prev,
+        publicado: isPub,
+        configuracion_curso: merged,
+      };
+    });
+  };
+
   const handleSaveCourse = async (overridePublished?: boolean) => {
     const finalTitle = course.titulo.trim() || 'Curso Sin Título';
     const finalSlug = slugifyText(course.slug || finalTitle) || `curso-${Date.now()}`;
-    const finalPublished =
-      typeof overridePublished === 'boolean' ? overridePublished : course.publicado;
+    const currentGov = resolveCourseGovernance(course);
+    const finalEstado: CourseStatus =
+      typeof overridePublished === 'boolean'
+        ? overridePublished
+          ? 'publicado'
+          : 'borrador'
+        : currentGov.estado_curso;
+    const finalPublished = finalEstado === 'publicado';
+    const finalConfig: CourseGovernanceConfig = {
+      ...(course.configuracion_curso || {}),
+      ...currentGov,
+      estado_curso: finalEstado,
+    };
 
     setSaving(true);
     setSaveMessage(null);
@@ -673,6 +706,7 @@ export default function CmsStudioEditor({
           titulo: finalTitle,
           slug: finalSlug,
           publicado: finalPublished,
+          configuracion_curso: finalConfig,
         }),
       });
       const data = await res.json();
@@ -685,10 +719,21 @@ export default function CmsStudioEditor({
         titulo: finalTitle,
         slug: finalSlug,
         publicado: finalPublished,
+        configuracion_curso: finalConfig,
       }));
+      const statusLabel =
+        finalEstado === 'publicado'
+          ? '¡Publicado y activo en Catálogo!'
+          : finalEstado === 'pausado'
+          ? 'Guardado (Curso Apagado / En Pausa)'
+          : finalEstado === 'proximamente'
+          ? 'Guardado como Próximamente'
+          : finalEstado === 'archivado'
+          ? 'Guardado en Archivo'
+          : 'Borrador guardado en Neon DB';
       setSaveMessage({
         type: 'ok',
-        text: finalPublished ? '¡Guardado y publicado en Cursos!' : 'Borrador guardado en Neon DB',
+        text: statusLabel,
       });
       onSaved(data.id);
       setTimeout(() => setSaveMessage(null), 3500);
@@ -891,16 +936,60 @@ export default function CmsStudioEditor({
             <FileUp size={14} />
           </button>
 
-          <button
-            type="button"
-            onClick={() =>
-              commitCourseChange((prev) => ({ ...prev, publicado: !prev.publicado }))
-            }
-            className={`cms-pill-toggle ${course.publicado ? 'active' : ''}`}
+          <select
+            aria-label="Estado operativo del curso"
+            value={courseGov.estado_curso}
+            onChange={(e) => updateGovernance({ estado_curso: e.target.value as CourseStatus })}
+            style={{
+              padding: '0.42rem 0.75rem',
+              borderRadius: '999px',
+              border: `1px solid ${
+                courseGov.estado_curso === 'publicado'
+                  ? 'rgba(16, 185, 129, 0.55)'
+                  : courseGov.estado_curso === 'pausado'
+                  ? 'rgba(244, 63, 94, 0.55)'
+                  : courseGov.estado_curso === 'proximamente'
+                  ? 'rgba(34, 211, 238, 0.55)'
+                  : 'rgba(148, 163, 184, 0.35)'
+              }`,
+              background:
+                courseGov.estado_curso === 'publicado'
+                  ? 'rgba(16, 185, 129, 0.16)'
+                  : courseGov.estado_curso === 'pausado'
+                  ? 'rgba(225, 29, 72, 0.18)'
+                  : courseGov.estado_curso === 'proximamente'
+                  ? 'rgba(8, 145, 178, 0.2)'
+                  : 'rgba(15, 23, 42, 0.85)',
+              color:
+                courseGov.estado_curso === 'publicado'
+                  ? '#6ee7b7'
+                  : courseGov.estado_curso === 'pausado'
+                  ? '#fda4af'
+                  : courseGov.estado_curso === 'proximamente'
+                  ? '#67e8f9'
+                  : '#cbd5e1',
+              fontSize: '0.78rem',
+              fontWeight: 700,
+              cursor: 'pointer',
+              outline: 'none',
+            }}
           >
-            {course.publicado ? <Globe size={14} /> : <Lock size={14} />}
-            {course.publicado ? 'Publicado' : 'Borrador'}
-          </button>
+            <option value="publicado" style={{ background: '#090512', color: '#6ee7b7' }}>
+              ● Publicado (Activo)
+            </option>
+            <option value="borrador" style={{ background: '#090512', color: '#cbd5e1' }}>
+              ○ Borrador (Oculto)
+            </option>
+            <option value="pausado" style={{ background: '#090512', color: '#fda4af' }}>
+              ⏻ Apagado / En Pausa
+            </option>
+            <option value="proximamente" style={{ background: '#090512', color: '#67e8f9' }}>
+              ◈ Próximamente
+            </option>
+            <option value="archivado" style={{ background: '#090512', color: '#94a3b8' }}>
+              ▣ Archivado
+            </option>
+          </select>
 
           <button
             type="button"
@@ -1437,7 +1526,157 @@ export default function CmsStudioEditor({
 
             {dockTab === 'settings' && (
               <div>
-                <div className="cms-drawer-section-title">Ajustes del Curso</div>
+                <div className="cms-drawer-section-title">Estado &amp; Visibilidad</div>
+
+                <div className="cms-field-group">
+                  <label className="cms-label">Estado Operativo del Curso</label>
+                  <select
+                    className="cms-select"
+                    value={courseGov.estado_curso}
+                    onChange={(e) =>
+                      updateGovernance({ estado_curso: e.target.value as CourseStatus })
+                    }
+                  >
+                    <option value="publicado">Publicado (Activo en Catálogo)</option>
+                    <option value="borrador">Borrador (En construcción / Oculto)</option>
+                    <option value="pausado">Apagado / En Mantenimiento</option>
+                    <option value="proximamente">Próximamente (Visible pero bloqueado)</option>
+                    <option value="archivado">Archivado (Retirado)</option>
+                  </select>
+                </div>
+
+                {courseGov.estado_curso === 'pausado' && (
+                  <div className="cms-field-group">
+                    <label className="cms-label">Mensaje al Apagar / Pausar</label>
+                    <textarea
+                      rows={2}
+                      className="cms-textarea"
+                      value={courseGov.mensaje_pausa}
+                      onChange={(e) => updateGovernance({ mensaje_pausa: e.target.value })}
+                    />
+                  </div>
+                )}
+
+                <div className="cms-field-group">
+                  <label className="cms-label">Visibilidad</label>
+                  <select
+                    className="cms-select"
+                    value={courseGov.visibilidad}
+                    onChange={(e) =>
+                      updateGovernance({
+                        visibilidad: e.target.value as CourseGovernanceConfig['visibilidad'],
+                      })
+                    }
+                  >
+                    <option value="publico">Catálogo Público</option>
+                    <option value="privado_link">Oculto (Solo con Link Directo)</option>
+                    <option value="solo_miembros">Solo Usuarios Autenticados</option>
+                  </select>
+                </div>
+
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '0.45rem',
+                    marginBottom: '0.9rem',
+                    padding: '0.65rem',
+                    borderRadius: '10px',
+                    background: 'rgba(255,255,255,0.03)',
+                    border: '1px solid rgba(168,85,247,0.2)',
+                    fontSize: '0.78rem',
+                  }}
+                >
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                    <input
+                      type="checkbox"
+                      checked={courseGov.destacado}
+                      onChange={(e) => updateGovernance({ destacado: e.target.checked })}
+                    />
+                    <span>Destacar curso al inicio del catálogo ⭐</span>
+                  </label>
+
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                    <input
+                      type="checkbox"
+                      checked={courseGov.inscripciones_abiertas}
+                      onChange={(e) =>
+                        updateGovernance({ inscripciones_abiertas: e.target.checked })
+                      }
+                    />
+                    <span>Inscripciones abiertas a estudiantes</span>
+                  </label>
+
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                    <input
+                      type="checkbox"
+                      checked={courseGov.navegacion_secuencial}
+                      onChange={(e) =>
+                        updateGovernance({ navegacion_secuencial: e.target.checked })
+                      }
+                    />
+                    <span>Bloqueo secuencial (exigir orden de unidades)</span>
+                  </label>
+
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                    <input
+                      type="checkbox"
+                      checked={courseGov.otorga_certificado}
+                      onChange={(e) => updateGovernance({ otorga_certificado: e.target.checked })}
+                    />
+                    <span>Habilitar Certificado CodePulse</span>
+                  </label>
+                </div>
+
+                {courseGov.otorga_certificado && (
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                    <div className="cms-field-group">
+                      <label className="cms-label">% Mín. Certificado</label>
+                      <input
+                        type="number"
+                        min={50}
+                        max={100}
+                        className="cms-input"
+                        value={courseGov.porcentaje_minimo_certificado}
+                        onChange={(e) =>
+                          updateGovernance({
+                            porcentaje_minimo_certificado: Math.max(
+                              50,
+                              Math.min(100, Number(e.target.value) || 100)
+                            ),
+                          })
+                        }
+                      />
+                    </div>
+
+                    <div className="cms-field-group">
+                      <label className="cms-label">Horas Curriculares</label>
+                      <input
+                        type="number"
+                        min={0}
+                        className="cms-input"
+                        placeholder="Auto"
+                        value={courseGov.horas_curriculares || ''}
+                        onChange={(e) =>
+                          updateGovernance({ horas_curriculares: Number(e.target.value) || 0 })
+                        }
+                      />
+                    </div>
+                  </div>
+                )}
+
+                <div className="cms-field-group">
+                  <label className="cms-label">PIN / Código de Acceso (Opcional)</label>
+                  <input
+                    type="text"
+                    className="cms-input"
+                    placeholder="Vacío = libre acceso"
+                    value={courseGov.codigo_acceso}
+                    onChange={(e) => updateGovernance({ codigo_acceso: e.target.value })}
+                  />
+                </div>
+
+                <div className="cms-drawer-section-title">Ficha de Catálogo</div>
 
                 <div className="cms-field-group">
                   <label className="cms-label">URL / Slug del Curso</label>
@@ -1452,6 +1691,16 @@ export default function CmsStudioEditor({
                         slug: slugifyText(e.target.value),
                       }));
                     }}
+                  />
+                </div>
+
+                <div className="cms-field-group">
+                  <label className="cms-label">Instructor / Autor</label>
+                  <input
+                    type="text"
+                    className="cms-input"
+                    value={courseGov.instructor_nombre}
+                    onChange={(e) => updateGovernance({ instructor_nombre: e.target.value })}
                   />
                 </div>
 
@@ -1474,6 +1723,7 @@ export default function CmsStudioEditor({
                     <option value="Cloud & DevOps" />
                     <option value="Inteligencia Artificial" />
                     <option value="Bases de Datos" />
+                    <option value="Redes & Infraestructura" />
                   </datalist>
                 </div>
 
@@ -1496,14 +1746,97 @@ export default function CmsStudioEditor({
                 </div>
 
                 <div className="cms-field-group">
+                  <label className="cms-label">Etiquetas / Stack (Buscador &amp; Filtros)</label>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem', marginBottom: '0.4rem' }}>
+                    {courseGov.etiquetas.map((tg, idx) => (
+                      <span
+                        key={idx}
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '0.25rem',
+                          padding: '0.15rem 0.5rem',
+                          borderRadius: '999px',
+                          background: 'rgba(168,85,247,0.18)',
+                          border: '1px solid rgba(168,85,247,0.4)',
+                          fontSize: '0.7rem',
+                          color: '#e9d5ff',
+                        }}
+                      >
+                        {tg}
+                        <button
+                          type="button"
+                          onClick={() =>
+                            updateGovernance({
+                              etiquetas: courseGov.etiquetas.filter((_, i) => i !== idx),
+                            })
+                          }
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            color: '#fda4af',
+                            cursor: 'pointer',
+                            padding: 0,
+                          }}
+                        >
+                          ×
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                  <div style={{ display: 'flex', gap: '0.35rem' }}>
+                    <input
+                      type="text"
+                      className="cms-input"
+                      placeholder="Ej. Docker, PostgreSQL..."
+                      value={tagDraft}
+                      onChange={(e) => setTagDraft(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && tagDraft.trim()) {
+                          e.preventDefault();
+                          updateGovernance({
+                            etiquetas: [...courseGov.etiquetas, tagDraft.trim()],
+                          });
+                          setTagDraft('');
+                        }
+                      }}
+                    />
+                    <button
+                      type="button"
+                      className="cms-pill-toggle"
+                      onClick={() => {
+                        if (!tagDraft.trim()) return;
+                        updateGovernance({
+                          etiquetas: [...courseGov.etiquetas, tagDraft.trim()],
+                        });
+                        setTagDraft('');
+                      }}
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+
+                <div className="cms-field-group">
                   <label className="cms-label">Descripción de Catálogo</label>
                   <textarea
-                    rows={4}
+                    rows={3}
                     className="cms-textarea"
                     value={course.descripcion}
                     onChange={(e) =>
                       commitCourseChange((prev) => ({ ...prev, descripcion: e.target.value }))
                     }
+                  />
+                </div>
+
+                <div className="cms-field-group">
+                  <label className="cms-label">Requisitos Previos</label>
+                  <input
+                    type="text"
+                    className="cms-input"
+                    placeholder="Ej. Conocimientos básicos de Linux y Git"
+                    value={courseGov.requisitos_previos}
+                    onChange={(e) => updateGovernance({ requisitos_previos: e.target.value })}
                   />
                 </div>
 
