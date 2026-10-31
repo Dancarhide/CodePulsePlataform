@@ -26,7 +26,63 @@ export type BlockType =
   | 'architecture'
   | 'badges'
   | 'cta_buttons'
-  | 'embed';
+  | 'embed'
+  | 'code_challenge'
+  | 'fill_blank';
+
+export type UnitFormat = 'leccion' | 'examen' | 'laboratorio';
+
+export type ExamQuestionKind = 'single' | 'multiple' | 'boolean' | 'command';
+
+export interface ExamQuestion {
+  id: string;
+  kind: ExamQuestionKind;
+  enunciado: string;
+  codeSnippet?: string;
+  puntos: number;
+  options: string[];
+  correctIndex?: number; // para single y boolean
+  correctIndices?: number[]; // para multiple
+  expectedCommand?: string; // para command / código corto
+  explanation?: string;
+}
+
+export interface ExamUnitConfig {
+  instrucciones: string;
+  notaMinima: number; // ej. 70 u 80 (%)
+  tiempoLimiteMinutos: number; // 0 = sin límite
+  intentosMaximos: number; // 0 = ilimitados
+  mostrarRespuestasAlFinal: boolean;
+  preguntas: ExamQuestion[];
+}
+
+export interface LabCriterion {
+  id: string;
+  titulo: string;
+  puntos: number;
+}
+
+export interface LabUnitConfig {
+  escenario: string;
+  instrucciones: string;
+  entorno: string; // 'Python' | 'TypeScript' | 'SQL' | 'Bash / Linux' | 'Docker' | 'Full-Stack'
+  dificultad: 'principiante' | 'intermedio' | 'avanzado';
+  modoCalificacion: 'auto' | 'manual' | 'ambos'; // auto-validación + opción manual del admin
+  repoBaseUrl?: string;
+  starterCode?: string;
+  pideCodigo: boolean;
+  pideRepoUrl: boolean;
+  pideReporte: boolean;
+  tokensObligatorios: string[]; // palabras clave / comandos / código que valida automáticamente
+  longitudMinimaCodigo?: number;
+  pista: string;
+  rubrica: LabCriterion[];
+}
+
+export interface UnitActivityConfig {
+  exam?: ExamUnitConfig;
+  lab?: LabUnitConfig;
+}
 
 export type TextAlign = 'left' | 'center' | 'right' | 'justify';
 
@@ -240,16 +296,32 @@ export interface CmsBlock {
   // Embed / Iframe
   embedUrl?: string;
   embedHeight?: number;
+
+  // Reto de Código / Terminal Evaluable (Actividad en Lección)
+  challengePrompt?: string;
+  challengeStarter?: string;
+  challengeLanguage?: string;
+  challengeExpectedTokens?: string[];
+  challengeHint?: string;
+  challengeSuccessMsg?: string;
+
+  // Actividad Completar Código / Espacios (Fill in the blank)
+  blankSentence?: string; // Usa [[respuesta]] para marcar huecos interactivos
+  blankExplanation?: string;
 }
 
 export interface CmsLesson {
   id: string;
+  clave_estable?: string;
   titulo: string;
   orden: number;
   tipo: 'lectura' | 'video' | 'quiz' | 'examen';
+  formato_unidad?: UnitFormat;
+  peso_puntos?: number;
   duracion_estimada_minutos: number;
   contenido_bloques: CmsBlock[];
   configuracion_pagina?: LessonPageSettings;
+  configuracion_actividad?: UnitActivityConfig;
 }
 
 export interface CmsModule {
@@ -673,5 +745,103 @@ export function createDefaultBlock(type: BlockType): CmsBlock {
         embedHeight: 420,
         caption: 'Laboratorio interactivo embebido (StackBlitz / CodePen / Figma).',
       };
+    case 'code_challenge':
+      return {
+        id,
+        type,
+        challengeLanguage: 'sql',
+        challengePrompt:
+          'Escribe una consulta SQL que seleccione todas las columnas de los usuarios activos ordenados por fecha de registro:',
+        challengeStarter: 'SELECT * FROM usuarios\nWHERE ...',
+        challengeExpectedTokens: ['SELECT', 'FROM usuarios', 'WHERE', 'activo'],
+        challengeHint: 'Recuerda filtrar con WHERE estado = \'activo\' y usar ORDER BY.',
+        challengeSuccessMsg: '¡Excelente! Tu consulta cumple con todos los criterios técnicos.',
+      };
+    case 'fill_blank':
+      return {
+        id,
+        type,
+        question: 'Completa el comando de despliegue en contenedores:',
+        blankSentence:
+          'Para levantar los servicios en segundo plano ejecutamos docker [[compose]] up [[-d]] en la terminal.',
+        blankExplanation:
+          'El subcomando compose orquesta múltiples contenedores y la bandera -d (detached) los mantiene corriendo en background.',
+      };
   }
+}
+
+export function createDefaultExamConfig(): ExamUnitConfig {
+  return {
+    instrucciones:
+      'Lee cuidadosamente cada reactivo antes de responder. Para acreditar el peso de este examen en tu progreso general debes alcanzar al menos la calificación mínima aprobatoria.',
+    notaMinima: 70,
+    tiempoLimiteMinutos: 20,
+    intentosMaximos: 0,
+    mostrarRespuestasAlFinal: true,
+    preguntas: [
+      {
+        id: `q_${Date.now()}_1`,
+        kind: 'single',
+        enunciado:
+          '¿Cuál es la responsabilidad principal de un API Gateway dentro de una arquitectura de microservicios?',
+        puntos: 10,
+        options: [
+          'Almacenar directamente las tablas relacionales del sistema',
+          'Centralizar el enrutamiento, autenticación, rate-limiting y observabilidad de entrada',
+          'Reemplazar el motor de renderizado CSS del navegador',
+          'Compilar binarios del kernel del sistema operativo',
+        ],
+        correctIndex: 1,
+        explanation:
+          'El API Gateway actúa como punto único de entrada para enrutar peticiones, validar seguridad y controlar tráfico.',
+      },
+      {
+        id: `q_${Date.now()}_2`,
+        kind: 'boolean',
+        enunciado:
+          '¿Es seguro almacenar contraseñas de usuarios utilizando únicamente codificación Base64 sin hashing criptográfico?',
+        puntos: 10,
+        options: ['Verdadero', 'Falso'],
+        correctIndex: 1,
+        explanation:
+          'Base64 es reversible de forma trivial; siempre debe emplearse hashing lento con salt como Bcrypt o Argon2id.',
+      },
+      {
+        id: `q_${Date.now()}_3`,
+        kind: 'command',
+        enunciado:
+          'Escribe el verbo HTTP estándar utilizado para actualizar parcialmente un recurso existente en una API REST:',
+        puntos: 10,
+        options: [],
+        expectedCommand: 'PATCH',
+        explanation:
+          'PATCH aplica modificaciones parciales a un recurso, mientras que PUT reemplaza la representación completa.',
+      },
+    ],
+  };
+}
+
+export function createDefaultLabConfig(): LabUnitConfig {
+  return {
+    escenario:
+      'El equipo de ingeniería necesita un endpoint seguro de verificación de salud y validación de entrada para el microservicio de pagos en producción.',
+    instrucciones:
+      '1. Implementa la función o script solicitado partiendo del código base.\n2. Asegúrate de incluir manejo de errores y validación.\n3. Ejecuta el validador automático o adjunta el enlace a tu repositorio para revisión.',
+    entorno: 'Python',
+    dificultad: 'intermedio',
+    modoCalificacion: 'ambos',
+    repoBaseUrl: '',
+    starterCode: `from fastapi import FastAPI, HTTPException\n\napp = FastAPI()\n\n# TODO: Implementa el endpoint /health que retorne {"status": "ok"}\n`,
+    pideCodigo: true,
+    pideRepoUrl: true,
+    pideReporte: true,
+    tokensObligatorios: ['FastAPI', '@app.get', '/health', 'return'],
+    longitudMinimaCodigo: 40,
+    pista: 'Usa el decorador @app.get("/health") y retorna un diccionario JSON con la clave status.',
+    rubrica: [
+      { id: 'rub_1', titulo: 'Definición correcta de ruta y método HTTP', puntos: 40 },
+      { id: 'rub_2', titulo: 'Estructura JSON de respuesta y buenas prácticas', puntos: 40 },
+      { id: 'rub_3', titulo: 'Documentación breve o repositorio limpio', puntos: 20 },
+    ],
+  };
 }

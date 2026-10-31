@@ -10,6 +10,10 @@ async function ensureCmsSchema() {
     await neonQuery(`ALTER TABLE cursos ALTER COLUMN imagen_portada_url TYPE TEXT;`);
     await neonQuery(`ALTER TABLE lecciones ADD COLUMN IF NOT EXISTS contenido_bloques JSONB DEFAULT '[]'::jsonb;`);
     await neonQuery(`ALTER TABLE lecciones ADD COLUMN IF NOT EXISTS configuracion_pagina JSONB DEFAULT '{}'::jsonb;`);
+    await neonQuery(`ALTER TABLE lecciones ADD COLUMN IF NOT EXISTS formato_unidad VARCHAR(30) DEFAULT 'leccion';`);
+    await neonQuery(`ALTER TABLE lecciones ADD COLUMN IF NOT EXISTS peso_puntos INT DEFAULT 10;`);
+    await neonQuery(`ALTER TABLE lecciones ADD COLUMN IF NOT EXISTS clave_estable VARCHAR(120);`);
+    await neonQuery(`ALTER TABLE lecciones ADD COLUMN IF NOT EXISTS configuracion_actividad JSONB DEFAULT '{}'::jsonb;`);
     schemaInitialized = true;
   } catch (err) {
     console.warn('Schema check warning:', err);
@@ -75,9 +79,12 @@ export async function GET(request: Request) {
           .filter((l) => l.id_modulo === mod.id)
           .map((l) => ({
             id: l.id,
+            clave_estable: l.clave_estable || l.id,
             titulo: l.titulo,
             orden: l.orden,
             tipo: l.tipo,
+            formato_unidad: l.formato_unidad || (l.tipo === 'examen' ? 'examen' : 'leccion'),
+            peso_puntos: Number(l.peso_puntos) || (l.formato_unidad === 'examen' ? 50 : l.formato_unidad === 'laboratorio' ? 30 : 10),
             duracion_estimada_minutos: l.duracion_estimada_minutos || 10,
             contenido_bloques: Array.isArray(l.contenido_bloques)
               ? l.contenido_bloques
@@ -89,6 +96,12 @@ export async function GET(request: Request) {
                 ? l.configuracion_pagina
                 : typeof l.configuracion_pagina === 'string'
                 ? JSON.parse(l.configuracion_pagina)
+                : {},
+            configuracion_actividad:
+              l.configuracion_actividad && typeof l.configuracion_actividad === 'object'
+                ? l.configuracion_actividad
+                : typeof l.configuracion_actividad === 'string'
+                ? JSON.parse(l.configuracion_actividad)
                 : {},
           })),
       }));
@@ -232,23 +245,38 @@ export async function POST(request: Request) {
       const lecciones = Array.isArray(mod.lecciones) ? mod.lecciones : [];
       for (let lIdx = 0; lIdx < lecciones.length; lIdx++) {
         const lec = lecciones[lIdx];
-        const validTipo = ['video', 'lectura', 'quiz', 'examen'].includes(lec.tipo)
-          ? lec.tipo
-          : 'lectura';
+        const formatoUnidad = ['leccion', 'examen', 'laboratorio'].includes(lec.formato_unidad)
+          ? lec.formato_unidad
+          : 'leccion';
+        const validTipo =
+          formatoUnidad === 'examen'
+            ? 'examen'
+            : ['video', 'lectura', 'quiz', 'examen'].includes(lec.tipo)
+            ? lec.tipo
+            : 'lectura';
+        const defaultPeso =
+          formatoUnidad === 'examen' ? 50 : formatoUnidad === 'laboratorio' ? 30 : 10;
+        const pesoPuntos = Math.max(1, Number(lec.peso_puntos) || defaultPeso);
+        const claveEstable = String(lec.clave_estable || lec.id || `unit_${mIdx + 1}_${lIdx + 1}`).slice(0, 115);
         const bloquesJson = JSON.stringify(lec.contenido_bloques || []);
         const pageConfigJson = JSON.stringify(lec.configuracion_pagina || {});
+        const activityConfigJson = JSON.stringify(lec.configuracion_actividad || {});
 
         await neonQuery(
-          `INSERT INTO lecciones (id_modulo, orden, titulo, tipo, duracion_estimada_minutos, contenido_bloques, configuracion_pagina)
-           VALUES ($1::uuid, $2, $3, $4::"EnumLeccion", $5, $6::jsonb, $7::jsonb);`,
+          `INSERT INTO lecciones (id_modulo, orden, titulo, tipo, duracion_estimada_minutos, contenido_bloques, configuracion_pagina, formato_unidad, peso_puntos, clave_estable, configuracion_actividad)
+           VALUES ($1::uuid, $2, $3, $4::"EnumLeccion", $5, $6::jsonb, $7::jsonb, $8, $9, $10, $11::jsonb);`,
           [
             modId,
             lIdx + 1,
-            lec.titulo || `Lección ${lIdx + 1}`,
+            lec.titulo || `Unidad ${lIdx + 1}`,
             validTipo,
             Number(lec.duracion_estimada_minutos) || 10,
             bloquesJson,
             pageConfigJson,
+            formatoUnidad,
+            pesoPuntos,
+            claveEstable,
+            activityConfigJson,
           ]
         );
       }

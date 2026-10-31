@@ -56,6 +56,9 @@ import {
   FileUp,
   Search,
   Maximize2,
+  FileQuestion,
+  FlaskConical,
+  Puzzle,
 } from 'lucide-react';
 import {
   BlockBoxStyle,
@@ -66,9 +69,18 @@ import {
   CmsModule,
   LessonPageSettings,
   TextAlign,
+  UnitFormat,
   createDefaultBlock,
+  createDefaultExamConfig,
+  createDefaultLabConfig,
 } from './CmsBlockTypes';
 import CmsBlockRenderer from './CmsBlockRenderer';
+import {
+  CmsExamBuilder,
+  CmsLabBuilder,
+  StudentExamRunner,
+  StudentLabWorkspace,
+} from './CmsExamAndLabBuilders';
 import './cms.css';
 
 interface CmsStudioEditorProps {
@@ -188,6 +200,8 @@ const TOOL_CATALOG: CatalogTool[] = [
 
   // Interactividad & Evaluación
   { type: 'quiz', label: 'Quiz Evaluable', category: 'interactive', icon: <HelpCircle size={18} color="#10b981" /> },
+  { type: 'code_challenge', label: 'Reto Código/CLI', category: 'interactive', icon: <TerminalIcon size={18} color="#22d3ee" /> },
+  { type: 'fill_blank', label: 'Completar Huecos', category: 'interactive', icon: <Puzzle size={18} color="#c084fc" /> },
   { type: 'flashcards', label: 'Flashcards 3D', category: 'interactive', icon: <RotateCw size={18} color="#f43f5e" /> },
 ];
 
@@ -516,21 +530,60 @@ export default function CmsStudioEditor({
     setSelectedBlockId(null);
   };
 
-  const addLessonToModule = (mIdx: number) => {
+  const addUnitToModule = (mIdx: number, format: UnitFormat = 'leccion') => {
     const targetMod = course.modulos[mIdx];
     if (!targetMod) return;
-    const newLec: CmsLesson = {
-      id: `lec_${Date.now()}`,
-      titulo: `Lección ${mIdx + 1}.${targetMod.lecciones.length + 1}`,
+    const stamp = `${Date.now()}_${Math.random().toString(36).slice(2, 5)}`;
+    const nextNum = `${mIdx + 1}.${targetMod.lecciones.length + 1}`;
+
+    let newUnit: CmsLesson = {
+      id: `lec_${stamp}`,
+      clave_estable: `unit_${stamp}`,
+      titulo: `Lección ${nextNum}`,
       orden: targetMod.lecciones.length + 1,
       tipo: 'lectura',
-      duracion_estimada_minutos: 10,
+      formato_unidad: 'leccion',
+      peso_puntos: 10,
+      duracion_estimada_minutos: 12,
       contenido_bloques: [createDefaultBlock('heading1'), createDefaultBlock('paragraph')],
     };
+
+    if (format === 'examen') {
+      newUnit = {
+        id: `ex_${stamp}`,
+        clave_estable: `exam_${stamp}`,
+        titulo: `Examen Evaluable ${nextNum}`,
+        orden: targetMod.lecciones.length + 1,
+        tipo: 'examen',
+        formato_unidad: 'examen',
+        peso_puntos: 50,
+        duracion_estimada_minutos: 20,
+        contenido_bloques: [],
+        configuracion_actividad: {
+          exam: createDefaultExamConfig(),
+        },
+      };
+    } else if (format === 'laboratorio') {
+      newUnit = {
+        id: `lab_${stamp}`,
+        clave_estable: `lab_${stamp}`,
+        titulo: `Laboratorio Práctico ${nextNum}`,
+        orden: targetMod.lecciones.length + 1,
+        tipo: 'lectura',
+        formato_unidad: 'laboratorio',
+        peso_puntos: 30,
+        duracion_estimada_minutos: 35,
+        contenido_bloques: [],
+        configuracion_actividad: {
+          lab: createDefaultLabConfig(),
+        },
+      };
+    }
+
     commitCourseChange((prev) => ({
       ...prev,
       modulos: prev.modulos.map((m, idx) =>
-        idx === mIdx ? { ...m, lecciones: [...m.lecciones, newLec] } : m
+        idx === mIdx ? { ...m, lecciones: [...m.lecciones, newUnit] } : m
       ),
     }));
     setActiveModIdx(mIdx);
@@ -543,7 +596,9 @@ export default function CmsStudioEditor({
     const source = mod?.lecciones[lIdx];
     if (!mod || !source) return;
     const copy: CmsLesson = JSON.parse(JSON.stringify(source));
-    copy.id = `lec_${Date.now()}`;
+    const stamp = `${Date.now()}_${Math.random().toString(36).slice(2, 5)}`;
+    copy.id = `lec_${stamp}`;
+    copy.clave_estable = `unit_${stamp}`;
     copy.titulo = `${source.titulo} (Copia)`;
     commitCourseChange((prev) => ({
       ...prev,
@@ -869,7 +924,15 @@ export default function CmsStudioEditor({
       </div>
 
       {/* ESPACIO DE TRABAJO 3 COLUMNAS */}
-      <div className={`cms-workspace ${previewMode ? 'preview-mode' : ''}`}>
+      <div
+        className={`cms-workspace ${
+          previewMode ||
+          activeLesson?.formato_unidad === 'examen' ||
+          activeLesson?.formato_unidad === 'laboratorio'
+            ? 'preview-mode'
+            : ''
+        }`}
+      >
         {/* PANEL IZQUIERDO: CANVA DOCK + DRAWER */}
         <aside className="cms-left-panel">
           <div className="cms-dock">
@@ -974,11 +1037,11 @@ export default function CmsStudioEditor({
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                    marginBottom: '0.85rem',
+                    marginBottom: '0.5rem',
                   }}
                 >
                   <span className="cms-drawer-section-title" style={{ margin: 0 }}>
-                    Módulos y Lecciones
+                    Estructura Académica
                   </span>
                   <button
                     type="button"
@@ -988,6 +1051,39 @@ export default function CmsStudioEditor({
                   >
                     <Plus size={13} /> Módulo
                   </button>
+                </div>
+
+                <div
+                  style={{
+                    fontSize: '0.73rem',
+                    color: '#94a3b8',
+                    marginBottom: '0.85rem',
+                    padding: '0.45rem 0.65rem',
+                    borderRadius: '8px',
+                    background: 'rgba(168,85,247,0.08)',
+                    border: '1px solid rgba(168,85,247,0.2)',
+                  }}
+                >
+                  Peso total del curso:{' '}
+                  <strong style={{ color: '#ffffff' }}>
+                    {course.modulos.reduce(
+                      (acc, m) =>
+                        acc +
+                        m.lecciones.reduce(
+                          (s, l) =>
+                            s +
+                            (Number(l.peso_puntos) ||
+                              (l.formato_unidad === 'examen'
+                                ? 50
+                                : l.formato_unidad === 'laboratorio'
+                                ? 30
+                                : 10)),
+                          0
+                        ),
+                      0
+                    )}{' '}
+                    pts
+                  </strong>
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem' }}>
@@ -1032,6 +1128,17 @@ export default function CmsStudioEditor({
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
                         {mod.lecciones.map((lec, lIdx) => {
                           const isCurrent = mIdx === safeModIdx && lIdx === safeLecIdx;
+                          const uFmt = lec.formato_unidad || (lec.tipo === 'examen' ? 'examen' : 'leccion');
+                          const badgeCfg =
+                            uFmt === 'examen'
+                              ? { text: 'EXAM', color: '#fda4af', bg: 'rgba(244,63,94,0.22)' }
+                              : uFmt === 'laboratorio'
+                              ? { text: 'LAB', color: '#67e8f9', bg: 'rgba(34,211,238,0.2)' }
+                              : { text: 'LEC', color: '#d8b4fe', bg: 'rgba(168,85,247,0.2)' };
+                          const pts =
+                            Number(lec.peso_puntos) ||
+                            (uFmt === 'examen' ? 50 : uFmt === 'laboratorio' ? 30 : 10);
+
                           return (
                             <div
                               key={lec.id}
@@ -1045,7 +1152,7 @@ export default function CmsStudioEditor({
                                 alignItems: 'center',
                                 justifyContent: 'space-between',
                                 gap: '0.35rem',
-                                padding: '0.48rem 0.6rem',
+                                padding: '0.48rem 0.55rem',
                                 borderRadius: '8px',
                                 cursor: 'pointer',
                                 background: isCurrent
@@ -1054,21 +1161,38 @@ export default function CmsStudioEditor({
                                 border: isCurrent
                                   ? '1px solid #f43f5e'
                                   : '1px solid rgba(255,255,255,0.06)',
-                                fontSize: '0.78rem',
+                                fontSize: '0.76rem',
                                 color: isCurrent ? '#ffffff' : '#cbd5e1',
                               }}
                             >
-                              <span
-                                style={{
-                                  overflow: 'hidden',
-                                  textOverflow: 'ellipsis',
-                                  whiteSpace: 'nowrap',
-                                  fontWeight: isCurrent ? 700 : 500,
-                                }}
-                              >
-                                {lec.titulo}
-                              </span>
-                              <span style={{ display: 'inline-flex', gap: '0.15rem', flexShrink: 0 }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', minWidth: 0 }}>
+                                <span
+                                  style={{
+                                    padding: '0.1rem 0.35rem',
+                                    borderRadius: '4px',
+                                    background: badgeCfg.bg,
+                                    color: badgeCfg.color,
+                                    fontFamily: 'monospace',
+                                    fontSize: '0.62rem',
+                                    fontWeight: 800,
+                                    flexShrink: 0,
+                                  }}
+                                >
+                                  {badgeCfg.text}
+                                </span>
+                                <span
+                                  style={{
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    whiteSpace: 'nowrap',
+                                    fontWeight: isCurrent ? 700 : 500,
+                                  }}
+                                >
+                                  {lec.titulo}
+                                </span>
+                              </div>
+                              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.2rem', flexShrink: 0 }}>
+                                <span style={{ fontSize: '0.66rem', color: '#94a3b8' }}>{pts}p</span>
                                 <button
                                   type="button"
                                   onClick={(e) => {
@@ -1076,9 +1200,9 @@ export default function CmsStudioEditor({
                                     duplicateLesson(mIdx, lIdx);
                                   }}
                                   className="cms-mini-icon-btn"
-                                  title="Duplicar lección"
+                                  title="Duplicar"
                                 >
-                                  <Copy size={12} />
+                                  <Copy size={11} />
                                 </button>
                                 {mod.lecciones.length > 1 && (
                                   <button
@@ -1088,9 +1212,9 @@ export default function CmsStudioEditor({
                                       deleteLesson(mIdx, lIdx);
                                     }}
                                     className="cms-mini-icon-btn"
-                                    title="Eliminar lección"
+                                    title="Eliminar"
                                   >
-                                    <Trash2 size={12} color="#fb7185" />
+                                    <Trash2 size={11} color="#fb7185" />
                                   </button>
                                 )}
                               </span>
@@ -1099,24 +1223,67 @@ export default function CmsStudioEditor({
                         })}
                       </div>
 
-                      <button
-                        type="button"
-                        onClick={() => addLessonToModule(mIdx)}
+                      {/* 3 Botones dedicados para agregar Lección, Examen o Laboratorio */}
+                      <div
                         style={{
-                          marginTop: '0.55rem',
-                          width: '100%',
-                          padding: '0.4rem',
-                          borderRadius: '7px',
-                          border: '1px dashed rgba(168, 85, 247, 0.4)',
-                          background: 'transparent',
-                          color: '#c084fc',
-                          fontSize: '0.75rem',
-                          fontWeight: 700,
-                          cursor: 'pointer',
+                          display: 'grid',
+                          gridTemplateColumns: '1fr 1fr 1fr',
+                          gap: '0.3rem',
+                          marginTop: '0.6rem',
                         }}
                       >
-                        + Añadir Lección
-                      </button>
+                        <button
+                          type="button"
+                          onClick={() => addUnitToModule(mIdx, 'leccion')}
+                          style={{
+                            padding: '0.38rem 0.25rem',
+                            borderRadius: '7px',
+                            border: '1px dashed rgba(168, 85, 247, 0.5)',
+                            background: 'rgba(168, 85, 247, 0.08)',
+                            color: '#d8b4fe',
+                            fontSize: '0.68rem',
+                            fontWeight: 700,
+                            cursor: 'pointer',
+                          }}
+                          title="Agregar Lección con Lienzo Libre"
+                        >
+                          + Lección
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => addUnitToModule(mIdx, 'examen')}
+                          style={{
+                            padding: '0.38rem 0.25rem',
+                            borderRadius: '7px',
+                            border: '1px dashed rgba(244, 63, 94, 0.55)',
+                            background: 'rgba(244, 63, 94, 0.1)',
+                            color: '#fda4af',
+                            fontSize: '0.68rem',
+                            fontWeight: 700,
+                            cursor: 'pointer',
+                          }}
+                          title="Agregar Plantilla Exclusiva de Examen"
+                        >
+                          + Examen
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => addUnitToModule(mIdx, 'laboratorio')}
+                          style={{
+                            padding: '0.38rem 0.25rem',
+                            borderRadius: '7px',
+                            border: '1px dashed rgba(34, 211, 238, 0.55)',
+                            background: 'rgba(34, 211, 238, 0.1)',
+                            color: '#67e8f9',
+                            fontSize: '0.68rem',
+                            fontWeight: 700,
+                            cursor: 'pointer',
+                          }}
+                          title="Agregar Plantilla Exclusiva de Laboratorio Práctico"
+                        >
+                          + Lab
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -1395,14 +1562,62 @@ export default function CmsStudioEditor({
           </div>
         </aside>
 
-        {/* LIENZO CENTRAL CON FLUJO FLEX MULTI-COLUMNA Y DRAG & DROP */}
+        {/* LIENZO CENTRAL CON PLANTILLAS DEDICADAS (LECCIÓN / EXAMEN / LABORATORIO) */}
         <div
           className="cms-canvas-scroll"
           onClick={() => setSelectedBlockId(null)}
           onDragOver={(e) => e.preventDefault()}
           onDrop={handleCanvasDrop}
         >
-          {activeLesson ? (
+          {activeLesson?.formato_unidad === 'examen' ? (
+            previewMode ? (
+              <div className="cms-page-sheet">
+                <StudentExamRunner
+                  unitTitle={activeLesson.titulo}
+                  pesoPuntos={activeLesson.peso_puntos || 50}
+                  config={activeLesson.configuracion_actividad?.exam}
+                  onSubmitExam={async () => {}}
+                />
+              </div>
+            ) : (
+              <CmsExamBuilder
+                title={activeLesson.titulo}
+                pesoPuntos={activeLesson.peso_puntos || 50}
+                config={activeLesson.configuracion_actividad?.exam}
+                onChangeMeta={(patch) => updateActiveLesson((l) => ({ ...l, ...patch }))}
+                onChangeConfig={(exam) =>
+                  updateActiveLesson((l) => ({
+                    ...l,
+                    configuracion_actividad: { ...(l.configuracion_actividad || {}), exam },
+                  }))
+                }
+              />
+            )
+          ) : activeLesson?.formato_unidad === 'laboratorio' ? (
+            previewMode ? (
+              <div className="cms-page-sheet">
+                <StudentLabWorkspace
+                  unitTitle={activeLesson.titulo}
+                  pesoPuntos={activeLesson.peso_puntos || 30}
+                  config={activeLesson.configuracion_actividad?.lab}
+                  onSubmitLab={async () => {}}
+                />
+              </div>
+            ) : (
+              <CmsLabBuilder
+                title={activeLesson.titulo}
+                pesoPuntos={activeLesson.peso_puntos || 30}
+                config={activeLesson.configuracion_actividad?.lab}
+                onChangeMeta={(patch) => updateActiveLesson((l) => ({ ...l, ...patch }))}
+                onChangeConfig={(lab) =>
+                  updateActiveLesson((l) => ({
+                    ...l,
+                    configuracion_actividad: { ...(l.configuracion_actividad || {}), lab },
+                  }))
+                }
+              />
+            )
+          ) : activeLesson ? (
             <div
               className={`cms-page-sheet ${
                 pageConfig.maxWidth === 'wide'
@@ -1470,7 +1685,31 @@ export default function CmsStudioEditor({
                     />
                   </div>
 
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                    <div
+                      style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}
+                      title="Peso en puntos de esta lección en el progreso general del curso"
+                    >
+                      <span style={{ fontSize: '0.72rem', color: '#c084fc', fontWeight: 700 }}>
+                        Peso:
+                      </span>
+                      <input
+                        type="number"
+                        min={1}
+                        max={200}
+                        value={activeLesson.peso_puntos ?? 10}
+                        onChange={(e) =>
+                          updateActiveLesson((l) => ({
+                            ...l,
+                            peso_puntos: Math.max(1, Number(e.target.value) || 10),
+                          }))
+                        }
+                        className="cms-input"
+                        style={{ width: 58, padding: '0.35rem 0.45rem', fontSize: '0.78rem' }}
+                      />
+                      <span style={{ fontSize: '0.72rem', color: '#94a3b8' }}>pts</span>
+                    </div>
+
                     <select
                       className="cms-select"
                       style={{ width: 'auto', padding: '0.35rem 0.6rem', fontSize: '0.78rem' }}
@@ -1484,8 +1723,7 @@ export default function CmsStudioEditor({
                     >
                       <option value="lectura">Lectura</option>
                       <option value="video">Video</option>
-                      <option value="quiz">Quiz</option>
-                      <option value="examen">Examen</option>
+                      <option value="quiz">Práctica</option>
                     </select>
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
@@ -1501,7 +1739,7 @@ export default function CmsStudioEditor({
                           }))
                         }
                         className="cms-input"
-                        style={{ width: 64, padding: '0.35rem 0.5rem', fontSize: '0.78rem' }}
+                        style={{ width: 60, padding: '0.35rem 0.5rem', fontSize: '0.78rem' }}
                       />
                       <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>min</span>
                     </div>
@@ -1643,8 +1881,10 @@ export default function CmsStudioEditor({
           ) : null}
         </div>
 
-        {/* PANEL DERECHO: INSPECTOR DUAL (CONTENIDO + ESTILO & CAJA LIBRE) */}
-        {!previewMode && (
+        {/* PANEL DERECHO: INSPECTOR DUAL (SOLO EN LECCIONES NORMALES) */}
+        {!previewMode &&
+          activeLesson?.formato_unidad !== 'examen' &&
+          activeLesson?.formato_unidad !== 'laboratorio' && (
           <aside className="cms-inspector">
             {!selectedBlock ? (
               <div style={{ color: '#94a3b8', fontSize: '0.84rem', lineHeight: 1.65 }}>
@@ -3564,6 +3804,122 @@ export default function CmsStudioEditor({
                             className="cms-textarea"
                             value={selectedBlock.explanation || ''}
                             onChange={(e) => updateSelectedBlock({ explanation: e.target.value })}
+                          />
+                        </div>
+                      </>
+                    )}
+
+                    {/* RETO DE CÓDIGO / TERMINAL */}
+                    {selectedBlock.type === 'code_challenge' && (
+                      <>
+                        <div className="cms-field-group">
+                          <label className="cms-label">Lenguaje / Entorno</label>
+                          <select
+                            className="cms-select"
+                            value={selectedBlock.challengeLanguage || 'sql'}
+                            onChange={(e) =>
+                              updateSelectedBlock({ challengeLanguage: e.target.value })
+                            }
+                          >
+                            <option value="sql">SQL</option>
+                            <option value="python">Python</option>
+                            <option value="typescript">TypeScript / JS</option>
+                            <option value="bash">Bash / Terminal</option>
+                            <option value="docker">Docker</option>
+                          </select>
+                        </div>
+                        <div className="cms-field-group">
+                          <label className="cms-label">Consigna del Reto</label>
+                          <textarea
+                            rows={3}
+                            className="cms-textarea"
+                            value={selectedBlock.challengePrompt || ''}
+                            onChange={(e) =>
+                              updateSelectedBlock({ challengePrompt: e.target.value })
+                            }
+                          />
+                        </div>
+                        <div className="cms-field-group">
+                          <label className="cms-label">Código Inicial</label>
+                          <textarea
+                            rows={3}
+                            className="cms-textarea"
+                            style={{ fontFamily: 'monospace', fontSize: '0.8rem' }}
+                            value={selectedBlock.challengeStarter || ''}
+                            onChange={(e) =>
+                              updateSelectedBlock({ challengeStarter: e.target.value })
+                            }
+                          />
+                        </div>
+                        <div className="cms-field-group">
+                          <label className="cms-label">
+                            Palabras / Comandos Esperados (separados por coma)
+                          </label>
+                          <input
+                            type="text"
+                            className="cms-input"
+                            style={{ fontFamily: 'monospace' }}
+                            value={(selectedBlock.challengeExpectedTokens || []).join(', ')}
+                            onChange={(e) =>
+                              updateSelectedBlock({
+                                challengeExpectedTokens: e.target.value
+                                  .split(',')
+                                  .map((s) => s.trim())
+                                  .filter(Boolean),
+                              })
+                            }
+                            placeholder="SELECT, WHERE, ORDER BY"
+                          />
+                        </div>
+                        <div className="cms-field-group">
+                          <label className="cms-label">Pista (Opcional)</label>
+                          <input
+                            type="text"
+                            className="cms-input"
+                            value={selectedBlock.challengeHint || ''}
+                            onChange={(e) =>
+                              updateSelectedBlock({ challengeHint: e.target.value })
+                            }
+                          />
+                        </div>
+                      </>
+                    )}
+
+                    {/* COMPLETAR HUECOS / CÓDIGO */}
+                    {selectedBlock.type === 'fill_blank' && (
+                      <>
+                        <div className="cms-field-group">
+                          <label className="cms-label">Instrucción</label>
+                          <input
+                            type="text"
+                            className="cms-input"
+                            value={selectedBlock.question || ''}
+                            onChange={(e) => updateSelectedBlock({ question: e.target.value })}
+                          />
+                        </div>
+                        <div className="cms-field-group">
+                          <label className="cms-label">
+                            Oración con Huecos (encierra cada respuesta entre [[dobles corchetes]])
+                          </label>
+                          <textarea
+                            rows={4}
+                            className="cms-textarea"
+                            value={selectedBlock.blankSentence || ''}
+                            onChange={(e) =>
+                              updateSelectedBlock({ blankSentence: e.target.value })
+                            }
+                            placeholder="Ejemplo: Para iniciar un contenedor usamos docker [[run]] -p [[8080:80]] nginx"
+                          />
+                        </div>
+                        <div className="cms-field-group">
+                          <label className="cms-label">Explicación al acertar</label>
+                          <textarea
+                            rows={2}
+                            className="cms-textarea"
+                            value={selectedBlock.blankExplanation || ''}
+                            onChange={(e) =>
+                              updateSelectedBlock({ blankExplanation: e.target.value })
+                            }
                           />
                         </div>
                       </>

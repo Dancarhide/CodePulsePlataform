@@ -158,16 +158,23 @@ export default function CmsBlockRenderer({
   block,
   editable = false,
   onUpdateBlock,
+  onActivitySolved,
 }: {
   block: CmsBlock;
   editable?: boolean;
   onUpdateBlock?: (patch: Partial<CmsBlock>) => void;
+  onActivitySolved?: (blockId: string) => void;
 }) {
   const [copied, setCopied] = useState(false);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [activeTabIdx, setActiveTabIdx] = useState(0);
   const [openAccMap, setOpenAccMap] = useState<Record<number, boolean>>({ 0: true });
   const [flippedMap, setFlippedMap] = useState<Record<number, boolean>>({});
+  const [challengeInput, setChallengeInput] = useState<string>(block.challengeStarter || '');
+  const [challengeResult, setChallengeResult] = useState<{ ok: boolean; msg: string } | null>(null);
+  const [showChallengeHint, setShowChallengeHint] = useState(false);
+  const [blankValues, setBlankValues] = useState<Record<number, string>>({});
+  const [blankChecked, setBlankChecked] = useState<boolean | null>(null);
 
   const st = block.style || {};
 
@@ -996,7 +1003,12 @@ export default function CmsBlockRenderer({
                   <button
                     key={idx}
                     type="button"
-                    onClick={() => setSelectedOption(idx)}
+                    onClick={() => {
+                      setSelectedOption(idx);
+                      if (idx === (block.correctIndex ?? 0)) {
+                        onActivitySolved?.(block.id);
+                      }
+                    }}
                     style={{
                       textAlign: 'left',
                       padding: '0.75rem 1rem',
@@ -1722,6 +1734,306 @@ export default function CmsBlockRenderer({
             )}
           </div>
         );
+
+      case 'code_challenge': {
+        const expected = block.challengeExpectedTokens || [];
+        const runChallenge = () => {
+          const missing = expected.filter(
+            (tk) => !challengeInput.toLowerCase().includes(tk.toLowerCase())
+          );
+          if (missing.length === 0 && challengeInput.trim().length > 2) {
+            setChallengeResult({
+              ok: true,
+              msg: block.challengeSuccessMsg || '¡Reto superado! Actividad acreditada.',
+            });
+            onActivitySolved?.(block.id);
+          } else {
+            setChallengeResult({
+              ok: false,
+              msg: `Revisa tu solución. Asegúrate de incluir o aplicar: ${missing.join(', ')}`,
+            });
+          }
+        };
+
+        return (
+          <div
+            style={{
+              background: '#07040e',
+              border: '1px solid rgba(34, 211, 238, 0.42)',
+              borderRadius: '16px',
+              padding: '1.45rem',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginBottom: '0.6rem',
+              }}
+            >
+              <span
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.45rem',
+                  fontFamily: 'monospace',
+                  fontSize: '0.75rem',
+                  fontWeight: 800,
+                  color: '#22d3ee',
+                  letterSpacing: '0.12em',
+                }}
+              >
+                <TerminalIcon size={15} /> RETO PRÁCTICO DE CÓDIGO / TERMINAL ({(block.challengeLanguage || 'code').toUpperCase()})
+              </span>
+              {challengeResult?.ok && (
+                <span style={{ fontSize: '0.74rem', color: '#10b981', fontWeight: 800 }}>
+                  ✔ RESUELTO
+                </span>
+              )}
+            </div>
+
+            <p style={{ margin: '0 0 0.9rem', color: '#f1f5f9', fontSize: '0.96rem', lineHeight: 1.6 }}>
+              {renderRichInline(block.challengePrompt)}
+            </p>
+
+            <textarea
+              rows={5}
+              value={challengeInput}
+              onChange={(e) => setChallengeInput(e.target.value)}
+              style={{
+                width: '100%',
+                background: '#040208',
+                border: '1px solid rgba(168, 85, 247, 0.35)',
+                borderRadius: '10px',
+                padding: '0.95rem 1.1rem',
+                color: '#34d399',
+                fontFamily: "'Fira Code', Consolas, monospace",
+                fontSize: '0.86rem',
+                lineHeight: 1.6,
+                outline: 'none',
+              }}
+              placeholder="Escribe el comando o código aquí..."
+            />
+
+            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '0.75rem', marginTop: '0.85rem' }}>
+              {block.challengeHint ? (
+                <button
+                  type="button"
+                  onClick={() => setShowChallengeHint((h) => !h)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: '#fbbf24',
+                    fontSize: '0.78rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    padding: 0,
+                  }}
+                >
+                  {showChallengeHint ? 'Ocultar Pista' : '💡 Ver Pista'}
+                </button>
+              ) : (
+                <span />
+              )}
+
+              <button
+                type="button"
+                onClick={runChallenge}
+                style={{
+                  padding: '0.55rem 1.2rem',
+                  borderRadius: '8px',
+                  border: 'none',
+                  background: 'linear-gradient(90deg, #0891b2, #9333ea)',
+                  color: '#ffffff',
+                  fontWeight: 800,
+                  fontSize: '0.82rem',
+                  cursor: 'pointer',
+                }}
+              >
+                Ejecutar y Validar
+              </button>
+            </div>
+
+            {showChallengeHint && block.challengeHint && (
+              <div style={{ marginTop: '0.6rem', fontSize: '0.82rem', color: '#fde68a' }}>
+                {block.challengeHint}
+              </div>
+            )}
+
+            {challengeResult && (
+              <div
+                style={{
+                  marginTop: '0.85rem',
+                  padding: '0.75rem 1rem',
+                  borderRadius: '8px',
+                  background: challengeResult.ok
+                    ? 'rgba(16, 185, 129, 0.14)'
+                    : 'rgba(239, 68, 68, 0.14)',
+                  color: challengeResult.ok ? '#6ee7b7' : '#fca5a5',
+                  fontSize: '0.85rem',
+                  fontFamily: 'monospace',
+                }}
+              >
+                {challengeResult.msg}
+              </div>
+            )}
+          </div>
+        );
+      }
+
+      case 'fill_blank': {
+        const raw = block.blankSentence || '';
+        const segments = raw.split(/(\[\[[^\]]+\]\])/g);
+        const expectedAnswers: string[] = [];
+        segments.forEach((seg) => {
+          if (seg.startsWith('[[') && seg.endsWith(']]')) {
+            expectedAnswers.push(seg.slice(2, -2).trim());
+          }
+        });
+
+        const checkBlanks = () => {
+          const allOk =
+            expectedAnswers.length > 0 &&
+            expectedAnswers.every(
+              (ans, idx) =>
+                (blankValues[idx] || '').trim().toLowerCase() === ans.toLowerCase()
+            );
+          setBlankChecked(allOk);
+          if (allOk) {
+            onActivitySolved?.(block.id);
+          }
+        };
+
+        let slotCounter = -1;
+
+        return (
+          <div
+            style={{
+              background: 'rgba(15, 8, 28, 0.92)',
+              border: '1px solid rgba(168, 85, 247, 0.4)',
+              borderRadius: '16px',
+              padding: '1.45rem',
+            }}
+          >
+            <div
+              style={{
+                fontFamily: 'monospace',
+                fontSize: '0.74rem',
+                fontWeight: 800,
+                color: '#c084fc',
+                letterSpacing: '0.12em',
+                marginBottom: '0.55rem',
+              }}
+            >
+              ACTIVIDAD INTERACTIVA • COMPLETAR COMANDO / CONCEPTO
+            </div>
+            {block.question && (
+              <div style={{ fontWeight: 700, color: '#ffffff', marginBottom: '0.85rem' }}>
+                {renderRichInline(block.question)}
+              </div>
+            )}
+
+            <div
+              style={{
+                padding: '1rem 1.15rem',
+                borderRadius: '12px',
+                background: '#06030d',
+                border: '1px solid rgba(255,255,255,0.08)',
+                lineHeight: 2.2,
+                fontSize: '0.96rem',
+                color: '#e2e8f0',
+              }}
+            >
+              {segments.map((seg, i) => {
+                if (seg.startsWith('[[') && seg.endsWith(']]')) {
+                  slotCounter += 1;
+                  const sIdx = slotCounter;
+                  const targetAns = seg.slice(2, -2).trim();
+                  const userVal = blankValues[sIdx] || '';
+                  const isSlotOk =
+                    blankChecked !== null &&
+                    userVal.trim().toLowerCase() === targetAns.toLowerCase();
+
+                  return (
+                    <input
+                      key={i}
+                      type="text"
+                      value={userVal}
+                      onChange={(e) => {
+                        setBlankChecked(null);
+                        setBlankValues((prev) => ({ ...prev, [sIdx]: e.target.value }));
+                      }}
+                      placeholder="..."
+                      style={{
+                        width: Math.max(85, targetAns.length * 11 + 26),
+                        margin: '0 0.3rem',
+                        padding: '0.2rem 0.55rem',
+                        borderRadius: '6px',
+                        background: '#130926',
+                        border: `1.5px solid ${
+                          blankChecked === null
+                            ? '#a855f7'
+                            : isSlotOk
+                            ? '#10b981'
+                            : '#ef4444'
+                        }`,
+                        color: '#22d3ee',
+                        fontFamily: "'Fira Code', Consolas, monospace",
+                        fontSize: '0.88rem',
+                        textAlign: 'center',
+                        outline: 'none',
+                      }}
+                    />
+                  );
+                }
+                return <span key={i}>{seg}</span>;
+              })}
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '0.9rem' }}>
+              <button
+                type="button"
+                onClick={checkBlanks}
+                style={{
+                  padding: '0.52rem 1.15rem',
+                  borderRadius: '8px',
+                  border: 'none',
+                  background: 'linear-gradient(90deg, #9333ea, #e11d48)',
+                  color: '#ffffff',
+                  fontWeight: 700,
+                  fontSize: '0.82rem',
+                  cursor: 'pointer',
+                }}
+              >
+                Comprobar Espacios
+              </button>
+            </div>
+
+            {blankChecked !== null && (
+              <div
+                style={{
+                  marginTop: '0.75rem',
+                  padding: '0.7rem 0.95rem',
+                  borderRadius: '8px',
+                  background: blankChecked
+                    ? 'rgba(16, 185, 129, 0.14)'
+                    : 'rgba(239, 68, 68, 0.14)',
+                  color: blankChecked ? '#6ee7b7' : '#fca5a5',
+                  fontSize: '0.85rem',
+                }}
+              >
+                <strong>
+                  {blankChecked
+                    ? '¡Correcto! Todos los espacios coinciden.'
+                    : 'Algunos espacios aún no coinciden, intenta de nuevo.'}
+                </strong>{' '}
+                {blankChecked && block.blankExplanation}
+              </div>
+            )}
+          </div>
+        );
+      }
     }
   };
 
