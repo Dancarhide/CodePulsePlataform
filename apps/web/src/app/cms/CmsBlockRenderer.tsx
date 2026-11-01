@@ -2037,8 +2037,36 @@ export default function CmsBlockRenderer({
     }
   };
 
-  if (hasBoxWrapper) {
-    return <div style={wrapperStyle}>{renderInner()}</div>;
+  // Paleta libre de colores internos (texto, títulos, acento, superficies, botones)
+  const colorVars: Record<string, string> = {};
+  const colorFlags: Record<string, string> = {};
+  const colorMap: [keyof typeof st, string, string][] = [
+    ['textColor', '--cx-text', 'data-cx-text'],
+    ['headingColor', '--cx-heading', 'data-cx-heading'],
+    ['accentColor', '--cx-accent', 'data-cx-accent'],
+    ['surfaceColor', '--cx-surface', 'data-cx-surface'],
+    ['buttonBg', '--cx-btn', 'data-cx-btn'],
+    ['buttonText', '--cx-btn-text', 'data-cx-btn-text'],
+  ];
+  colorMap.forEach(([key, cssVar, attr]) => {
+    const val = st[key] as string | undefined;
+    if (val) {
+      colorVars[cssVar] = val;
+      colorFlags[attr] = '1';
+    }
+  });
+  const hasColorOverrides = Object.keys(colorFlags).length > 0;
+
+  if (hasBoxWrapper || hasColorOverrides) {
+    return (
+      <div
+        className={hasColorOverrides ? 'cms-cx' : undefined}
+        {...colorFlags}
+        style={{ ...wrapperStyle, ...(colorVars as React.CSSProperties) }}
+      >
+        {renderInner()}
+      </div>
+    );
   }
 
   return <>{renderInner()}</>;

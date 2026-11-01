@@ -2584,6 +2584,256 @@ export default function CmsStudioEditor({
                       </select>
                     </div>
 
+                    
+                    {/* =================================================
+                        PALETA LIBRE DE COLORES (TEXTO, TÍTULOS, ACENTO, ETC.)
+                       ================================================= */}
+                    <div
+                      className="cms-drawer-section-title"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        marginTop: '1.25rem',
+                      }}
+                    >
+                      <span>Paleta Libre de Colores</span>
+                      {(selectedBlock.style?.textColor ||
+                        selectedBlock.style?.headingColor ||
+                        selectedBlock.style?.accentColor ||
+                        selectedBlock.style?.surfaceColor ||
+                        selectedBlock.style?.buttonBg ||
+                        selectedBlock.style?.buttonText) && (
+                        <button
+                          type="button"
+                          onClick={() =>
+                            updateSelectedStyle({
+                              textColor: undefined,
+                              headingColor: undefined,
+                              accentColor: undefined,
+                              surfaceColor: undefined,
+                              buttonBg: undefined,
+                              buttonText: undefined,
+                            })
+                          }
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            color: '#a066ff',
+                            fontSize: '0.68rem',
+                            cursor: 'pointer',
+                            padding: 0,
+                          }}
+                        >
+                          Limpiar paleta
+                        </button>
+                      )}
+                    </div>
+
+                    <div className="cms-field-group">
+                      <label className="cms-label" style={{ fontSize: '0.68rem', color: '#94a3b8' }}>
+                        Presets Rápidos de Paleta
+                      </label>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.35rem' }}>
+                        {[
+                          {
+                            name: 'Cíber Púrpura',
+                            color: '#a855f7',
+                            preset: {
+                              textColor: '#e9d5ff',
+                              headingColor: '#f3e8ff',
+                              accentColor: '#c084fc',
+                              surfaceColor: '#170b2c',
+                              buttonBg: '#9333ea',
+                              buttonText: '#ffffff',
+                              borderColor: '#9333ea',
+                            },
+                          },
+                          {
+                            name: 'Neón Cian',
+                            color: '#06b6d4',
+                            preset: {
+                              textColor: '#cffafe',
+                              headingColor: '#ffffff',
+                              accentColor: '#22d3ee',
+                              surfaceColor: '#08273d',
+                              buttonBg: '#06b6d4',
+                              buttonText: '#041d2e',
+                              borderColor: '#0891b2',
+                            },
+                          },
+                          {
+                            name: 'Esmeralda',
+                            color: '#10b981',
+                            preset: {
+                              textColor: '#d1fae5',
+                              headingColor: '#ffffff',
+                              accentColor: '#34d399',
+                              surfaceColor: '#063828',
+                              buttonBg: '#10b981',
+                              buttonText: '#022416',
+                              borderColor: '#059669',
+                            },
+                          },
+                          {
+                            name: 'Solar Ámbar',
+                            color: '#f59e0b',
+                            preset: {
+                              textColor: '#fef3c7',
+                              headingColor: '#ffffff',
+                              accentColor: '#fbbf24',
+                              surfaceColor: '#381c04',
+                              buttonBg: '#f59e0b',
+                              buttonText: '#1f1300',
+                              borderColor: '#d97706',
+                            },
+                          },
+                          {
+                            name: 'Carmesí Neón',
+                            color: '#f43f5e',
+                            preset: {
+                              textColor: '#ffe4e6',
+                              headingColor: '#ffffff',
+                              accentColor: '#fb7185',
+                              surfaceColor: '#380614',
+                              buttonBg: '#e11d48',
+                              buttonText: '#ffffff',
+                              borderColor: '#be123c',
+                            },
+                          },
+                          {
+                            name: 'Monocromo',
+                            color: '#e2e8f0',
+                            preset: {
+                              textColor: '#e2e8f0',
+                              headingColor: '#ffffff',
+                              accentColor: '#94a3b8',
+                              surfaceColor: '#1e293b',
+                              buttonBg: '#f1f5f9',
+                              buttonText: '#0f172a',
+                              borderColor: '#475569',
+                            },
+                          },
+                        ].map((p) => (
+                          <button
+                            key={p.name}
+                            type="button"
+                            onClick={() => updateSelectedStyle(p.preset)}
+                            className="cms-pill-toggle"
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '0.45rem',
+                              padding: '0.38rem 0.55rem',
+                              fontSize: '0.72rem',
+                              justifyContent: 'flex-start',
+                            }}
+                          >
+                            <span
+                              style={{
+                                width: 10,
+                                height: 10,
+                                borderRadius: '50%',
+                                backgroundColor: p.color,
+                                flexShrink: 0,
+                                boxShadow: `0 0 6px ${p.color}`,
+                              }}
+                            />
+                            <span
+                              style={{
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap',
+                              }}
+                            >
+                              {p.name}
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {([
+                      { key: 'textColor', label: 'Texto General & Párrafos', fallback: '#e2e8f0' },
+                      { key: 'headingColor', label: 'Títulos & Cabeceras', fallback: '#ffffff' },
+                      { key: 'accentColor', label: 'Acentos, Iconos & Enlaces', fallback: '#a066ff' },
+                      { key: 'surfaceColor', label: 'Superficie de Tarjetas', fallback: '#120924' },
+                      { key: 'buttonBg', label: 'Fondo de Botones', fallback: '#7c3aed' },
+                      { key: 'buttonText', label: 'Texto de Botones', fallback: '#ffffff' },
+                    ] as const).map(({ key, label, fallback }) => {
+                      const currentVal = selectedBlock.style?.[key];
+                      return (
+                        <div key={key} className="cms-field-group" style={{ marginBottom: '0.65rem' }}>
+                          <div
+                            style={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              alignItems: 'center',
+                            }}
+                          >
+                            <label
+                              className="cms-label"
+                              style={{
+                                fontSize: '0.69rem',
+                                textTransform: 'none',
+                                letterSpacing: 'normal',
+                              }}
+                            >
+                              {label}
+                            </label>
+                            {currentVal && (
+                              <button
+                                type="button"
+                                onClick={() => updateSelectedStyle({ [key]: undefined })}
+                                style={{
+                                  background: 'none',
+                                  border: 'none',
+                                  color: '#94a3b8',
+                                  fontSize: '0.68rem',
+                                  cursor: 'pointer',
+                                  padding: 0,
+                                }}
+                                title="Restablecer a auto"
+                              >
+                                Auto
+                              </button>
+                            )}
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
+                            <input
+                              type="color"
+                              value={
+                                currentVal && currentVal.startsWith('#')
+                                  ? currentVal
+                                  : fallback
+                              }
+                              onChange={(e) => updateSelectedStyle({ [key]: e.target.value })}
+                              style={{
+                                width: 34,
+                                height: 30,
+                                borderRadius: 6,
+                                border: '1px solid rgba(168, 85, 247, 0.35)',
+                                background: 'transparent',
+                                cursor: 'pointer',
+                                padding: 0,
+                                flexShrink: 0,
+                              }}
+                            />
+                            <input
+                              type="text"
+                              value={currentVal || ''}
+                              placeholder="Auto / Predeterminado"
+                              onChange={(e) =>
+                                updateSelectedStyle({ [key]: e.target.value || undefined })
+                              }
+                              className="cms-input"
+                              style={{ height: 30, fontSize: '0.78rem', padding: '0.2rem 0.55rem' }}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
+
                     <button
                       type="button"
                       onClick={() => updateSelectedBlock({ style: undefined })}

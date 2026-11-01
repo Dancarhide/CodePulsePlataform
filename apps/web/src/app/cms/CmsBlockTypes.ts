@@ -188,7 +188,23 @@ export interface BlockBoxStyle {
   lineHeight?: number;
   textTransform?: 'none' | 'uppercase' | 'capitalize';
   entranceAnim?: 'none' | 'fade-up' | 'zoom' | 'slide-left';
+  // Paleta libre: sobrescribe los colores internos de cualquier bloque
+  textColor?: string; // párrafos, listas, celdas y textos generales
+  headingColor?: string; // títulos, encabezados y negritas
+  accentColor?: string; // iconos, bordes internos y detalles
+  surfaceColor?: string; // tarjetas, paneles y cajas internas
+  buttonBg?: string; // fondo de botones
+  buttonText?: string; // texto de botones
 }
+
+export const BLOCK_COLOR_KEYS = [
+  'textColor',
+  'headingColor',
+  'accentColor',
+  'surfaceColor',
+  'buttonBg',
+  'buttonText',
+] as const;
 
 export interface LessonPageSettings {
   maxWidth?: 'standard' | 'wide' | 'full'; // 840px | 1120px | 100%
