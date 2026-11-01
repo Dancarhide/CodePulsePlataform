@@ -4,6 +4,7 @@
    Neon Brand Violet (#a066ff / #a000ff), Borders (#4a21a5)
    ========================================================= */
 
+/* Force dark theme refresh */
 .cms-studio-wrapper {
   display: flex;
   flex-direction: column;
