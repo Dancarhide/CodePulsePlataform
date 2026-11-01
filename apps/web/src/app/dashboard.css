@@ -1,21 +1,42 @@
 /* =========================================================
-   AMBER STUDIO REPLICA - PURPLE & RED EDITION (CODEPULSE)
+   CODEPULSE PLATFORM — LOGIN INSPIRED DESIGN SYSTEM
+   Palette: Pitch Black (#000000), Deep Night Purple (#0d061c / #120926),
+   Neon Brand Violet (#a066ff / #a000ff / hover #b336ff),
+   Borders (#4a21a5 / rgba(160, 102, 255, 0.25))
+   Typography: Outfit, -apple-system, sans-serif
    ========================================================= */
 
-@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Rajdhani:wght@500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+
+:root {
+  --cp-bg: #000000;
+  --cp-surface-deep: #080312;
+  --cp-surface: #0d061c;
+  --cp-surface-elevated: #120926;
+  --cp-surface-hover: #1b0e35;
+  --cp-primary: #a000ff;
+  --cp-primary-glow: #a066ff;
+  --cp-primary-hover: #b336ff;
+  --cp-primary-soft: rgba(160, 102, 255, 0.16);
+  --cp-primary-border: #4a21a5;
+  --cp-border-subtle: rgba(74, 33, 165, 0.35);
+  --cp-text-bright: #ffffff;
+  --cp-text-subtle: #cbd5e1;
+  --cp-text-muted: #8b7ca0;
+}
 
 .amber-shell {
   min-height: 100vh;
   width: 100%;
-  background-color: #06020c;
-  color: #ffffff;
+  background-color: var(--cp-bg);
+  color: var(--cp-text-bright);
   display: flex;
   flex-direction: column;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Outfit', sans-serif;
   overflow-x: hidden;
 }
 
-/* --- STICKY NAVBAR (Purple & Red) --- */
+/* --- STICKY NAVBAR (Login Style) --- */
 .amber-navbar {
   position: fixed;
   top: 0;
@@ -25,11 +46,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 4rem;
-  background: rgba(6, 2, 12, 0.82);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(168, 85, 247, 0.2);
+  padding: 0.9rem 3.5rem;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--cp-primary-border);
 }
 
 .amber-brand {
@@ -41,30 +62,29 @@
 }
 
 .amber-brand-title {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 1.65rem;
-  font-weight: 700;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.45rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-transform: none;
   color: #ffffff;
 }
 
 .amber-brand-accent {
-  background: linear-gradient(90deg, #a855f7, #ef4444);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--cp-primary-glow);
+  font-weight: 800;
 }
 
 .amber-nav-right {
   display: flex;
   align-items: center;
-  gap: 2.5rem;
+  gap: 2.25rem;
 }
 
 .amber-nav-links {
   display: flex;
   align-items: center;
-  gap: 2.25rem;
+  gap: 2rem;
 }
 
 .amber-nav-link {
@@ -73,34 +93,35 @@
   align-items: center;
   gap: 0.45rem;
   padding: 0.4rem 0;
-  color: #d4d4d8;
+  color: var(--cp-text-subtle);
   text-decoration: none;
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 1.05rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.95rem;
   font-weight: 600;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.02em;
   transition: color 0.2s ease;
 }
 
 .amber-nav-link:hover,
 .amber-nav-link.active {
-  color: #f43f5e;
+  color: var(--cp-primary-glow);
 }
 
 .amber-nav-link.active::after {
   content: '';
   position: absolute;
-  bottom: -2px;
+  bottom: -3px;
   left: 0;
   width: 100%;
   height: 2px;
-  background: linear-gradient(90deg, #9333ea, #ef4444);
+  background: var(--cp-primary-glow);
+  box-shadow: 0 0 10px rgba(160, 102, 255, 0.8);
 }
 
 .amber-user-zone {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.85rem;
 }
 
 .amber-user-pill {
@@ -108,44 +129,50 @@
   align-items: center;
   gap: 0.5rem;
   font-size: 0.85rem;
-  color: #a1a1aa;
+  color: var(--cp-text-muted);
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-primary-border);
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
 }
 
 .amber-admin-badge {
-  padding: 0.15rem 0.5rem;
+  padding: 0.12rem 0.5rem;
   font-size: 0.65rem;
   font-weight: 800;
-  letter-spacing: 0.1em;
-  border-radius: 3px;
-  background: rgba(225, 29, 72, 0.2);
-  color: #fb7185;
-  border: 1px solid rgba(168, 85, 247, 0.55);
+  letter-spacing: 0.08em;
+  border-radius: 999px;
+  background: rgba(160, 0, 255, 0.25);
+  color: #d8b4fe;
+  border: 1px solid var(--cp-primary-glow);
 }
 
-/* Rectangular Gradient-Border Button (Purple + Red) */
+/* Primary Button (Exact Login .btn-submit style) */
 .amber-rect-btn {
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.65rem 1.5rem;
-  background: #080310;
+  padding: 0.55rem 1.25rem;
+  background-color: var(--cp-primary);
   color: #ffffff;
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 1rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.85rem;
   font-weight: 700;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
   text-decoration: none;
-  border: 1px solid transparent;
-  border-image: linear-gradient(90deg, #9333ea, #e11d48, #ef4444) 1;
+  border: none;
+  border-radius: 10px;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 12px rgba(160, 0, 255, 0.35);
 }
 
 .amber-rect-btn:hover {
-  background: linear-gradient(90deg, rgba(147, 51, 234, 0.25), rgba(225, 29, 72, 0.25));
-  box-shadow: 0 0 22px rgba(225, 29, 72, 0.35);
+  background-color: var(--cp-primary-hover);
+  box-shadow: 0 4px 18px rgba(160, 0, 255, 0.55);
+  transform: translateY(-1px);
 }
 
 .amber-main {
@@ -155,7 +182,7 @@
 }
 
 /* =========================================================
-   1. HERO SECTION (3D Faceted Purple-Red Crystal)
+   1. HERO SECTION (CodePulse Deep Purple Gradient & Blobs)
    ========================================================= */
 .amber-crystal-hero {
   position: relative;
@@ -166,7 +193,7 @@
   justify-content: center;
   text-align: center;
   padding: 3rem 1.5rem 5rem;
-  background: radial-gradient(circle at 50% 22%, rgba(225, 29, 72, 0.24) 0%, rgba(126, 34, 206, 0.18) 34%, #06020c 70%);
+  background: radial-gradient(circle at 50% 25%, #2a1163 0%, #150930 45%, #000000 85%);
   overflow: hidden;
 }
 
@@ -191,29 +218,29 @@
 }
 
 .amber-crystal-title {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: clamp(2.6rem, 5.5vw, 4.75rem);
-  font-weight: 500;
-  letter-spacing: 0.01em;
+  font-weight: 800;
+  letter-spacing: -0.03em;
   color: #ffffff;
   margin: 0 0 1rem 0;
   z-index: 2;
-  text-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+  text-shadow: 0 8px 32px rgba(0, 0, 0, 0.9);
 }
 
 .amber-crystal-sub {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: clamp(1.15rem, 2vw, 1.55rem);
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(1.05rem, 1.8vw, 1.35rem);
   font-weight: 400;
-  line-height: 1.45;
-  color: #d4d4d8;
-  max-width: 720px;
+  line-height: 1.55;
+  color: var(--cp-text-subtle);
+  max-width: 680px;
   margin: 0 auto 2.5rem;
   z-index: 2;
 }
 
 /* =========================================================
-   2. SCROLL-SCALING VIDEO REEL SECTION
+   2. VIDEO REEL SECTION
    ========================================================= */
 .amber-reel-section {
   position: relative;
@@ -221,7 +248,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background: radial-gradient(circle at 50% 15%, rgba(147, 51, 234, 0.22) 0%, rgba(225, 29, 72, 0.1) 35%, #06020c 68%);
+  background: radial-gradient(circle at 50% 20%, rgba(160, 102, 255, 0.18) 0%, rgba(27, 12, 64, 0.45) 50%, #000000 80%);
 }
 
 .amber-reel-frame {
@@ -230,13 +257,13 @@
   max-width: 1320px;
   height: 76vh;
   min-height: 460px;
-  border-radius: 22px;
+  border-radius: 20px;
   overflow: hidden;
-  border: 1px solid rgba(168, 85, 247, 0.35);
-  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.85), 0 0 60px rgba(225, 29, 72, 0.18);
+  border: 1px solid var(--cp-primary-border);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.9), 0 0 50px rgba(160, 102, 255, 0.22);
   transition: transform 0.12s ease-out, border-radius 0.2s ease-out;
   will-change: transform;
-  background: #070512;
+  background: #000000;
 }
 
 .amber-reel-video-bg {
@@ -245,13 +272,13 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: brightness(0.68) contrast(1.1);
+  filter: brightness(0.65) contrast(1.1);
 }
 
 .amber-reel-overlay {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 50% 60%, rgba(147, 51, 234, 0.2), rgba(6, 2, 12, 0.74));
+  background: radial-gradient(circle at 50% 60%, rgba(160, 102, 255, 0.15), rgba(0, 0, 0, 0.8));
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -268,7 +295,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #9333ea, #e11d48);
+  background: linear-gradient(135deg, #a066ff, #a000ff);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -283,11 +310,12 @@
 }
 
 .amber-reel-headline {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: clamp(2.4rem, 5vw, 4.5rem);
-  font-weight: 700;
+  font-weight: 800;
+  letter-spacing: -0.02em;
   line-height: 1.05;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.95);
   margin: 0;
 }
 
@@ -299,24 +327,26 @@
   width: 84px;
   height: 84px;
   border-radius: 50%;
-  background: rgba(15, 7, 28, 0.7);
-  backdrop-filter: blur(8px);
-  border: 2px solid rgba(244, 63, 94, 0.75);
+  background: rgba(13, 6, 28, 0.85);
+  backdrop-filter: blur(10px);
+  border: 2px solid var(--cp-primary-glow);
   color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: transform 0.25s ease, background 0.25s ease;
+  transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: 0 0 25px rgba(160, 102, 255, 0.4);
 }
 
 .amber-reel-play-btn:hover {
   transform: translate(-50%, -50%) scale(1.1);
-  background: linear-gradient(135deg, #9333ea, #e11d48);
+  background: var(--cp-primary);
+  box-shadow: 0 0 35px rgba(160, 0, 255, 0.7);
 }
 
 /* =========================================================
-   3. LATEST ON CODEPULSE (3-Column Rounded Card Frame)
+   3. LATEST ON CODEPULSE (Login Cards Style)
    ========================================================= */
 .amber-latest-section {
   max-width: 1320px;
@@ -325,16 +355,17 @@
 }
 
 .amber-latest-box {
-  border: 1px solid rgba(168, 85, 247, 0.3);
-  border-radius: 16px;
+  border: 1px solid var(--cp-primary-border);
+  border-radius: 20px;
   padding: 4rem 3.5rem;
-  background: radial-gradient(circle at 50% 0%, rgba(225, 29, 72, 0.14) 0%, rgba(126, 34, 206, 0.12) 35%, rgba(8, 3, 16, 0.96) 75%);
+  background: radial-gradient(circle at 50% 0%, rgba(160, 102, 255, 0.14) 0%, rgba(27, 12, 64, 0.35) 45%, #080312 90%);
 }
 
 .amber-section-big-title {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: clamp(2.4rem, 4.2vw, 3.8rem);
-  font-weight: 700;
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(2.2rem, 4vw, 3.4rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
   text-align: center;
   margin: 0 0 3rem 0;
   color: #ffffff;
@@ -343,45 +374,46 @@
 .amber-latest-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2.5rem;
+  gap: 2rem;
 }
 
 .amber-latest-cat {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 0.95rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #f43f5e;
-  margin-bottom: 0.85rem;
+  color: var(--cp-primary-glow);
+  margin-bottom: 0.65rem;
 }
 
 .amber-latest-thumb {
   width: 100%;
   height: 175px;
-  border-radius: 22px;
-  border: 1px solid rgba(168, 85, 247, 0.45);
+  border-radius: 16px;
+  border: 1px solid var(--cp-primary-border);
   overflow: hidden;
-  margin-bottom: 1.35rem;
+  margin-bottom: 1.25rem;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: #0d061c;
 }
 
 .amber-latest-card-title {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 1.55rem;
-  font-weight: 600;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 700;
   line-height: 1.25;
   color: #ffffff;
-  margin: 0 0 0.75rem 0;
+  margin: 0 0 0.65rem 0;
 }
 
 .amber-latest-card-desc {
   font-size: 0.92rem;
   line-height: 1.6;
-  color: #a1a1aa;
+  color: var(--cp-text-subtle);
   margin: 0 0 1.25rem 0;
 }
 
@@ -389,43 +421,47 @@
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  color: #c084fc;
-  font-family: 'Rajdhani', sans-serif;
+  color: var(--cp-primary-glow);
+  font-family: 'Outfit', sans-serif;
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 0.95rem;
   text-decoration: none;
-  transition: color 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .amber-read-more:hover {
-  color: #f43f5e;
+  color: #ffffff;
+  transform: translateX(3px);
 }
 
 /* =========================================================
-   4. WHITE SECTION: IT & TECHNOLOGIES (2 HILERAS / 2 ROWS)
+   4. TECH MARQUEE SECTION (Dark Theme Unified)
    ========================================================= */
 .amber-industry-white {
-  background-color: #ffffff;
-  color: #090d16;
+  background-color: #080312;
+  color: #ffffff;
   padding: 5.5rem 0;
   overflow: hidden;
+  border-top: 1px solid var(--cp-primary-border);
+  border-bottom: 1px solid var(--cp-primary-border);
 }
 
 .amber-industry-title {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: clamp(2.4rem, 4.5vw, 3.9rem);
-  font-weight: 700;
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(2.2rem, 4.2vw, 3.4rem);
+  font-weight: 800;
   text-align: center;
-  color: #090d16;
+  color: #ffffff;
   margin: 0 0 3.5rem 0;
+  letter-spacing: -0.02em;
 }
 
 .amber-marquee-wrapper {
   position: relative;
   width: 100%;
   overflow: hidden;
-  border-top: 1px solid #eceff4;
-  border-bottom: 1px solid #eceff4;
+  border-top: 1px solid rgba(74, 33, 165, 0.4);
+  border-bottom: 1px solid rgba(74, 33, 165, 0.4);
   display: flex;
   flex-direction: column;
 }
@@ -433,7 +469,7 @@
 .amber-marquee-row {
   display: flex;
   width: max-content;
-  border-bottom: 1px solid #eceff4;
+  border-bottom: 1px solid rgba(74, 33, 165, 0.4);
 }
 
 .amber-marquee-row:last-child {
@@ -472,42 +508,39 @@
 
 .amber-tech-cell {
   width: 280px;
-  height: 175px;
-  border-right: 1px solid #eceff4;
+  height: 165px;
+  border-right: 1px solid rgba(74, 33, 165, 0.4);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.7rem;
+  gap: 0.65rem;
   padding: 1.5rem;
-  background: #ffffff;
+  background: #0d061c;
   text-align: center;
-  transition: background 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 .amber-tech-cell:hover {
-  background: #fdf2f8;
+  background: #170b33;
 }
 
 .amber-tech-name {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 1.2rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.1rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #1e293b;
+  letter-spacing: 0.02em;
+  color: #ffffff;
 }
 
 .amber-tech-sub {
-  font-size: 0.74rem;
-  font-weight: 600;
-  color: #64748b;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  font-size: 0.76rem;
+  font-weight: 500;
+  color: var(--cp-text-muted);
 }
 
 /* =========================================================
-   5. OUR RECENT WORK -> SHOWCASE DE CURSOS INTERACTIVO
+   5. SHOWCASE DE CURSOS INTERACTIVO
    ========================================================= */
 .amber-courses-showcase {
   position: relative;
@@ -517,7 +550,7 @@
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  background-color: #06020c;
+  background-color: #000000;
   overflow: hidden;
 }
 
@@ -542,10 +575,10 @@
   max-width: 920px;
   margin: 1.5rem auto 2.5rem;
   padding: 3.5rem 2.5rem;
-  border-radius: 24px;
-  background: rgba(10, 4, 20, 0.6);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(168, 85, 247, 0.25);
+  border-radius: 20px;
+  background: rgba(13, 6, 28, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--cp-primary-border);
 }
 
 .amber-arrow-btn {
@@ -555,14 +588,14 @@
   z-index: 5;
   background: transparent;
   border: none;
-  color: #e11d48;
+  color: var(--cp-primary-glow);
   cursor: pointer;
   padding: 1rem;
   transition: transform 0.2s ease, color 0.2s ease;
 }
 
 .amber-arrow-btn:hover {
-  color: #c084fc;
+  color: #ffffff;
   transform: translateY(-50%) scale(1.15);
 }
 
@@ -579,39 +612,41 @@
   z-index: 2;
   display: grid;
   grid-template-columns: repeat(4, minmax(220px, 1fr));
-  gap: 1.5rem;
+  gap: 1.25rem;
   width: 100%;
   max-width: 1280px;
 }
 
 .amber-course-thumb-card {
   height: 150px;
-  border-radius: 20px;
+  border-radius: 16px;
   padding: 1.35rem;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   cursor: pointer;
-  border: 2px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--cp-primary-border);
+  background: #0d061c;
   transition: all 0.25s ease;
   position: relative;
   overflow: hidden;
 }
 
 .amber-course-thumb-card.active {
-  border-color: #f43f5e;
-  transform: translateY(-6px);
-  box-shadow: 0 12px 30px rgba(225, 29, 72, 0.38);
+  border-color: var(--cp-primary-glow);
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(160, 102, 255, 0.35);
+  background: #170b33;
 }
 
 /* =========================================================
-   6. A GLOBAL COMMUNITY OF ARTISANS -> COMUNIDAD LATAM (Morado y Rojo)
+   6. COMUNIDAD LATAM
    ========================================================= */
 .amber-latam-section {
   position: relative;
   min-height: 92vh;
   padding: 6rem 2rem 6.5rem;
-  background: radial-gradient(circle at 50% 55%, rgba(225, 29, 72, 0.22) 0%, rgba(126, 34, 206, 0.18) 38%, #06020c 72%);
+  background: radial-gradient(circle at 50% 55%, rgba(160, 102, 255, 0.16) 0%, rgba(27, 12, 64, 0.45) 45%, #000000 85%);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -663,22 +698,24 @@
 }
 
 .amber-latam-country {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: clamp(1.55rem, 2.3vw, 2.1rem);
-  font-weight: 600;
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(1.4rem, 2.2vw, 1.9rem);
+  font-weight: 700;
   color: #ffffff;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.01em;
   text-shadow: 0 4px 20px rgba(0, 0, 0, 0.9);
   transition: color 0.2s ease, transform 0.2s ease;
   cursor: default;
 }
 
 .amber-latam-country:hover {
-  color: #f43f5e;
+  color: var(--cp-primary-glow);
   transform: scale(1.06);
 }
 
-/* Inner pages container (/cursos, /cms) */
+/* =========================================================
+   PÁGINAS INTERNAS (/cursos, /cms)
+   ========================================================= */
 .amber-inner-container {
   max-width: 1320px;
   margin: 0 auto;
@@ -691,39 +728,40 @@
   justify-content: space-between;
   margin-bottom: 2rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid rgba(168, 85, 247, 0.2);
+  border-bottom: 1px solid var(--cp-primary-border);
 }
 
 .amber-kicker {
   display: inline-block;
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 0.9rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #f43f5e;
+  color: var(--cp-primary-glow);
   margin-bottom: 0.4rem;
 }
 
 .amber-section-title {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 2.2rem;
-  font-weight: 700;
+  font-family: 'Outfit', sans-serif;
+  font-size: 2.1rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
   text-transform: uppercase;
   margin: 0;
 }
 
 .amber-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 1.5rem;
 }
 
 .amber-card {
-  background: #0b0516;
-  border: 1px solid rgba(168, 85, 247, 0.26);
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-primary-border);
   border-radius: 16px;
-  padding: 2rem;
+  padding: 1.75rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -732,9 +770,10 @@
 }
 
 .amber-card:hover {
-  border-color: #e11d48;
+  border-color: var(--cp-primary-glow);
   transform: translateY(-4px);
-  box-shadow: 0 12px 30px rgba(225, 29, 72, 0.2);
+  box-shadow: 0 12px 30px rgba(160, 0, 255, 0.25);
+  background: var(--cp-surface-elevated);
 }
 
 .amber-card-top {
@@ -745,47 +784,48 @@
 }
 
 .amber-card-num {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 0.9rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.8rem;
   font-weight: 700;
-  letter-spacing: 0.14em;
-  color: #c084fc;
+  letter-spacing: 0.05em;
+  color: var(--cp-primary-glow);
 }
 
 .amber-card-tag {
   font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
+  font-weight: 800;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  padding: 0.2rem 0.6rem;
-  border-radius: 6px;
-  background: rgba(225, 29, 72, 0.16);
-  color: #fb7185;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(160, 102, 255, 0.18);
+  color: #e9d5ff;
+  border: 1px solid rgba(160, 102, 255, 0.35);
 }
 
 .amber-card-title {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 1.45rem;
-  font-weight: 700;
-  margin: 0 0 0.6rem 0;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 800;
+  margin: 0 0 0.5rem 0;
   color: #ffffff;
 }
 
 .amber-card-desc {
   font-size: 0.92rem;
   line-height: 1.55;
-  color: #a1a1aa;
+  color: var(--cp-text-subtle);
   margin: 0;
 }
 
 /* =========================================================
-   7. COMPLETE STUDIO FOOTER (PIE DE PÁGINA MORADO & ROJO)
+   7. FOOTER (Login Style)
    ========================================================= */
 .amber-footer {
-  border-top: 1px solid rgba(168, 85, 247, 0.24);
-  background: linear-gradient(180deg, #080311 0%, #040108 100%);
+  border-top: 1px solid var(--cp-primary-border);
+  background: #000000;
   padding: 4.5rem 4rem 2.25rem;
-  color: #a1a1aa;
+  color: var(--cp-text-muted);
 }
 
 .amber-footer-top {
@@ -795,24 +835,24 @@
   grid-template-columns: 1.6fr 1fr 1fr 1fr;
   gap: 3rem;
   padding-bottom: 3.25rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(74, 33, 165, 0.35);
 }
 
 .amber-footer-brand-desc {
   font-size: 0.92rem;
   line-height: 1.65;
-  color: #9ca3af;
+  color: var(--cp-text-subtle);
   margin: 1rem 0 1.5rem;
   max-width: 340px;
 }
 
 .amber-footer-col-title {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 1.05rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #f43f5e;
+  color: var(--cp-primary-glow);
   margin: 0 0 1.15rem 0;
 }
 
@@ -826,14 +866,14 @@
 }
 
 .amber-footer-link {
-  color: #d4d4d8;
+  color: var(--cp-text-subtle);
   text-decoration: none;
   font-size: 0.9rem;
   transition: color 0.2s ease;
 }
 
 .amber-footer-link:hover {
-  color: #c084fc;
+  color: var(--cp-primary-glow);
 }
 
 .amber-footer-bottom {
@@ -844,11 +884,9 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 0.88rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #71717a;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.85rem;
+  color: var(--cp-text-muted);
 }
 
 @media (max-width: 900px) {

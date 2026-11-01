@@ -77,21 +77,21 @@ export default function HomePage() {
       category: 'NUEVOS LABORATORIOS',
       title: 'Entornos de Ejecución en Vivo ya Disponibles',
       desc: 'Compila y ejecuta retos de estructuras de datos y algoritmos en contenedores aislados con métricas en tiempo real.',
-      gradient: 'linear-gradient(135deg, #2e1065 0%, #7e22ce 55%, #be123c 100%)',
+      gradient: 'linear-gradient(135deg, #2e1065 0%, #7e22ce 55%, #3b1b8c 100%)',
       badge: 'LABS 2.0',
     },
     {
       category: 'TORNEOS & LOGROS',
       title: 'CodePulse Global Hackathon & Arena 2026',
       desc: 'Participa en los torneos semanales de programación competitiva, desbloquea insignias y sube de nivel en la comunidad.',
-      gradient: 'linear-gradient(135deg, #4c0519 0%, #e11d48 55%, #6b21a8 100%)',
+      gradient: 'linear-gradient(135deg, #1b0c40 0%, #a000ff 55%, #6b21a8 100%)',
       badge: 'ARENA AWARDS',
     },
     {
       category: 'CASOS DE ESTUDIO',
       title: 'Arquitectura de Microservicios en Producción',
       desc: 'Cómo diseñar ecosistemas escalables combinando Next.js, API Gateways, FastAPI y bases de datos distribuidas en Neon.',
-      gradient: 'linear-gradient(135deg, #3b0764 0%, #9333ea 50%, #f43f5e 100%)',
+      gradient: 'linear-gradient(135deg, #3b0764 0%, #9333ea 50%, #a066ff 100%)',
       badge: 'ARQUITECTURA',
     },
   ];
@@ -134,16 +134,16 @@ export default function HomePage() {
       title: 'INGENIERÍA FULL-STACK CON NEXT.JS',
       subtitle: 'Domina React 18, App Router, Server Actions, diseño de interfaces modernas y arquitecturas empresariales.',
       level: 'AVANZADO',
-      bg: 'radial-gradient(circle at 50% 40%, rgba(225, 29, 72, 0.38) 0%, rgba(136, 19, 55, 0.28) 42%, #06020c 80%)',
-      cardBg: 'linear-gradient(135deg, #881337 0%, #e11d48 100%)',
+      bg: 'radial-gradient(circle at 50% 40%, rgba(160, 0, 255, 0.38) 0%, rgba(59, 27, 140, 0.28) 42%, #06020c 80%)',
+      cardBg: 'linear-gradient(135deg, #3b1b8c 0%, #a000ff 100%)',
     },
     {
       id: 'algoritmos-estructura',
       title: 'ESTRUCTURAS DE DATOS Y ALGORITMOS',
       subtitle: 'Entrena tu lógica para entrevistas técnicas y competencias resolviendo problemas de grafos, árboles y programación dinámica.',
       level: 'PRINCIPIANTE',
-      bg: 'radial-gradient(circle at 50% 40%, rgba(168, 85, 247, 0.36) 0%, rgba(225, 29, 72, 0.24) 42%, #06020c 80%)',
-      cardBg: 'linear-gradient(135deg, #581c87 0%, #be123c 100%)',
+      bg: 'radial-gradient(circle at 50% 40%, rgba(168, 85, 247, 0.36) 0%, rgba(160, 0, 255, 0.24) 42%, #06020c 80%)',
+      cardBg: 'linear-gradient(135deg, #581c87 0%, #3b1b8c 100%)',
     },
     {
       id: 'ciberseguridad-cloud',
@@ -151,7 +151,7 @@ export default function HomePage() {
       subtitle: 'Protege infraestructuras críticas, automatiza despliegues con contenedores Docker y audita aplicaciones web.',
       level: 'AVANZADO',
       bg: 'radial-gradient(circle at 50% 40%, rgba(239, 68, 68, 0.38) 0%, rgba(107, 33, 168, 0.25) 42%, #06020c 80%)',
-      cardBg: 'linear-gradient(135deg, #7f1d1d 0%, #9333ea 100%)',
+      cardBg: 'linear-gradient(135deg, #1b0c40 0%, #9333ea 100%)',
     },
   ];
 
@@ -207,7 +207,7 @@ export default function HomePage() {
                 <div className="amber-latest-thumb" style={{ background: item.gradient }}>
                   <span
                     style={{
-                      fontFamily: 'Rajdhani, sans-serif',
+                      fontFamily: "'Outfit', sans-serif",
                       fontSize: '1.65rem',
                       fontWeight: 800,
                       letterSpacing: '0.1em',
@@ -299,7 +299,7 @@ export default function HomePage() {
             <span className="amber-kicker">// NIVEL {currentCourse.level}</span>
             <h3
               style={{
-                fontFamily: 'Rajdhani, sans-serif',
+                fontFamily: "'Outfit', sans-serif",
                 fontSize: 'clamp(2rem, 4vw, 3.4rem)',
                 fontWeight: 800,
                 margin: '0.5rem 0 1rem',
@@ -346,7 +346,7 @@ export default function HomePage() {
               </span>
               <div
                 style={{
-                  fontFamily: 'Rajdhani, sans-serif',
+                  fontFamily: "'Outfit', sans-serif",
                   fontSize: '1.25rem',
                   fontWeight: 800,
                   lineHeight: 1.15,

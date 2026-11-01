@@ -87,9 +87,9 @@ export default function CmsFreeCanvasBlock({
         w: 28,
         h: 34,
         text: 'INSIGNIA PRO',
-        bg: 'rgba(244, 63, 94, 0.22)',
-        color: '#fda4af',
-        borderColor: '#f43f5e',
+        bg: 'rgba(160, 102, 255, 0.22)',
+        color: '#c4a5ff',
+        borderColor: '#a066ff',
         borderRadius: 999,
         fontSize: 12,
         fontWeight: 800,
@@ -111,7 +111,7 @@ export default function CmsFreeCanvasBlock({
         w: 40,
         h: 4,
         text: '',
-        bg: 'linear-gradient(90deg, #9333ea, #f43f5e)',
+        bg: 'linear-gradient(90deg, #9333ea, #a066ff)',
         borderRadius: 999,
       };
     } else if (kind === 'image') {
@@ -243,7 +243,7 @@ export default function CmsFreeCanvasBlock({
                 fontFamily: 'monospace',
                 fontSize: '0.68rem',
                 fontWeight: 800,
-                color: '#f43f5e',
+                color: '#a066ff',
                 marginRight: '0.3rem',
               }}
             >
@@ -313,12 +313,12 @@ export default function CmsFreeCanvasBlock({
             padding: '0.45rem 0.75rem',
             marginBottom: '0.5rem',
             borderRadius: '8px',
-            background: 'rgba(244, 63, 94, 0.09)',
-            border: '1px solid rgba(244, 63, 94, 0.35)',
+            background: 'rgba(160, 102, 255, 0.09)',
+            border: '1px solid rgba(160, 102, 255, 0.35)',
             fontSize: '0.73rem',
           }}
         >
-          <span style={{ color: '#fda4af', fontWeight: 700 }}>Elemento:</span>
+          <span style={{ color: '#c4a5ff', fontWeight: 700 }}>Elemento:</span>
 
           {selectedEl.kind !== 'image' && selectedEl.kind !== 'line' && (
             <label style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', cursor: 'pointer' }}>
@@ -421,7 +421,7 @@ export default function CmsFreeCanvasBlock({
             <Copy size={13} />
           </button>
           <button type="button" className="cms-mini-icon-btn" onClick={deleteSelected} title="Eliminar elemento">
-            <Trash2 size={13} color="#fb7185" />
+            <Trash2 size={13} color="#b48cff" />
           </button>
         </div>
       )}
@@ -493,10 +493,10 @@ export default function CmsFreeCanvasBlock({
                   el.borderColor && el.borderColor !== 'transparent'
                     ? `1.5px solid ${el.borderColor}`
                     : isSel
-                    ? '1.5px dashed #f43f5e'
+                    ? '1.5px dashed #a066ff'
                     : 'none',
                 borderRadius: el.borderRadius ?? 10,
-                outline: isSel ? '2px solid #f43f5e' : 'none',
+                outline: isSel ? '2px solid #a066ff' : 'none',
                 outlineOffset: '2px',
                 cursor: editable ? (isEditing ? 'text' : 'grab') : 'default',
                 display: 'flex',
@@ -575,7 +575,7 @@ export default function CmsFreeCanvasBlock({
                     width: 13,
                     height: 13,
                     borderRadius: '3px',
-                    background: '#f43f5e',
+                    background: '#a066ff',
                     border: '2px solid #ffffff',
                     cursor: 'nwse-resize',
                   }}

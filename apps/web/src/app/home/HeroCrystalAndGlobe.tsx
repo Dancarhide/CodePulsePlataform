@@ -35,7 +35,7 @@ export function HeroQuantumCrystal() {
           height: '230px',
           borderRadius: '50%',
           background:
-            'radial-gradient(circle, rgba(225, 29, 72, 0.55) 0%, rgba(147, 51, 234, 0.38) 50%, transparent 75%)',
+            'radial-gradient(circle, rgba(160, 0, 255, 0.55) 0%, rgba(147, 51, 234, 0.38) 50%, transparent 75%)',
           filter: 'blur(30px)',
         }}
       />
@@ -53,8 +53,8 @@ export function HeroQuantumCrystal() {
           width: '275px',
           height: '275px',
           borderRadius: '50%',
-          border: '1.5px solid rgba(244, 63, 94, 0.45)',
-          boxShadow: '0 0 20px rgba(225, 29, 72, 0.25)',
+          border: '1.5px solid rgba(160, 102, 255, 0.45)',
+          boxShadow: '0 0 20px rgba(160, 0, 255, 0.25)',
           transformStyle: 'preserve-3d',
         }}
       />
@@ -96,14 +96,14 @@ export function HeroQuantumCrystal() {
           width: '220px',
           height: '240px',
           transformStyle: 'preserve-3d',
-          filter: 'drop-shadow(0 20px 35px rgba(225, 29, 72, 0.45))',
+          filter: 'drop-shadow(0 20px 35px rgba(160, 0, 255, 0.45))',
         }}
       >
         <svg width="220" height="240" viewBox="0 0 240 260" fill="none">
           <defs>
             <linearGradient id="gemTopLeft" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#fda4af" />
-              <stop offset="45%" stopColor="#f43f5e" />
+              <stop offset="0%" stopColor="#c4a5ff" />
+              <stop offset="45%" stopColor="#a066ff" />
               <stop offset="100%" stopColor="#9f1239" />
             </linearGradient>
             <linearGradient id="gemTopRight" x1="100%" y1="0%" x2="0%" y2="100%">
@@ -112,8 +112,8 @@ export function HeroQuantumCrystal() {
               <stop offset="100%" stopColor="#4c1d95" />
             </linearGradient>
             <linearGradient id="gemCenterLeft" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#e11d48" />
-              <stop offset="50%" stopColor="#881337" />
+              <stop offset="0%" stopColor="#a000ff" />
+              <stop offset="50%" stopColor="#3b1b8c" />
               <stop offset="100%" stopColor="#2e1065" />
             </linearGradient>
             <linearGradient id="gemCenterRight" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -122,8 +122,8 @@ export function HeroQuantumCrystal() {
               <stop offset="100%" stopColor="#1e052e" />
             </linearGradient>
             <linearGradient id="gemCenterFront" x1="50%" y1="0%" x2="50%" y2="100%">
-              <stop offset="0%" stopColor="#fb7185" />
-              <stop offset="38%" stopColor="#be123c" />
+              <stop offset="0%" stopColor="#b48cff" />
+              <stop offset="38%" stopColor="#3b1b8c" />
               <stop offset="100%" stopColor="#581c87" />
             </linearGradient>
             <linearGradient id="gemBottomLeft" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -136,7 +136,7 @@ export function HeroQuantumCrystal() {
             </linearGradient>
             <linearGradient id="gemShine" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor="#ffffff" stopOpacity="0.85" />
-              <stop offset="50%" stopColor="#fda4af" stopOpacity="0.25" />
+              <stop offset="50%" stopColor="#c4a5ff" stopOpacity="0.25" />
               <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
             </linearGradient>
           </defs>
@@ -175,7 +175,7 @@ export function HeroQuantumCrystal() {
           {/* Contorno exterior brillante */}
           <polygon
             points="120,10 185,62 206,126 120,244 34,126 55,62"
-            stroke="#fda4af"
+            stroke="#c4a5ff"
             strokeOpacity="0.7"
             strokeWidth="1.3"
             fill="none"
@@ -197,8 +197,8 @@ export function HeroQuantumCrystal() {
             width: '18px',
             height: '18px',
             borderRadius: '50%',
-            background: 'radial-gradient(circle, #ffffff 0%, #f43f5e 60%, transparent 100%)',
-            boxShadow: '0 0 18px #ffffff, 0 0 30px #f43f5e',
+            background: 'radial-gradient(circle, #ffffff 0%, #a066ff 60%, transparent 100%)',
+            boxShadow: '0 0 18px #ffffff, 0 0 30px #a066ff',
           }}
         />
       </motion.div>
@@ -232,8 +232,8 @@ export function HeroQuantumCrystal() {
             width: p.size,
             height: p.size,
             borderRadius: '50%',
-            background: idx % 2 === 0 ? '#f43f5e' : '#c084fc',
-            boxShadow: `0 0 12px ${idx % 2 === 0 ? '#f43f5e' : '#c084fc'}`,
+            background: idx % 2 === 0 ? '#a066ff' : '#c084fc',
+            boxShadow: `0 0 12px ${idx % 2 === 0 ? '#a066ff' : '#c084fc'}`,
           }}
         />
       ))}
@@ -303,7 +303,7 @@ export function RotatingLatamPlanet() {
       // Resplandor atmosférico del planeta
       const bgGlow = ctx.createRadialGradient(cx, cy, radius * 0.2, cx, cy, radius * 1.18);
       bgGlow.addColorStop(0, 'rgba(147, 51, 234, 0.25)');
-      bgGlow.addColorStop(0.55, 'rgba(225, 29, 72, 0.16)');
+      bgGlow.addColorStop(0.55, 'rgba(160, 0, 255, 0.16)');
       bgGlow.addColorStop(0.85, 'rgba(88, 28, 135, 0.06)');
       bgGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
       ctx.fillStyle = bgGlow;
@@ -312,7 +312,7 @@ export function RotatingLatamPlanet() {
       ctx.fill();
 
       // Borde exterior de la atmósfera
-      ctx.strokeStyle = 'rgba(244, 63, 94, 0.32)';
+      ctx.strokeStyle = 'rgba(160, 102, 255, 0.32)';
       ctx.lineWidth = 1.2;
       ctx.beginPath();
       ctx.arc(cx, cy, radius, 0, Math.PI * 2);
@@ -354,10 +354,10 @@ export function RotatingLatamPlanet() {
 
         if (p.isHub && z > 0) {
           ctx.fillStyle = `rgba(255, 255, 255, ${Math.min(1, depthAlpha + 0.3)})`;
-          ctx.shadowColor = '#f43f5e';
+          ctx.shadowColor = '#a066ff';
           ctx.shadowBlur = 10;
         } else if (p.size > 1.5) {
-          ctx.fillStyle = `rgba(244, 63, 94, ${depthAlpha * 0.85})`;
+          ctx.fillStyle = `rgba(160, 102, 255, ${depthAlpha * 0.85})`;
           ctx.shadowBlur = 0;
         } else {
           ctx.fillStyle = `rgba(192, 132, 252, ${depthAlpha * 0.38})`;
@@ -377,7 +377,7 @@ export function RotatingLatamPlanet() {
           const dist = Math.hypot(a.x - b.x, a.y - b.y);
           if (dist < 115) {
             const lineAlpha = (1 - dist / 115) * 0.52;
-            ctx.strokeStyle = `rgba(244, 63, 94, ${lineAlpha})`;
+            ctx.strokeStyle = `rgba(160, 102, 255, ${lineAlpha})`;
             ctx.beginPath();
             ctx.moveTo(a.x, a.y);
             ctx.lineTo(b.x, b.y);
@@ -424,7 +424,7 @@ export function RotatingLatamPlanet() {
           width: '615px',
           height: '615px',
           borderRadius: '50%',
-          border: '1px solid rgba(244, 63, 94, 0.18)',
+          border: '1px solid rgba(160, 102, 255, 0.18)',
         }}
       />
 

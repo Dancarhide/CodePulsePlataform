@@ -423,7 +423,7 @@ export function createDefaultBlock(type: BlockType): CmsBlock {
         type,
         text: 'Subtítulo de Sección',
         align: 'left',
-        color: '#f43f5e',
+        color: '#a066ff',
       };
     case 'heading3':
       return {
@@ -451,7 +451,7 @@ export function createDefaultBlock(type: BlockType): CmsBlock {
         badgeText: 'MÓDULO DESTACADO',
         text: 'Domina la Arquitectura en Producción',
         subtitle: 'Aprende paso a paso con ejemplos reales y buenas prácticas de la industria.',
-        bannerGradient: 'linear-gradient(135deg, #4c1d95 0%, #be123c 100%)',
+        bannerGradient: 'linear-gradient(135deg, #4c1d95 0%, #3b1b8c 100%)',
         align: 'left',
         buttonText: '',
         buttonUrl: '',
@@ -482,7 +482,7 @@ export function createDefaultBlock(type: BlockType): CmsBlock {
           {
             title: 'Columna 02 // Consideraciones',
             content: 'Detalla los requisitos técnicos, límites o cuidados importantes en producción.',
-            accent: '#f43f5e',
+            accent: '#a066ff',
           },
         ],
       };
@@ -499,7 +499,7 @@ export function createDefaultBlock(type: BlockType): CmsBlock {
           {
             title: '02. Procesamiento',
             content: 'Lógica de negocio desacoplada y servicios asíncronos.',
-            accent: '#f43f5e',
+            accent: '#a066ff',
           },
           {
             title: '03. Persistencia',
@@ -592,9 +592,9 @@ export function createDefaultBlock(type: BlockType): CmsBlock {
             h: 34,
             zIndex: 3,
             text: 'DISEÑO LIBRE // CANVA MODE',
-            bg: 'rgba(244, 63, 94, 0.22)',
-            color: '#fda4af',
-            borderColor: '#f43f5e',
+            bg: 'rgba(160, 102, 255, 0.22)',
+            color: '#c4a5ff',
+            borderColor: '#a066ff',
             borderRadius: 999,
             fontSize: 12,
             fontWeight: 800,
@@ -644,7 +644,7 @@ export function createDefaultBlock(type: BlockType): CmsBlock {
             h: 110,
             zIndex: 1,
             text: '',
-            bg: 'radial-gradient(circle, rgba(244,63,94,0.45) 0%, transparent 70%)',
+            bg: 'radial-gradient(circle, rgba(160, 102, 255,0.45) 0%, transparent 70%)',
             color: '#ffffff',
             borderColor: 'transparent',
             borderRadius: 999,
@@ -721,7 +721,7 @@ export function createDefaultBlock(type: BlockType): CmsBlock {
         type,
         stats: [
           { value: '99.99%', label: 'Disponibilidad SLA', accent: '#c084fc' },
-          { value: '< 18ms', label: 'Latencia P95 en API', accent: '#f43f5e' },
+          { value: '< 18ms', label: 'Latencia P95 en API', accent: '#a066ff' },
           { value: 'AES-256', label: 'Estándar de Cifrado', accent: '#22d3ee' },
         ],
       };
@@ -762,7 +762,7 @@ export function createDefaultBlock(type: BlockType): CmsBlock {
         archDirection: 'horizontal',
         archNodes: [
           { title: 'Cliente Web', subtitle: 'Next.js 14 App', accent: '#c084fc' },
-          { title: 'API Serverless', subtitle: 'Auth & RBAC JWT', accent: '#f43f5e' },
+          { title: 'API Serverless', subtitle: 'Auth & RBAC JWT', accent: '#a066ff' },
           { title: 'Neon Cloud DB', subtitle: 'PostgreSQL + JSONB', accent: '#22d3ee' },
         ],
       };
@@ -775,7 +775,7 @@ export function createDefaultBlock(type: BlockType): CmsBlock {
           { label: 'TypeScript 5', color: '#38bdf8' },
           { label: 'Next.js 14', color: '#c084fc' },
           { label: 'PostgreSQL', color: '#10b981' },
-          { label: 'OWASP Top 10', color: '#f43f5e' },
+          { label: 'OWASP Top 10', color: '#a066ff' },
         ],
       };
     case 'cta_buttons':

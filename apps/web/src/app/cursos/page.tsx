@@ -33,9 +33,9 @@ function getCatalogCoverGradient(category: string, accent?: string): string {
     return 'linear-gradient(135deg, #090d24 0%, #1d4ed8 55%, #0891b2 100%)';
   }
   if (cat.includes('ia') || cat.includes('inteligencia') || cat.includes('datos')) {
-    return 'linear-gradient(135deg, #1a0926 0%, #7e22ce 50%, #be185d 100%)';
+    return 'linear-gradient(135deg, #1a0926 0%, #7e22ce 50%, #3b1b8c 100%)';
   }
-  return 'linear-gradient(135deg, #19072c 0%, #6b21a8 52%, #be123c 100%)';
+  return 'linear-gradient(135deg, #1b0c40 0%, #3b1b8c 50%, #0d061c 100%)';
 }
 
 function formatCatalogDuration(minutes?: number, customHours?: number): string {
@@ -175,11 +175,11 @@ export default function CursosPage() {
           }}
         >
           <div>
-            <span className="amber-kicker">// CATÁLOGO DE INGENIERÍA &amp; PRÁCTICA</span>
-            <h1 className="amber-section-title" style={{ marginBottom: '0.35rem' }}>
+            <span className="amber-kicker" style={{ color: '#a066ff' }}>// CATÁLOGO DE INGENIERÍA &amp; PRÁCTICA</span>
+            <h1 className="amber-section-title" style={{ fontFamily: "'Outfit', sans-serif", marginBottom: '0.35rem' }}>
               CURSOS &amp; ESPECIALIZACIONES
             </h1>
-            <p style={{ color: '#94a3b8', fontSize: '0.95rem', margin: 0, maxWidth: 640 }}>
+            <p style={{ color: '#cbd5e1', fontSize: '0.95rem', margin: 0, maxWidth: 640 }}>
               Rutas técnicas diseñadas con laboratorios evaluables, retos interactivos en terminal,
               exámenes y progreso ponderado conectado a tu perfil.
             </p>
@@ -188,38 +188,38 @@ export default function CursosPage() {
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.65rem' }}>
             <div
               style={{
-                padding: '0.6rem 1rem',
+                padding: '0.6rem 1.1rem',
                 borderRadius: '12px',
-                background: 'rgba(14, 8, 26, 0.8)',
-                border: '1px solid rgba(168, 85, 247, 0.28)',
+                background: '#0d061c',
+                border: '1px solid #4a21a5',
                 fontSize: '0.78rem',
                 color: '#cbd5e1',
               }}
             >
-              <strong style={{ color: '#c084fc', fontSize: '1.05rem' }}>{courses.length}</strong>{' '}
+              <strong style={{ color: '#a066ff', fontSize: '1.05rem' }}>{courses.length}</strong>{' '}
               Rutas Disponibles
             </div>
             <div
               style={{
-                padding: '0.6rem 1rem',
+                padding: '0.6rem 1.1rem',
                 borderRadius: '12px',
-                background: 'rgba(14, 8, 26, 0.8)',
-                border: '1px solid rgba(34, 211, 238, 0.28)',
+                background: '#0d061c',
+                border: '1px solid #4a21a5',
                 fontSize: '0.78rem',
                 color: '#cbd5e1',
               }}
             >
-              <strong style={{ color: '#67e8f9', fontSize: '1.05rem' }}>{totalLabs}</strong>{' '}
+              <strong style={{ color: '#a066ff', fontSize: '1.05rem' }}>{totalLabs}</strong>{' '}
               Laboratorios Activos
             </div>
           </div>
         </div>
 
-        {/* CONSOLA DE BÚSQUEDA Y FILTROS AVANZADOS */}
+        {/* CONSOLA DE BÚSQUEDA Y FILTROS AVANZADOS (ESTILO LOGIN CODEPULSE) */}
         <div
           style={{
-            background: 'rgba(14, 8, 26, 0.86)',
-            border: '1px solid rgba(168, 85, 247, 0.28)',
+            background: '#0d061c',
+            border: '1px solid #4a21a5',
             borderRadius: '16px',
             padding: '1.15rem 1.35rem',
             marginBottom: '1.85rem',
@@ -241,7 +241,7 @@ export default function CursosPage() {
             <div style={{ position: 'relative', flex: '1 1 280px', minWidth: 240 }}>
               <Search
                 size={16}
-                color="#a855f7"
+                color="#a066ff"
                 style={{
                   position: 'absolute',
                   left: 13,
@@ -256,13 +256,14 @@ export default function CursosPage() {
                 placeholder="Buscar curso, tecnología (Docker, SQL, Python), categoría o instructor..."
                 style={{
                   width: '100%',
-                  background: '#080412',
-                  border: '1px solid rgba(168, 85, 247, 0.35)',
-                  borderRadius: '10px',
-                  padding: '0.68rem 2.2rem 0.68rem 2.45rem',
+                  background: '#080312',
+                  border: '1px solid #4a21a5',
+                  borderRadius: '12px',
+                  padding: '0.72rem 2.2rem 0.72rem 2.45rem',
                   color: '#ffffff',
                   fontSize: '0.87rem',
                   outline: 'none',
+                  fontFamily: "'Outfit', sans-serif",
                 }}
               />
               {search && (
@@ -291,26 +292,28 @@ export default function CursosPage() {
                 value={selectedLevel}
                 onChange={(e) => setSelectedLevel(e.target.value)}
                 style={{
-                  background: '#080412',
-                  border: '1px solid rgba(255,255,255,0.14)',
-                  borderRadius: '10px',
-                  padding: '0.62rem 0.85rem',
-                  color: '#e2e8f0',
+                  background: '#080312',
+                  border: '1px solid #4a21a5',
+                  borderRadius: '12px',
+                  padding: '0.65rem 0.95rem',
+                  color: '#ffffff',
                   fontSize: '0.82rem',
                   fontWeight: 600,
                   cursor: 'pointer',
+                  fontFamily: "'Outfit', sans-serif",
+                  outline: 'none',
                 }}
               >
-                <option value="Todos" style={{ background: '#090512' }}>
+                <option value="Todos" style={{ background: '#0d061c' }}>
                   Nivel: Todos
                 </option>
-                <option value="principiante" style={{ background: '#090512' }}>
+                <option value="principiante" style={{ background: '#0d061c' }}>
                   Principiante
                 </option>
-                <option value="intermedio" style={{ background: '#090512' }}>
+                <option value="intermedio" style={{ background: '#0d061c' }}>
                   Intermedio
                 </option>
-                <option value="avanzado" style={{ background: '#090512' }}>
+                <option value="avanzado" style={{ background: '#0d061c' }}>
                   Avanzado
                 </option>
               </select>
@@ -320,29 +323,31 @@ export default function CursosPage() {
                 value={featureFilter}
                 onChange={(e) => setFeatureFilter(e.target.value as any)}
                 style={{
-                  background: '#080412',
-                  border: '1px solid rgba(255,255,255,0.14)',
-                  borderRadius: '10px',
-                  padding: '0.62rem 0.85rem',
-                  color: '#e2e8f0',
+                  background: '#080312',
+                  border: '1px solid #4a21a5',
+                  borderRadius: '12px',
+                  padding: '0.65rem 0.95rem',
+                  color: '#ffffff',
                   fontSize: '0.82rem',
                   fontWeight: 600,
                   cursor: 'pointer',
+                  fontFamily: "'Outfit', sans-serif",
+                  outline: 'none',
                 }}
               >
-                <option value="todos" style={{ background: '#090512' }}>
+                <option value="todos" style={{ background: '#0d061c' }}>
                   Formato: Todos
                 </option>
-                <option value="con_labs" style={{ background: '#090512' }}>
+                <option value="con_labs" style={{ background: '#0d061c' }}>
                   Con Laboratorios Prácticos
                 </option>
-                <option value="con_examen" style={{ background: '#090512' }}>
+                <option value="con_examen" style={{ background: '#0d061c' }}>
                   Con Examen Final
                 </option>
-                <option value="certificado" style={{ background: '#090512' }}>
+                <option value="certificado" style={{ background: '#0d061c' }}>
                   Con Certificado CodePulse
                 </option>
-                <option value="destacados" style={{ background: '#090512' }}>
+                <option value="destacados" style={{ background: '#0d061c' }}>
                   Cursos Destacados ⭐
                 </option>
               </select>
@@ -352,26 +357,28 @@ export default function CursosPage() {
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
                 style={{
-                  background: '#080412',
-                  border: '1px solid rgba(255,255,255,0.14)',
-                  borderRadius: '10px',
-                  padding: '0.62rem 0.85rem',
-                  color: '#e2e8f0',
+                  background: '#080312',
+                  border: '1px solid #4a21a5',
+                  borderRadius: '12px',
+                  padding: '0.65rem 0.95rem',
+                  color: '#ffffff',
                   fontSize: '0.82rem',
                   fontWeight: 600,
                   cursor: 'pointer',
+                  fontFamily: "'Outfit', sans-serif",
+                  outline: 'none',
                 }}
               >
-                <option value="destacados" style={{ background: '#090512' }}>
+                <option value="destacados" style={{ background: '#0d061c' }}>
                   Orden: Recomendados
                 </option>
-                <option value="titulo" style={{ background: '#090512' }}>
+                <option value="titulo" style={{ background: '#0d061c' }}>
                   Orden: Alfabético (A–Z)
                 </option>
-                <option value="puntos" style={{ background: '#090512' }}>
+                <option value="puntos" style={{ background: '#0d061c' }}>
                   Orden: Mayor XP
                 </option>
-                <option value="duracion" style={{ background: '#090512' }}>
+                <option value="duracion" style={{ background: '#0d061c' }}>
                   Orden: Duración
                 </option>
               </select>
@@ -392,12 +399,14 @@ export default function CursosPage() {
               <span
                 style={{
                   fontSize: '0.73rem',
-                  color: '#94a3b8',
+                  color: '#a066ff',
                   fontWeight: 700,
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '0.3rem',
                   marginRight: '0.2rem',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
                 }}
               >
                 <SlidersHorizontal size={13} /> Área:
@@ -410,18 +419,21 @@ export default function CursosPage() {
                     type="button"
                     onClick={() => setSelectedCategory(cat.name)}
                     style={{
-                      padding: '0.38rem 0.85rem',
+                      padding: '0.42rem 0.95rem',
                       borderRadius: '999px',
                       border: active
-                        ? '1px solid #f43f5e'
-                        : '1px solid rgba(168, 85, 247, 0.22)',
+                        ? '1px solid #a066ff'
+                        : '1px solid #4a21a5',
                       background: active
-                        ? 'linear-gradient(90deg, rgba(147,51,234,0.36), rgba(225,29,72,0.3))'
-                        : 'rgba(255,255,255,0.03)',
+                        ? '#a000ff'
+                        : '#0d061c',
                       color: active ? '#ffffff' : '#cbd5e1',
-                      fontSize: '0.77rem',
+                      fontSize: '0.78rem',
                       fontWeight: 700,
                       cursor: 'pointer',
+                      boxShadow: active ? '0 2px 14px rgba(160, 0, 255, 0.45)' : 'none',
+                      transition: 'all 0.2s ease',
+                      fontFamily: "'Outfit', sans-serif",
                     }}
                   >
                     {cat.name} ({cat.count})
@@ -442,11 +454,12 @@ export default function CursosPage() {
                 style={{
                   background: 'none',
                   border: 'none',
-                  color: '#f43f5e',
-                  fontSize: '0.78rem',
+                  color: '#a066ff',
+                  fontSize: '0.8rem',
                   fontWeight: 700,
                   cursor: 'pointer',
                   textDecoration: 'underline',
+                  fontFamily: "'Outfit', sans-serif",
                 }}
               >
                 Restablecer filtros ({filtered.length} encontrados)
@@ -474,7 +487,7 @@ export default function CursosPage() {
             <Sparkles size={32} color="#c084fc" style={{ marginBottom: '0.6rem' }} />
             <h3
               style={{
-                fontFamily: 'Rajdhani, sans-serif',
+                fontFamily: "'Outfit', sans-serif",
                 fontSize: '1.55rem',
                 margin: '0 0 0.5rem 0',
               }}
@@ -531,21 +544,21 @@ export default function CursosPage() {
                   style={{
                     textDecoration: 'none',
                     color: 'inherit',
-                    background: 'rgba(14, 8, 26, 0.9)',
+                    background: '#0d061c',
                     border: `1px solid ${
                       gov.destacado
-                        ? 'rgba(251, 191, 36, 0.48)'
+                        ? '#fbbf24'
                         : isComingSoon
-                        ? 'rgba(34, 211, 238, 0.35)'
-                        : 'rgba(168, 85, 247, 0.28)'
+                        ? '#22d3ee'
+                        : '#4a21a5'
                     }`,
-                    borderRadius: '18px',
+                    borderRadius: '16px',
                     overflow: 'hidden',
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'space-between',
-                    boxShadow: '0 14px 36px rgba(0, 0, 0, 0.38)',
-                    transition: 'transform 0.2s ease, border-color 0.2s ease',
+                    boxShadow: '0 12px 32px rgba(0, 0, 0, 0.55)',
+                    transition: 'transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease',
                   }}
                 >
                   <div>
@@ -553,11 +566,9 @@ export default function CursosPage() {
                     <div
                       style={{
                         position: 'relative',
-                        height: 162,
-                        background: course.imagen_portada_url
-                          ? '#090512'
-                          : getCatalogCoverGradient(course.categoria, gov.color_acento),
-                        borderBottom: '1px solid rgba(255,255,255,0.08)',
+                        height: 168,
+                        background: '#080312',
+                        borderBottom: '1px solid #4a21a5',
                         overflow: 'hidden',
                       }}
                     >
@@ -566,11 +577,13 @@ export default function CursosPage() {
                         <img
                           src={course.imagen_portada_url}
                           alt={course.titulo}
+                          onError={(e) => {
+                            (e.currentTarget as HTMLElement).style.display = 'none';
+                          }}
                           style={{
                             width: '100%',
                             height: '100%',
                             objectFit: 'cover',
-                            opacity: 0.85,
                           }}
                         />
                       ) : (
@@ -578,10 +591,7 @@ export default function CursosPage() {
                           style={{
                             position: 'absolute',
                             inset: 0,
-                            backgroundImage:
-                              'radial-gradient(rgba(255,255,255,0.13) 1px, transparent 1px)',
-                            backgroundSize: '18px 18px',
-                            opacity: 0.35,
+                            background: getCatalogCoverGradient(course.categoria, gov.color_acento),
                           }}
                         />
                       )}
@@ -591,7 +601,7 @@ export default function CursosPage() {
                           position: 'absolute',
                           inset: 0,
                           background:
-                            'linear-gradient(180deg, rgba(6,3,14,0.38) 0%, rgba(10,5,20,0.92) 100%)',
+                            'linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(13,6,28,0.85) 100%)',
                         }}
                       />
 
@@ -615,10 +625,11 @@ export default function CursosPage() {
                               fontWeight: 800,
                               padding: '0.2rem 0.55rem',
                               borderRadius: '999px',
-                              background: 'rgba(9, 5, 18, 0.78)',
-                              border: '1px solid rgba(255,255,255,0.16)',
-                              color: '#e2e8f0',
+                              background: 'rgba(0, 0, 0, 0.75)',
+                              border: '1px solid #4a21a5',
+                              color: '#ffffff',
                               letterSpacing: '0.08em',
+                              fontFamily: "'Outfit', sans-serif",
                             }}
                           >
                             TRACK {String(idx + 1).padStart(2, '0')}
@@ -637,6 +648,7 @@ export default function CursosPage() {
                                 background: 'rgba(245, 158, 11, 0.25)',
                                 border: '1px solid rgba(251, 191, 36, 0.55)',
                                 color: '#fde68a',
+                                fontFamily: "'Outfit', sans-serif",
                               }}
                             >
                               <Star size={11} fill="#fbbf24" /> DESTACADO
@@ -653,6 +665,7 @@ export default function CursosPage() {
                                 background: 'rgba(8, 145, 178, 0.28)',
                                 border: '1px solid #22d3ee',
                                 color: '#67e8f9',
+                                fontFamily: "'Outfit', sans-serif",
                               }}
                             >
                               PRÓXIMAMENTE
@@ -664,12 +677,14 @@ export default function CursosPage() {
                           style={{
                             fontSize: '0.68rem',
                             fontWeight: 800,
-                            padding: '0.22rem 0.6rem',
-                            borderRadius: '6px',
-                            background: 'rgba(244, 63, 94, 0.22)',
-                            border: '1px solid rgba(244, 63, 94, 0.45)',
-                            color: '#fda4af',
+                            padding: '0.24rem 0.65rem',
+                            borderRadius: '8px',
+                            background: 'rgba(160, 102, 255, 0.16)',
+                            border: '1px solid #4a21a5',
+                            color: '#a066ff',
                             textTransform: 'uppercase',
+                            fontFamily: "'Outfit', sans-serif",
+                            letterSpacing: '0.05em',
                           }}
                         >
                           {course.nivel || 'intermedio'}
@@ -691,8 +706,11 @@ export default function CursosPage() {
                         <span
                           style={{
                             fontSize: '0.74rem',
-                            color: '#c084fc',
+                            color: '#a066ff',
                             fontWeight: 800,
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.05em',
+                            fontFamily: "'Outfit', sans-serif",
                           }}
                         >
                           {course.categoria || 'Desarrollo de Software'}
@@ -704,9 +722,10 @@ export default function CursosPage() {
                             gap: '0.3rem',
                             fontSize: '0.73rem',
                             color: '#cbd5e1',
+                            fontFamily: "'Outfit', sans-serif",
                           }}
                         >
-                          <Clock size={12} color="#67e8f9" />
+                          <Clock size={12} color="#a066ff" />
                           {formatCatalogDuration(
                             course.duracion_total_minutos,
                             gov.horas_curriculares
@@ -719,12 +738,12 @@ export default function CursosPage() {
                     <div style={{ padding: '1.25rem 1.35rem 1rem' }}>
                       <h3
                         style={{
-                          fontFamily: 'Rajdhani, sans-serif',
-                          fontSize: '1.45rem',
+                          fontFamily: "'Outfit', sans-serif",
+                          fontSize: '1.35rem',
                           fontWeight: 800,
                           margin: '0 0 0.45rem',
                           color: '#ffffff',
-                          lineHeight: 1.2,
+                          lineHeight: 1.25,
                         }}
                       >
                         {course.titulo}
@@ -732,7 +751,7 @@ export default function CursosPage() {
 
                       <p
                         style={{
-                          color: '#94a3b8',
+                          color: '#cbd5e1',
                           fontSize: '0.86rem',
                           lineHeight: 1.58,
                           margin: '0 0 0.85rem',
@@ -761,10 +780,11 @@ export default function CursosPage() {
                                 fontSize: '0.68rem',
                                 padding: '0.15rem 0.52rem',
                                 borderRadius: '999px',
-                                background: 'rgba(168,85,247,0.14)',
-                                border: '1px solid rgba(168,85,247,0.32)',
-                                color: '#e9d5ff',
+                                background: 'rgba(160, 102, 255, 0.12)',
+                                border: '1px solid #4a21a5',
+                                color: '#a066ff',
                                 fontWeight: 600,
+                                fontFamily: "'Outfit', sans-serif",
                               }}
                             >
                               {t}
@@ -783,6 +803,7 @@ export default function CursosPage() {
                           fontSize: '0.75rem',
                           color: '#cbd5e1',
                           marginBottom: '0.85rem',
+                          fontFamily: "'Outfit', sans-serif",
                         }}
                       >
                         <span
@@ -793,7 +814,7 @@ export default function CursosPage() {
                             color: '#94a3b8',
                           }}
                         >
-                          <User size={13} color="#c084fc" />
+                          <User size={13} color="#a066ff" />
                           {gov.instructor_nombre}
                         </span>
 
@@ -820,16 +841,17 @@ export default function CursosPage() {
                           flexWrap: 'wrap',
                           gap: '0.8rem',
                           paddingTop: '0.75rem',
-                          borderTop: '1px solid rgba(255,255,255,0.06)',
+                          borderTop: '1px solid rgba(74, 33, 165, 0.35)',
                           fontSize: '0.76rem',
                           color: '#cbd5e1',
+                          fontFamily: "'Outfit', sans-serif",
                         }}
                       >
                         <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
-                          <Layers size={13} color="#c084fc" /> {course.total_modulos ?? 0} módulos
+                          <Layers size={13} color="#a066ff" /> {course.total_modulos ?? 0} módulos
                         </span>
                         <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
-                          <BookOpen size={13} color="#f43f5e" /> {course.total_lecciones ?? 0}{' '}
+                          <BookOpen size={13} color="#a066ff" /> {course.total_lecciones ?? 0}{' '}
                           unidades
                         </span>
                         {Number(course.total_laboratorios || 0) > 0 && (
@@ -848,21 +870,25 @@ export default function CursosPage() {
                     </div>
                   </div>
 
-                  {/* CTA INFERIOR */}
+                  {/* CTA INFERIOR ESTILO BOTON LOGIN */}
                   <div
                     style={{
-                      padding: '0.9rem 1.35rem',
+                      padding: '0.95rem 1.35rem',
                       background: isComingSoon
-                        ? 'rgba(8, 145, 178, 0.12)'
-                        : 'rgba(147, 51, 234, 0.1)',
-                      borderTop: '1px solid rgba(255,255,255,0.07)',
+                        ? 'rgba(8, 145, 178, 0.16)'
+                        : isClosed
+                        ? 'rgba(239, 68, 68, 0.16)'
+                        : '#a000ff',
+                      borderTop: '1px solid #4a21a5',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
-                      color: isComingSoon ? '#67e8f9' : isClosed ? '#fca5a5' : '#f43f5e',
-                      fontSize: '0.8rem',
+                      color: isComingSoon ? '#67e8f9' : isClosed ? '#fca5a5' : '#ffffff',
+                      fontSize: '0.82rem',
                       fontWeight: 800,
-                      letterSpacing: '0.1em',
+                      letterSpacing: '0.06em',
+                      fontFamily: "'Outfit', sans-serif",
+                      boxShadow: !isComingSoon && !isClosed ? '0 4px 18px rgba(160, 0, 255, 0.35)' : 'none',
                     }}
                   >
                     <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.45rem' }}>

@@ -278,7 +278,7 @@ export default function CourseStudentViewerPage() {
         >
           <h2
             style={{
-              fontFamily: 'Rajdhani, sans-serif',
+              fontFamily: "'Outfit', sans-serif",
               fontSize: '2rem',
               marginBottom: '0.75rem',
             }}
@@ -295,11 +295,12 @@ export default function CourseStudentViewerPage() {
               alignItems: 'center',
               gap: '0.5rem',
               padding: '0.7rem 1.35rem',
-              borderRadius: '8px',
-              background: 'linear-gradient(90deg, #9333ea, #e11d48)',
+              borderRadius: '12px',
+              background: '#a000ff',
               color: '#ffffff',
               textDecoration: 'none',
               fontWeight: 700,
+              boxShadow: '0 4px 16px rgba(160, 0, 255, 0.35)',
             }}
           >
             <ArrowLeft size={16} /> Volver al Catálogo
@@ -312,18 +313,18 @@ export default function CourseStudentViewerPage() {
         >
           <div
             style={{
-              background: 'rgba(14, 8, 26, 0.9)',
-              border: '1px solid rgba(244, 63, 94, 0.38)',
+              background: '#0d061c',
+              border: '1px solid #4a21a5',
               borderRadius: '20px',
               padding: '2.8rem 2rem',
             }}
           >
-            <Lock size={38} color="#f43f5e" style={{ marginBottom: '0.8rem' }} />
+            <Lock size={38} color="#a066ff" style={{ marginBottom: '0.8rem' }} />
             <div
               style={{
                 fontSize: '0.74rem',
                 fontWeight: 800,
-                color: '#67e8f9',
+                color: '#a066ff',
                 letterSpacing: '0.12em',
                 marginBottom: '0.35rem',
               }}
@@ -334,7 +335,7 @@ export default function CourseStudentViewerPage() {
                   ? '// CURSO TEMPORALMENTE PAUSADO'
                   : '// ACCESO RESTRINGIDO'}
             </div>
-            <h2 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2rem', margin: '0 0 0.7rem' }}>
+            <h2 style={{ fontFamily: "'Outfit', sans-serif", fontSize: '2rem', margin: '0 0 0.7rem' }}>
               {course.titulo}
             </h2>
             <p style={{ color: '#cbd5e1', lineHeight: 1.65, maxWidth: 540, margin: '0 auto 1.5rem' }}>
@@ -349,14 +350,14 @@ export default function CourseStudentViewerPage() {
               <div
                 style={{
                   textAlign: 'left',
-                  background: 'rgba(5, 3, 12, 0.65)',
-                  border: '1px solid rgba(255,255,255,0.08)',
+                  background: '#080312',
+                  border: '1px solid #4a21a5',
                   borderRadius: '14px',
                   padding: '1.1rem 1.3rem',
                   marginBottom: '1.5rem',
                 }}
               >
-                <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#c084fc', marginBottom: '0.5rem' }}>
+                <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#a066ff', marginBottom: '0.5rem' }}>
                   ADELANTO DEL TEMARIO ({course.modulos.length} MÓDULOS):
                 </div>
                 {course.modulos.map((m) => (
@@ -374,11 +375,12 @@ export default function CourseStudentViewerPage() {
                 alignItems: 'center',
                 gap: '0.5rem',
                 padding: '0.75rem 1.4rem',
-                borderRadius: '10px',
-                background: 'linear-gradient(90deg, #9333ea, #e11d48)',
+                borderRadius: '12px',
+                background: '#a000ff',
                 color: '#ffffff',
                 textDecoration: 'none',
                 fontWeight: 700,
+                boxShadow: '0 4px 16px rgba(160, 0, 255, 0.35)',
               }}
             >
               <ArrowLeft size={16} /> Explorar Cursos Activos
@@ -392,14 +394,14 @@ export default function CourseStudentViewerPage() {
         >
           <div
             style={{
-              background: 'rgba(14, 8, 26, 0.92)',
-              border: '1px solid rgba(168, 85, 247, 0.45)',
+              background: '#0d061c',
+              border: '1px solid #4a21a5',
               borderRadius: '20px',
               padding: '2.4rem 1.8rem',
             }}
           >
-            <Lock size={34} color="#c084fc" style={{ marginBottom: '0.7rem' }} />
-            <h2 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.75rem', margin: '0 0 0.45rem' }}>
+            <Lock size={34} color="#a066ff" style={{ marginBottom: '0.7rem' }} />
+            <h2 style={{ fontFamily: "'Outfit', sans-serif", fontSize: '1.75rem', margin: '0 0 0.45rem' }}>
               Cohorte con Código de Acceso
             </h2>
             <p style={{ color: '#94a3b8', fontSize: '0.9rem', marginBottom: '1.25rem' }}>
@@ -416,13 +418,14 @@ export default function CourseStudentViewerPage() {
               style={{
                 width: '100%',
                 padding: '0.72rem 0.9rem',
-                borderRadius: '10px',
-                border: `1px solid ${pinError ? '#ef4444' : 'rgba(168,85,247,0.4)'}`,
-                background: '#070310',
+                borderRadius: '12px',
+                border: `1px solid ${pinError ? '#ef4444' : '#4a21a5'}`,
+                background: '#080312',
                 color: '#ffffff',
                 textAlign: 'center',
                 fontSize: '1rem',
                 marginBottom: '0.75rem',
+                outline: 'none',
               }}
             />
             {pinError && (
@@ -442,13 +445,14 @@ export default function CourseStudentViewerPage() {
               }}
               style={{
                 width: '100%',
-                padding: '0.75rem',
-                borderRadius: '10px',
+                padding: '0.85rem',
+                borderRadius: '12px',
                 border: 'none',
-                background: 'linear-gradient(90deg, #9333ea, #e11d48)',
+                background: '#a000ff',
                 color: '#ffffff',
                 fontWeight: 700,
                 cursor: 'pointer',
+                boxShadow: '0 4px 16px rgba(160, 0, 255, 0.4)',
               }}
             >
               Desbloquear Curso
@@ -496,9 +500,9 @@ export default function CourseStudentViewerPage() {
             {/* SIDEBAR DE TEMARIO Y PROGRESO PONDERADO */}
             <aside
               style={{
-                background: '#0b0617',
-                border: '1px solid rgba(168, 85, 247, 0.25)',
-                borderRadius: '18px',
+                background: '#0d061c',
+                border: '1px solid #4a21a5',
+                borderRadius: '16px',
                 padding: '1.4rem',
                 position: 'sticky',
                 top: '88px',
@@ -510,11 +514,12 @@ export default function CourseStudentViewerPage() {
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '0.4rem',
-                  color: '#c084fc',
+                  color: '#a066ff',
                   fontSize: '0.8rem',
                   fontWeight: 700,
                   textDecoration: 'none',
                   marginBottom: '0.9rem',
+                  fontFamily: "'Outfit', sans-serif",
                 }}
               >
                 <ArrowLeft size={14} /> Todos los Cursos
@@ -522,12 +527,12 @@ export default function CourseStudentViewerPage() {
 
               <h2
                 style={{
-                  fontFamily: 'Rajdhani, sans-serif',
+                  fontFamily: "'Outfit', sans-serif",
                   fontSize: '1.35rem',
                   fontWeight: 800,
                   color: '#ffffff',
                   margin: '0 0 0.85rem 0',
-                  lineHeight: 1.2,
+                  lineHeight: 1.25,
                 }}
               >
                 {course.titulo}
@@ -539,8 +544,8 @@ export default function CourseStudentViewerPage() {
                   marginBottom: '1.4rem',
                   padding: '0.9rem 1rem',
                   borderRadius: '12px',
-                  background: 'rgba(168, 85, 247, 0.08)',
-                  border: '1px solid rgba(168, 85, 247, 0.22)',
+                  background: 'rgba(160, 102, 255, 0.08)',
+                  border: '1px solid #4a21a5',
                 }}
               >
                 <div
@@ -551,10 +556,11 @@ export default function CourseStudentViewerPage() {
                     fontSize: '0.78rem',
                     color: '#cbd5e1',
                     marginBottom: '0.4rem',
+                    fontFamily: "'Outfit', sans-serif",
                   }}
                 >
-                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', fontWeight: 700 }}>
-                    <Award size={14} color="#f43f5e" /> Progreso Ponderado
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', fontWeight: 700, color: '#a066ff' }}>
+                    <Award size={14} color="#a066ff" /> Progreso Ponderado
                   </span>
                   <strong style={{ color: '#ffffff' }}>{progressPercent}%</strong>
                 </div>
@@ -571,12 +577,12 @@ export default function CourseStudentViewerPage() {
                     style={{
                       height: '100%',
                       width: `${progressPercent}%`,
-                      background: 'linear-gradient(90deg, #9333ea, #f43f5e)',
+                      background: 'linear-gradient(90deg, #7928ca, #a000ff)',
                       transition: 'width 0.35s ease',
                     }}
                   />
                 </div>
-                <div style={{ fontSize: '0.72rem', color: '#94a3b8', textAlign: 'right' }}>
+                <div style={{ fontSize: '0.72rem', color: '#94a3b8', textAlign: 'right', fontFamily: "'Outfit', sans-serif" }}>
                   <strong>{earnedPoints}</strong> / {totalPoints} pts obtenidos
                 </div>
               </div>
@@ -595,12 +601,12 @@ export default function CourseStudentViewerPage() {
                   <div key={mod.id}>
                     <div
                       style={{
-                        fontFamily: 'Rajdhani, sans-serif',
-                        fontSize: '0.84rem',
+                        fontFamily: "'Outfit', sans-serif",
+                        fontSize: '0.8rem',
                         fontWeight: 700,
-                        letterSpacing: '0.08em',
+                        letterSpacing: '0.06em',
                         textTransform: 'uppercase',
-                        color: '#f43f5e',
+                        color: '#a066ff',
                         marginBottom: '0.45rem',
                       }}
                     >
@@ -628,7 +634,7 @@ export default function CourseStudentViewerPage() {
 
                         const badge =
                           flatRef.unitFormat === 'examen'
-                            ? { label: 'EXAMEN', color: '#fda4af', bg: 'rgba(244,63,94,0.2)' }
+                            ? { label: 'EXAMEN', color: '#a066ff', bg: 'rgba(160,102,255,0.18)' }
                             : flatRef.unitFormat === 'laboratorio'
                               ? { label: 'LAB', color: '#67e8f9', bg: 'rgba(34,211,238,0.18)' }
                               : null;
@@ -654,14 +660,14 @@ export default function CourseStudentViewerPage() {
                               justifyContent: 'space-between',
                               gap: '0.5rem',
                               textAlign: 'left',
-                              padding: '0.58rem 0.7rem',
+                              padding: '0.62rem 0.75rem',
                               borderRadius: '10px',
                               border: isCurrent
-                                ? '1px solid #f43f5e'
-                                : '1px solid rgba(255,255,255,0.06)',
+                                ? '1px solid #a066ff'
+                                : '1px solid rgba(74, 33, 165, 0.35)',
                               background: isCurrent
-                                ? 'linear-gradient(90deg, rgba(147,51,234,0.25), rgba(225,29,72,0.2))'
-                                : 'rgba(255,255,255,0.02)',
+                                ? 'rgba(160, 102, 255, 0.16)'
+                                : 'transparent',
                               color: isSeqLocked
                                 ? '#64748b'
                                 : isCurrent
@@ -669,6 +675,8 @@ export default function CourseStudentViewerPage() {
                                   : '#cbd5e1',
                               cursor: isSeqLocked ? 'not-allowed' : 'pointer',
                               opacity: isSeqLocked ? 0.62 : 1,
+                              fontFamily: "'Outfit', sans-serif",
+                              transition: 'all 0.15s ease',
                             }}
                           >
                             <span
@@ -676,7 +684,7 @@ export default function CourseStudentViewerPage() {
                                 display: 'inline-flex',
                                 alignItems: 'center',
                                 gap: '0.45rem',
-                                fontSize: '0.8rem',
+                                fontSize: '0.82rem',
                                 fontWeight: isCurrent ? 700 : 500,
                                 minWidth: 0,
                               }}
@@ -720,7 +728,7 @@ export default function CourseStudentViewerPage() {
                               style={{
                                 fontSize: '0.68rem',
                                 fontWeight: 700,
-                                color: isDone ? '#6ee7b7' : '#94a3b8',
+                                color: isDone ? '#6ee7b7' : '#a066ff',
                                 flexShrink: 0,
                               }}
                             >
@@ -819,7 +827,7 @@ export default function CourseStudentViewerPage() {
                           </span>
                           <h1
                             style={{
-                              fontFamily: 'Rajdhani, sans-serif',
+                              fontFamily: "'Outfit', sans-serif",
                               fontSize: '1.75rem',
                               fontWeight: 800,
                               color: '#ffffff',
@@ -836,16 +844,17 @@ export default function CourseStudentViewerPage() {
                             alignItems: 'center',
                             gap: '0.85rem',
                             fontSize: '0.8rem',
-                            color: '#94a3b8',
+                            color: '#cbd5e1',
+                            fontFamily: "'Outfit', sans-serif",
                           }}
                         >
                           <span
                             style={{
                               padding: '0.22rem 0.65rem',
                               borderRadius: '999px',
-                              background: 'rgba(168,85,247,0.16)',
-                              border: '1px solid rgba(168,85,247,0.35)',
-                              color: '#e9d5ff',
+                              background: 'rgba(160, 102, 255, 0.16)',
+                              border: '1px solid #4a21a5',
+                              color: '#a066ff',
                               fontWeight: 700,
                               fontSize: '0.74rem',
                             }}
@@ -853,11 +862,11 @@ export default function CourseStudentViewerPage() {
                             Valor: +{activeItem.pesoPuntos} pts
                           </span>
                           <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
-                            <BookOpen size={14} color="#c084fc" />
+                            <BookOpen size={14} color="#a066ff" />
                             {activeItem.lesson.tipo.toUpperCase()}
                           </span>
                           <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
-                            <Clock size={14} color="#f43f5e" />
+                            <Clock size={14} color="#a066ff" />
                             {activeItem.lesson.duracion_estimada_minutos} min
                           </span>
                         </div>
@@ -1025,11 +1034,16 @@ export default function CourseStudentViewerPage() {
                         background:
                           currentFlatIdx >= flatLessons.length - 1
                             ? 'rgba(255,255,255,0.06)'
-                            : 'linear-gradient(90deg, #9333ea, #e11d48)',
+                            : '#a000ff',
                         color: currentFlatIdx >= flatLessons.length - 1 ? '#64748b' : '#ffffff',
                         fontWeight: 700,
                         cursor:
                           currentFlatIdx >= flatLessons.length - 1 ? 'not-allowed' : 'pointer',
+                        boxShadow:
+                          currentFlatIdx >= flatLessons.length - 1
+                            ? 'none'
+                            : '0 4px 16px rgba(160, 0, 255, 0.4)',
+                        fontFamily: "'Outfit', sans-serif",
                       }}
                     >
                       Siguiente <ArrowRight size={15} />

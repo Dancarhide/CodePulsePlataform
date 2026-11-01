@@ -374,7 +374,7 @@ export default function CodePulseReelComponent({ videoScale }: CodePulseReelProp
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.25, delay: 0.12, ease: 'easeOut' }}
                     style={{
-                      fontFamily: 'Rajdhani, sans-serif',
+                      fontFamily: "'Outfit', sans-serif",
                       fontSize: isVertical916
                         ? 'clamp(2.1rem, 5vw, 2.7rem)'
                         : 'clamp(2.8rem, 5.2vw, 4.6rem)',
@@ -425,7 +425,7 @@ export default function CodePulseReelComponent({ videoScale }: CodePulseReelProp
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 0.2, ease: 'easeOut' }}
                     style={{
-                      fontFamily: 'Rajdhani, sans-serif',
+                      fontFamily: "'Outfit', sans-serif",
                       fontSize: isVertical916
                         ? 'clamp(2.4rem, 6vw, 3.1rem)'
                         : 'clamp(3.2rem, 6vw, 5.2rem)',
@@ -600,7 +600,7 @@ export default function CodePulseReelComponent({ videoScale }: CodePulseReelProp
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 0.25, ease: 'easeOut' }}
                     style={{
-                      fontFamily: 'Rajdhani, sans-serif',
+                      fontFamily: "'Outfit', sans-serif",
                       fontSize: isVertical916
                         ? 'clamp(2.8rem, 8vw, 3.6rem)'
                         : 'clamp(3.8rem, 7vw, 6rem)',

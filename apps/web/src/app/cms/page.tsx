@@ -36,6 +36,7 @@ import {
   UserCheck,
   KeyRound,
   GitCommit,
+  Upload,
 } from 'lucide-react';
 import DashboardComponent from '../DashboardComponent';
 import CmsStudioEditor from './CmsStudioEditor';
@@ -92,9 +93,9 @@ const STATUS_META: Record<
   pausado: {
     label: 'APAGADO • EN PAUSA',
     short: 'Apagado',
-    color: '#fda4af',
-    bg: 'rgba(225, 29, 72, 0.2)',
-    border: 'rgba(244, 63, 94, 0.5)',
+    color: '#c4a5ff',
+    bg: 'rgba(160, 0, 255, 0.2)',
+    border: 'rgba(160, 102, 255, 0.5)',
   },
   proximamente: {
     label: 'PRÓXIMAMENTE',
@@ -124,9 +125,9 @@ function getCoverGradient(category: string, accent?: string): string {
     return 'linear-gradient(135deg, #090d24 0%, #1d4ed8 55%, #0891b2 100%)';
   }
   if (cat.includes('ia') || cat.includes('inteligencia') || cat.includes('datos')) {
-    return 'linear-gradient(135deg, #1a0926 0%, #7e22ce 50%, #be185d 100%)';
+    return 'linear-gradient(135deg, #1a0926 0%, #7e22ce 50%, #3b1b8c 100%)';
   }
-  return 'linear-gradient(135deg, #19072c 0%, #6b21a8 52%, #be123c 100%)';
+  return 'linear-gradient(135deg, #19072c 0%, #6b21a8 52%, #3b1b8c 100%)';
 }
 
 function formatDuration(minutes?: number, customHours?: number): string {
@@ -137,6 +138,32 @@ function formatDuration(minutes?: number, customHours?: number): string {
   const h = Math.floor(mins / 60);
   const rem = mins % 60;
   return rem > 0 ? `${h}h ${rem}m` : `${h}h`;
+}
+
+async function compressImageToDataUrl(file: File, maxWidth = 1080, quality = 0.8): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error('No se pudo leer la imagen.'));
+    reader.onload = () => {
+      const img = new window.Image();
+      img.onerror = () => reject(new Error('Formato de imagen no válido.'));
+      img.onload = () => {
+        const scale = img.width > maxWidth ? maxWidth / img.width : 1;
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          resolve(String(reader.result));
+          return;
+        }
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.src = String(reader.result);
+    };
+    reader.readAsDataURL(file);
+  });
 }
 
 export default function CmsPage() {
@@ -173,6 +200,7 @@ export default function CmsPage() {
   } | null>(null);
   const [modalTagInput, setModalTagInput] = useState('');
   const [savingModal, setSavingModal] = useState(false);
+  const modalCoverInputRef = React.useRef<HTMLInputElement | null>(null);
 
   // Estado de revisiones de Labs & Exámenes
   const [submissions, setSubmissions] = useState<AdminEvaluationRecord[]>([]);
@@ -607,7 +635,7 @@ export default function CmsPage() {
                 border: '1px solid rgba(168, 85, 247, 0.4)',
                 background: 'rgba(14, 8, 26, 0.8)',
                 color: '#e9d5ff',
-                fontFamily: 'Rajdhani, sans-serif',
+                fontFamily: "'Outfit', sans-serif",
                 fontSize: '0.95rem',
                 fontWeight: 700,
                 letterSpacing: '0.06em',
@@ -628,15 +656,15 @@ export default function CmsPage() {
                 padding: '0.85rem 1.5rem',
                 borderRadius: '10px',
                 border: 'none',
-                background: 'linear-gradient(90deg, #9333ea 0%, #e11d48 100%)',
+                background: '#a000ff',
                 color: '#ffffff',
-                fontFamily: 'Rajdhani, sans-serif',
+                fontFamily: "'Outfit', sans-serif",
                 fontSize: '1.02rem',
                 fontWeight: 700,
                 letterSpacing: '0.08em',
                 textTransform: 'uppercase',
                 cursor: 'pointer',
-                boxShadow: '0 10px 28px rgba(225, 29, 72, 0.3)',
+                boxShadow: '0 10px 28px rgba(160, 0, 255, 0.3)',
               }}
             >
               <Plus size={18} /> Crear Nuevo Curso
@@ -750,7 +778,7 @@ export default function CmsPage() {
             <span style={{ fontSize: '0.72rem', color: '#94a3b8', letterSpacing: '0.1em' }}>
               TOTAL DE CURSOS
             </span>
-            <div style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2rem', fontWeight: 800 }}>
+            <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: '2rem', fontWeight: 800 }}>
               {courses.length}
             </div>
             <span style={{ fontSize: '0.72rem', color: '#c084fc' }}>
@@ -778,7 +806,7 @@ export default function CmsPage() {
             <span style={{ fontSize: '0.72rem', color: '#6ee7b7', letterSpacing: '0.1em' }}>
               ACTIVOS EN CATÁLOGO
             </span>
-            <div style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2rem', fontWeight: 800 }}>
+            <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: '2rem', fontWeight: 800 }}>
               {stats.publicados}
             </div>
             <span style={{ fontSize: '0.72rem', color: '#94a3b8' }}>
@@ -793,16 +821,16 @@ export default function CmsPage() {
             }}
             style={{
               background: 'rgba(14, 8, 26, 0.82)',
-              border: '1px solid rgba(244, 63, 94, 0.28)',
+              border: '1px solid rgba(160, 102, 255, 0.28)',
               borderRadius: '14px',
               padding: '1.1rem 1.3rem',
               cursor: 'pointer',
             }}
           >
-            <span style={{ fontSize: '0.72rem', color: '#fda4af', letterSpacing: '0.1em' }}>
+            <span style={{ fontSize: '0.72rem', color: '#c4a5ff', letterSpacing: '0.1em' }}>
               BORRADORES / APAGADOS
             </span>
-            <div style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2rem', fontWeight: 800 }}>
+            <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: '2rem', fontWeight: 800 }}>
               {stats.borradores + stats.pausados}
             </div>
             <span style={{ fontSize: '0.72rem', color: '#94a3b8' }}>
@@ -821,7 +849,7 @@ export default function CmsPage() {
             <span style={{ fontSize: '0.72rem', color: '#d8b4fe', letterSpacing: '0.1em' }}>
               UNIDADES EN TEMARIOS
             </span>
-            <div style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2rem', fontWeight: 800 }}>
+            <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: '2rem', fontWeight: 800 }}>
               {stats.unidades}
             </div>
             <span style={{ fontSize: '0.72rem', color: '#94a3b8' }}>
@@ -845,7 +873,7 @@ export default function CmsPage() {
             <span style={{ fontSize: '0.72rem', color: '#67e8f9', letterSpacing: '0.1em' }}>
               LABS POR REVISAR
             </span>
-            <div style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '2rem', fontWeight: 800 }}>
+            <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: '2rem', fontWeight: 800 }}>
               {pendingReviewCount}
             </div>
             <span style={{ fontSize: '0.72rem', color: '#67e8f9' }}>
@@ -951,7 +979,7 @@ export default function CmsPage() {
                 <ClipboardCheck size={32} color="#22d3ee" style={{ marginBottom: '0.7rem' }} />
                 <h3
                   style={{
-                    fontFamily: 'Rajdhani, sans-serif',
+                    fontFamily: "'Outfit', sans-serif",
                     fontSize: '1.5rem',
                     margin: '0 0 0.4rem',
                   }}
@@ -983,7 +1011,7 @@ export default function CmsPage() {
                             ? 'rgba(245, 158, 11, 0.45)'
                             : sub.estado === 'aprobado'
                             ? 'rgba(16, 185, 129, 0.35)'
-                            : 'rgba(244, 63, 94, 0.35)'
+                            : 'rgba(160, 102, 255, 0.35)'
                         }`,
                         borderRadius: '16px',
                         padding: '1.4rem 1.6rem',
@@ -1019,10 +1047,10 @@ export default function CmsPage() {
                                 borderRadius: '999px',
                                 background: isLab
                                   ? 'rgba(34, 211, 238, 0.16)'
-                                  : 'rgba(244, 63, 94, 0.18)',
-                                color: isLab ? '#67e8f9' : '#fda4af',
+                                  : 'rgba(160, 102, 255, 0.18)',
+                                color: isLab ? '#67e8f9' : '#c4a5ff',
                                 border: `1px solid ${
-                                  isLab ? 'rgba(34,211,238,0.4)' : 'rgba(244,63,94,0.4)'
+                                  isLab ? 'rgba(34,211,238,0.4)' : 'rgba(160, 102, 255,0.4)'
                                 }`,
                                 letterSpacing: '0.08em',
                               }}
@@ -1039,7 +1067,7 @@ export default function CmsPage() {
 
                           <h3
                             style={{
-                              fontFamily: 'Rajdhani, sans-serif',
+                              fontFamily: "'Outfit', sans-serif",
                               fontSize: '1.35rem',
                               margin: 0,
                             }}
@@ -1314,9 +1342,9 @@ export default function CmsPage() {
                               gap: '0.4rem',
                               padding: '0.58rem 0.9rem',
                               borderRadius: '8px',
-                              border: '1px solid rgba(244, 63, 94, 0.5)',
-                              background: 'rgba(225, 29, 72, 0.14)',
-                              color: '#fda4af',
+                              border: '1px solid rgba(160, 102, 255, 0.5)',
+                              background: 'rgba(160, 0, 255, 0.14)',
+                              color: '#c4a5ff',
                               fontWeight: 700,
                               fontSize: '0.8rem',
                               cursor: 'pointer',
@@ -1580,10 +1608,10 @@ export default function CmsPage() {
                           padding: '0.36rem 0.8rem',
                           borderRadius: '999px',
                           border: active
-                            ? '1px solid #f43f5e'
+                            ? '1px solid #a066ff'
                             : '1px solid rgba(255,255,255,0.1)',
                           background: active
-                            ? 'linear-gradient(90deg, rgba(147,51,234,0.35), rgba(225,29,72,0.3))'
+                            ? 'rgba(160, 102, 255, 0.18)'
                             : 'rgba(255,255,255,0.03)',
                           color: active ? '#ffffff' : '#cbd5e1',
                           fontSize: '0.76rem',
@@ -1609,7 +1637,7 @@ export default function CmsPage() {
                     style={{
                       background: 'none',
                       border: 'none',
-                      color: '#f43f5e',
+                      color: '#a066ff',
                       fontSize: '0.78rem',
                       fontWeight: 700,
                       cursor: 'pointer',
@@ -1638,10 +1666,10 @@ export default function CmsPage() {
                   textAlign: 'center',
                 }}
               >
-                <Sparkles size={34} color="#f43f5e" style={{ marginBottom: '0.75rem' }} />
+                <Sparkles size={34} color="#a066ff" style={{ marginBottom: '0.75rem' }} />
                 <h3
                   style={{
-                    fontFamily: 'Rajdhani, sans-serif',
+                    fontFamily: "'Outfit', sans-serif",
                     fontSize: '1.6rem',
                     margin: '0 0 0.5rem 0',
                   }}
@@ -1665,8 +1693,8 @@ export default function CmsPage() {
                       gap: '0.5rem',
                       padding: '0.75rem 1.4rem',
                       borderRadius: '10px',
-                      border: '1px solid #f43f5e',
-                      background: 'rgba(225, 29, 72, 0.16)',
+                      border: '1px solid #a066ff',
+                      background: 'rgba(160, 0, 255, 0.16)',
                       color: '#ffffff',
                       fontWeight: 700,
                       cursor: 'pointer',
@@ -1745,7 +1773,7 @@ export default function CmsPage() {
                             </span>
                           )}
                         </div>
-                        <div style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.3rem', fontWeight: 700 }}>
+                        <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: '1.3rem', fontWeight: 700 }}>
                           {course.titulo}
                         </div>
                         <div style={{ fontSize: '0.76rem', color: '#94a3b8' }}>
@@ -1848,9 +1876,9 @@ export default function CmsPage() {
                           style={{
                             padding: '0.5rem',
                             borderRadius: '8px',
-                            border: '1px solid rgba(244,63,94,0.35)',
-                            background: 'rgba(225,29,72,0.1)',
-                            color: '#fb7185',
+                            border: '1px solid rgba(160, 102, 255,0.35)',
+                            background: 'rgba(160, 0, 255,0.1)',
+                            color: '#b48cff',
                             cursor: 'pointer',
                           }}
                         >
@@ -1885,7 +1913,7 @@ export default function CmsPage() {
                           gov.destacado
                             ? 'rgba(251, 191, 36, 0.45)'
                             : gov.estado_curso === 'pausado'
-                            ? 'rgba(244, 63, 94, 0.38)'
+                            ? 'rgba(160, 102, 255, 0.38)'
                             : 'rgba(168, 85, 247, 0.28)'
                         }`,
                         borderRadius: '18px',
@@ -2026,12 +2054,12 @@ export default function CmsPage() {
                                   border: `1px solid ${
                                     isLive
                                       ? 'rgba(16, 185, 129, 0.55)'
-                                      : 'rgba(244, 63, 94, 0.55)'
+                                      : 'rgba(160, 102, 255, 0.55)'
                                   }`,
                                   background: isLive
                                     ? 'rgba(16, 185, 129, 0.24)'
-                                    : 'rgba(225, 29, 72, 0.25)',
-                                  color: isLive ? '#6ee7b7' : '#fda4af',
+                                    : 'rgba(160, 0, 255, 0.25)',
+                                  color: isLive ? '#6ee7b7' : '#c4a5ff',
                                   display: 'inline-flex',
                                   alignItems: 'center',
                                   gap: '0.3rem',
@@ -2087,9 +2115,9 @@ export default function CmsPage() {
                                 fontWeight: 800,
                                 padding: '0.2rem 0.55rem',
                                 borderRadius: '6px',
-                                background: 'rgba(244, 63, 94, 0.2)',
-                                border: '1px solid rgba(244, 63, 94, 0.4)',
-                                color: '#fda4af',
+                                background: 'rgba(160, 102, 255, 0.2)',
+                                border: '1px solid rgba(160, 102, 255, 0.4)',
+                                color: '#c4a5ff',
                                 textTransform: 'uppercase',
                               }}
                             >
@@ -2102,7 +2130,7 @@ export default function CmsPage() {
                         <div style={{ padding: '1.2rem 1.3rem 0.9rem' }}>
                           <h3
                             style={{
-                              fontFamily: 'Rajdhani, sans-serif',
+                              fontFamily: "'Outfit', sans-serif",
                               fontSize: '1.42rem',
                               fontWeight: 800,
                               margin: '0 0 0.4rem',
@@ -2192,7 +2220,7 @@ export default function CmsPage() {
                               <span style={{ color: '#64748b', display: 'block', fontSize: '0.65rem' }}>
                                 VALOR / TIEMPO
                               </span>
-                              <strong style={{ color: '#f43f5e' }}>
+                              <strong style={{ color: '#a066ff' }}>
                                 {course.total_puntos ?? 0} pts •{' '}
                                 {formatDuration(
                                   course.duracion_total_minutos,
@@ -2232,8 +2260,8 @@ export default function CmsPage() {
                                 style={{
                                   padding: '0.14rem 0.45rem',
                                   borderRadius: '5px',
-                                  background: 'rgba(244,63,94,0.15)',
-                                  color: '#fda4af',
+                                  background: 'rgba(160, 102, 255,0.15)',
+                                  color: '#c4a5ff',
                                 }}
                               >
                                 PIN Activo
@@ -2347,7 +2375,7 @@ export default function CmsPage() {
                               borderRadius: '9px',
                               border: '1px solid rgba(168, 85, 247, 0.55)',
                               background:
-                                'linear-gradient(90deg, rgba(147,51,234,0.32), rgba(225,29,72,0.22))',
+                                'rgba(160, 102, 255, 0.18)',
                               color: '#ffffff',
                               fontSize: '0.81rem',
                               fontWeight: 700,
@@ -2453,9 +2481,9 @@ export default function CmsPage() {
                               justifyContent: 'center',
                               padding: '0.58rem',
                               borderRadius: '9px',
-                              border: '1px solid rgba(244, 63, 94, 0.35)',
-                              background: 'rgba(225, 29, 72, 0.1)',
-                              color: '#fb7185',
+                              border: '1px solid rgba(160, 102, 255, 0.35)',
+                              background: 'rgba(160, 0, 255, 0.1)',
+                              color: '#b48cff',
                               cursor: 'pointer',
                             }}
                           >
@@ -2527,7 +2555,7 @@ export default function CmsPage() {
                   </span>
                   <h2
                     style={{
-                      fontFamily: 'Rajdhani, sans-serif',
+                      fontFamily: "'Outfit', sans-serif",
                       fontSize: '1.65rem',
                       margin: '0.2rem 0 0',
                     }}
@@ -2627,7 +2655,7 @@ export default function CmsPage() {
                   <div style={{ position: 'relative' }}>
                     <KeyRound
                       size={14}
-                      color="#f43f5e"
+                      color="#a066ff"
                       style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)' }}
                     />
                     <input
@@ -2655,7 +2683,7 @@ export default function CmsPage() {
 
               {modalDraft.gov.estado_curso === 'pausado' && (
                 <div style={{ marginBottom: '1.1rem' }}>
-                  <label style={{ display: 'block', fontSize: '0.75rem', color: '#fda4af', fontWeight: 700, marginBottom: '0.35rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.75rem', color: '#c4a5ff', fontWeight: 700, marginBottom: '0.35rem' }}>
                     Aviso mostrado a estudiantes cuando el curso está Apagado / En Pausa:
                   </label>
                   <textarea
@@ -2671,7 +2699,7 @@ export default function CmsPage() {
                       width: '100%',
                       padding: '0.65rem 0.85rem',
                       borderRadius: '10px',
-                      border: '1px solid rgba(244,63,94,0.45)',
+                      border: '1px solid rgba(160, 102, 255,0.45)',
                       background: '#070310',
                       color: '#ffffff',
                     }}
@@ -2976,7 +3004,7 @@ export default function CmsPage() {
                             },
                           })
                         }
-                        style={{ background: 'none', border: 'none', color: '#fda4af', cursor: 'pointer', padding: 0 }}
+                        style={{ background: 'none', border: 'none', color: '#c4a5ff', cursor: 'pointer', padding: 0 }}
                       >
                         ×
                       </button>
@@ -3058,6 +3086,97 @@ export default function CmsPage() {
                 />
               </div>
 
+              {/* Portada del Curso */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <label style={{ display: 'block', fontSize: '0.74rem', color: '#94a3b8', marginBottom: '0.35rem', fontWeight: 700 }}>
+                  Imagen de Portada (URL o Subir archivo)
+                </label>
+                <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                  <input
+                    type="text"
+                    placeholder="https://... o sube desde tu equipo"
+                    value={modalDraft.imagen_portada_url || ''}
+                    onChange={(e) => setModalDraft({ ...modalDraft, imagen_portada_url: e.target.value })}
+                    style={{
+                      flex: 1,
+                      padding: '0.55rem 0.75rem',
+                      borderRadius: '8px',
+                      border: '1px solid rgba(255,255,255,0.14)',
+                      background: '#070310',
+                      color: '#ffffff',
+                      fontSize: '0.85rem',
+                    }}
+                  />
+                  <input
+                    ref={modalCoverInputRef}
+                    type="file"
+                    accept="image/*"
+                    style={{ display: 'none' }}
+                    onChange={async (e) => {
+                      const f = e.target.files?.[0];
+                      if (!f) return;
+                      const dataUrl = await compressImageToDataUrl(f, 960, 0.78);
+                      setModalDraft((prev) => (prev ? { ...prev, imagen_portada_url: dataUrl } : prev));
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => modalCoverInputRef.current?.click()}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.35rem',
+                      padding: '0.55rem 0.95rem',
+                      borderRadius: '8px',
+                      border: '1px solid rgba(168,85,247,0.5)',
+                      background: 'rgba(147,51,234,0.24)',
+                      color: '#ffffff',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      fontSize: '0.8rem',
+                    }}
+                  >
+                    <Upload size={14} /> Subir Imagen
+                  </button>
+                  {modalDraft.imagen_portada_url && (
+                    <button
+                      type="button"
+                      onClick={() => setModalDraft({ ...modalDraft, imagen_portada_url: '' })}
+                      style={{
+                        padding: '0.55rem 0.75rem',
+                        borderRadius: '8px',
+                        border: '1px solid rgba(160, 102, 255,0.4)',
+                        background: 'rgba(160, 0, 255,0.15)',
+                        color: '#c4a5ff',
+                        cursor: 'pointer',
+                        fontSize: '0.8rem',
+                      }}
+                    >
+                      Quitar
+                    </button>
+                  )}
+                </div>
+                {modalDraft.imagen_portada_url && (
+                  <div
+                    style={{
+                      width: '100%',
+                      height: 120,
+                      borderRadius: '10px',
+                      overflow: 'hidden',
+                      border: '1px solid rgba(255,255,255,0.15)',
+                      position: 'relative',
+                    }}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={modalDraft.imagen_portada_url}
+                      alt="Vista previa portada"
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                  </div>
+                )}
+              </div>
+
               <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.65rem' }}>
                 <button
                   type="button"
@@ -3082,7 +3201,7 @@ export default function CmsPage() {
                     padding: '0.68rem 1.5rem',
                     borderRadius: '10px',
                     border: 'none',
-                    background: 'linear-gradient(90deg, #9333ea 0%, #e11d48 100%)',
+                    background: '#a000ff',
                     color: '#ffffff',
                     fontWeight: 700,
                     cursor: 'pointer',

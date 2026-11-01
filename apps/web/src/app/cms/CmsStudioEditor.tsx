@@ -135,7 +135,7 @@ const TEXT_COLOR_SWATCHES = [
   '#ffffff',
   '#e2e8f0',
   '#cbd5e1',
-  '#f43f5e',
+  '#a066ff',
   '#c084fc',
   '#22d3ee',
   '#10b981',
@@ -144,7 +144,7 @@ const TEXT_COLOR_SWATCHES = [
 
 const ACCENT_SWATCHES = [
   '#9333ea',
-  '#e11d48',
+  '#a000ff',
   '#2563eb',
   '#0891b2',
   '#059669',
@@ -153,9 +153,9 @@ const ACCENT_SWATCHES = [
 ];
 
 const BANNER_GRADIENTS = [
-  { label: 'CodePulse', value: 'linear-gradient(135deg, #4c1d95 0%, #be123c 100%)' },
+  { label: 'CodePulse', value: 'linear-gradient(135deg, #4c1d95 0%, #3b1b8c 100%)' },
   { label: 'Cyber Neon', value: 'linear-gradient(135deg, #0f172a 0%, #0891b2 55%, #4f46e5 100%)' },
-  { label: 'Crimson Dark', value: 'linear-gradient(135deg, #1f0614 0%, #9f1239 60%, #e11d48 100%)' },
+  { label: 'Crimson Dark', value: 'linear-gradient(135deg, #1f0614 0%, #9f1239 60%, #a000ff 100%)' },
   { label: 'Violet Matrix', value: 'linear-gradient(135deg, #1e1b4b 0%, #6d28d9 60%, #ec4899 100%)' },
   { label: 'Emerald Ops', value: 'linear-gradient(135deg, #022c22 0%, #059669 100%)' },
 ];
@@ -169,35 +169,35 @@ interface CatalogTool {
 
 const TOOL_CATALOG: CatalogTool[] = [
   // Libertad Visual (Canva)
-  { type: 'canvas_free', label: 'Lienzo Libre', category: 'canva', icon: <Move size={18} color="#f43f5e" /> },
+  { type: 'canvas_free', label: 'Lienzo Libre', category: 'canva', icon: <Move size={18} color="#a066ff" /> },
   { type: 'banner', label: 'Banner Hero', category: 'canva', icon: <Megaphone size={18} color="#c084fc" /> },
   { type: 'columns2', label: '2 Columnas', category: 'canva', icon: <Columns size={18} color="#38bdf8" /> },
   { type: 'columns3', label: '3 Tarjetas', category: 'canva', icon: <LayoutGrid size={18} color="#a855f7" /> },
   { type: 'stats', label: 'Métricas KPI', category: 'canva', icon: <BarChart3 size={18} color="#10b981" /> },
   { type: 'badges', label: 'Chips / Stack', category: 'canva', icon: <Tag size={18} color="#fbbf24" /> },
-  { type: 'cta_buttons', label: 'Botones CTA', category: 'canva', icon: <MousePointerClick size={18} color="#f43f5e" /> },
+  { type: 'cta_buttons', label: 'Botones CTA', category: 'canva', icon: <MousePointerClick size={18} color="#a066ff" /> },
   { type: 'divider', label: 'Separador', category: 'canva', icon: <Minus size={18} color="#94a3b8" /> },
 
   // Texto y Editorial
   { type: 'heading1', label: 'Título H1', category: 'text', icon: <Heading1 size={18} color="#c084fc" /> },
-  { type: 'heading2', label: 'Subtítulo H2', category: 'text', icon: <Heading2 size={18} color="#f43f5e" /> },
+  { type: 'heading2', label: 'Subtítulo H2', category: 'text', icon: <Heading2 size={18} color="#a066ff" /> },
   { type: 'heading3', label: 'Encabezado H3', category: 'text', icon: <Heading3 size={18} color="#22d3ee" /> },
   { type: 'paragraph', label: 'Párrafo Rico', category: 'text', icon: <AlignLeft size={18} color="#cbd5e1" /> },
   { type: 'list', label: 'Lista / Checks', category: 'text', icon: <ListChecks size={18} color="#10b981" /> },
   { type: 'quote', label: 'Cita Destacada', category: 'text', icon: <Quote size={18} color="#fbbf24" /> },
-  { type: 'callout', label: 'Nota / Alerta', category: 'text', icon: <AlertCircle size={18} color="#fb7185" /> },
+  { type: 'callout', label: 'Nota / Alerta', category: 'text', icon: <AlertCircle size={18} color="#b48cff" /> },
 
   // Tablas y Estructuras
   { type: 'table', label: 'Tabla Dinámica', category: 'structure', icon: <TableIcon size={18} color="#c084fc" /> },
   { type: 'tabs', label: 'Pestañas (Tabs)', category: 'structure', icon: <FolderKanban size={18} color="#38bdf8" /> },
-  { type: 'accordion', label: 'Acordeón FAQ', category: 'structure', icon: <ChevronDown size={18} color="#f43f5e" /> },
+  { type: 'accordion', label: 'Acordeón FAQ', category: 'structure', icon: <ChevronDown size={18} color="#a066ff" /> },
   { type: 'steps', label: 'Pasos / Roadmap', category: 'structure', icon: <GitBranch size={18} color="#10b981" /> },
   { type: 'architecture', label: 'Diagrama Nodos', category: 'structure', icon: <Sliders size={18} color="#a855f7" /> },
 
   // Código, Terminal y Multimedia
   { type: 'code', label: 'Código Fuente', category: 'code_media', icon: <Code2 size={18} color="#22d3ee" /> },
   { type: 'terminal', label: 'Terminal HUD', category: 'code_media', icon: <TerminalIcon size={18} color="#34d399" /> },
-  { type: 'image', label: 'Imagen / Subir', category: 'code_media', icon: <ImageIcon size={18} color="#f43f5e" /> },
+  { type: 'image', label: 'Imagen / Subir', category: 'code_media', icon: <ImageIcon size={18} color="#a066ff" /> },
   { type: 'video', label: 'Video / YouTube', category: 'code_media', icon: <Video size={18} color="#c084fc" /> },
   { type: 'embed', label: 'Embed / Iframe', category: 'code_media', icon: <MonitorPlay size={18} color="#fbbf24" /> },
 
@@ -205,7 +205,7 @@ const TOOL_CATALOG: CatalogTool[] = [
   { type: 'quiz', label: 'Quiz Evaluable', category: 'interactive', icon: <HelpCircle size={18} color="#10b981" /> },
   { type: 'code_challenge', label: 'Reto Código/CLI', category: 'interactive', icon: <TerminalIcon size={18} color="#22d3ee" /> },
   { type: 'fill_blank', label: 'Completar Huecos', category: 'interactive', icon: <Puzzle size={18} color="#c084fc" /> },
-  { type: 'flashcards', label: 'Flashcards 3D', category: 'interactive', icon: <RotateCw size={18} color="#f43f5e" /> },
+  { type: 'flashcards', label: 'Flashcards 3D', category: 'interactive', icon: <RotateCw size={18} color="#a066ff" /> },
 ];
 
 export default function CmsStudioEditor({
@@ -947,7 +947,7 @@ export default function CmsStudioEditor({
                 courseGov.estado_curso === 'publicado'
                   ? 'rgba(16, 185, 129, 0.55)'
                   : courseGov.estado_curso === 'pausado'
-                  ? 'rgba(244, 63, 94, 0.55)'
+                  ? 'rgba(160, 102, 255, 0.55)'
                   : courseGov.estado_curso === 'proximamente'
                   ? 'rgba(34, 211, 238, 0.55)'
                   : 'rgba(148, 163, 184, 0.35)'
@@ -956,7 +956,7 @@ export default function CmsStudioEditor({
                 courseGov.estado_curso === 'publicado'
                   ? 'rgba(16, 185, 129, 0.16)'
                   : courseGov.estado_curso === 'pausado'
-                  ? 'rgba(225, 29, 72, 0.18)'
+                  ? 'rgba(160, 0, 255, 0.18)'
                   : courseGov.estado_curso === 'proximamente'
                   ? 'rgba(8, 145, 178, 0.2)'
                   : 'rgba(15, 23, 42, 0.85)',
@@ -964,7 +964,7 @@ export default function CmsStudioEditor({
                 courseGov.estado_curso === 'publicado'
                   ? '#6ee7b7'
                   : courseGov.estado_curso === 'pausado'
-                  ? '#fda4af'
+                  ? '#c4a5ff'
                   : courseGov.estado_curso === 'proximamente'
                   ? '#67e8f9'
                   : '#cbd5e1',
@@ -980,7 +980,7 @@ export default function CmsStudioEditor({
             <option value="borrador" style={{ background: '#090512', color: '#cbd5e1' }}>
               ○ Borrador (Oculto)
             </option>
-            <option value="pausado" style={{ background: '#090512', color: '#fda4af' }}>
+            <option value="pausado" style={{ background: '#090512', color: '#c4a5ff' }}>
               ⏻ Apagado / En Pausa
             </option>
             <option value="proximamente" style={{ background: '#090512', color: '#67e8f9' }}>
@@ -1209,7 +1209,7 @@ export default function CmsStudioEditor({
                             className="cms-mini-icon-btn"
                             title="Eliminar módulo"
                           >
-                            <Trash2 size={14} color="#fb7185" />
+                            <Trash2 size={14} color="#b48cff" />
                           </button>
                         )}
                       </div>
@@ -1220,7 +1220,7 @@ export default function CmsStudioEditor({
                           const uFmt = lec.formato_unidad || (lec.tipo === 'examen' ? 'examen' : 'leccion');
                           const badgeCfg =
                             uFmt === 'examen'
-                              ? { text: 'EXAM', color: '#fda4af', bg: 'rgba(244,63,94,0.22)' }
+                              ? { text: 'EXAM', color: '#c4a5ff', bg: 'rgba(160, 102, 255,0.22)' }
                               : uFmt === 'laboratorio'
                               ? { text: 'LAB', color: '#67e8f9', bg: 'rgba(34,211,238,0.2)' }
                               : { text: 'LEC', color: '#d8b4fe', bg: 'rgba(168,85,247,0.2)' };
@@ -1245,10 +1245,10 @@ export default function CmsStudioEditor({
                                 borderRadius: '8px',
                                 cursor: 'pointer',
                                 background: isCurrent
-                                  ? 'linear-gradient(90deg, rgba(147,51,234,0.28), rgba(225,29,72,0.22))'
+                                  ? 'rgba(160, 102, 255, 0.18)'
                                   : 'rgba(0,0,0,0.25)',
                                 border: isCurrent
-                                  ? '1px solid #f43f5e'
+                                  ? '1px solid #a066ff'
                                   : '1px solid rgba(255,255,255,0.06)',
                                 fontSize: '0.76rem',
                                 color: isCurrent ? '#ffffff' : '#cbd5e1',
@@ -1303,7 +1303,7 @@ export default function CmsStudioEditor({
                                     className="cms-mini-icon-btn"
                                     title="Eliminar"
                                   >
-                                    <Trash2 size={11} color="#fb7185" />
+                                    <Trash2 size={11} color="#b48cff" />
                                   </button>
                                 )}
                               </span>
@@ -1344,9 +1344,9 @@ export default function CmsStudioEditor({
                           style={{
                             padding: '0.38rem 0.25rem',
                             borderRadius: '7px',
-                            border: '1px dashed rgba(244, 63, 94, 0.55)',
-                            background: 'rgba(244, 63, 94, 0.1)',
-                            color: '#fda4af',
+                            border: '1px dashed rgba(160, 102, 255, 0.55)',
+                            background: 'rgba(160, 102, 255, 0.1)',
+                            color: '#c4a5ff',
                             fontSize: '0.68rem',
                             fontWeight: 700,
                             cursor: 'pointer',
@@ -1441,7 +1441,7 @@ export default function CmsStudioEditor({
                 <div className="cms-field-group">
                   <label className="cms-label">Color del Marco de Hoja</label>
                   <div className="cms-swatch-row">
-                    {['rgba(168, 85, 247, 0.25)', '#f43f5e', '#22d3ee', '#10b981', '#334155'].map(
+                    {['rgba(168, 85, 247, 0.25)', '#a066ff', '#22d3ee', '#10b981', '#334155'].map(
                       (c) => (
                         <button
                           key={c}
@@ -1467,7 +1467,7 @@ export default function CmsStudioEditor({
                     className="cms-tool-tile"
                     style={{ width: '100%' }}
                   >
-                    <strong style={{ color: '#f43f5e' }}>Portada Lienzo Libre (Canva)</strong>
+                    <strong style={{ color: '#a066ff' }}>Portada Lienzo Libre (Canva)</strong>
                     <span style={{ fontSize: '0.73rem', color: '#94a3b8' }}>
                       Lienzo arrastrable libre + Chips de Tecnologías + Introducción + Botones CTA.
                     </span>
@@ -1774,7 +1774,7 @@ export default function CmsStudioEditor({
                           style={{
                             background: 'none',
                             border: 'none',
-                            color: '#fda4af',
+                            color: '#c4a5ff',
                             cursor: 'pointer',
                             padding: 0,
                           }}
@@ -1990,7 +1990,7 @@ export default function CmsStudioEditor({
                       style={{
                         fontFamily: 'monospace',
                         fontSize: '0.72rem',
-                        color: '#f43f5e',
+                        color: '#a066ff',
                         letterSpacing: '0.12em',
                         display: 'block',
                         marginBottom: '0.25rem',
@@ -2008,7 +2008,7 @@ export default function CmsStudioEditor({
                         background: 'transparent',
                         border: 'none',
                         color: '#ffffff',
-                        fontFamily: 'Rajdhani, sans-serif',
+                        fontFamily: "'Outfit', sans-serif",
                         fontSize: '1.35rem',
                         fontWeight: 700,
                         width: '100%',
@@ -2155,7 +2155,7 @@ export default function CmsStudioEditor({
                                 style={{
                                   fontSize: '0.66rem',
                                   fontWeight: 800,
-                                  color: widthVal === w ? '#f43f5e' : '#94a3b8',
+                                  color: widthVal === w ? '#a066ff' : '#94a3b8',
                                   padding: '0.15rem 0.32rem',
                                 }}
                                 title={`Ancho del bloque: ${w}%`}
@@ -2196,7 +2196,7 @@ export default function CmsStudioEditor({
                               className="cms-mini-icon-btn"
                               title="Eliminar"
                             >
-                              <Trash2 size={14} color="#fb7185" />
+                              <Trash2 size={14} color="#b48cff" />
                             </button>
                           </div>
                         )}
@@ -2230,7 +2230,7 @@ export default function CmsStudioEditor({
                     <strong style={{ color: '#ffffff' }}>Contenido Rico:</strong> Usa `**negrita**`, `==resaltado==`, `` `código` `` o edita tablas y lienzos libres directamente sobre la hoja.
                   </li>
                   <li>
-                    <strong style={{ color: '#f43f5e' }}>Diseño &amp; Caja Libre:</strong> Ajusta ancho (`25%` a `100%` para poner bloques lado a lado), tamaño exacto en `px`, fuentes, paddings, degradados con ángulo y bordes con glow neón.
+                    <strong style={{ color: '#a066ff' }}>Diseño &amp; Caja Libre:</strong> Ajusta ancho (`25%` a `100%` para poner bloques lado a lado), tamaño exacto en `px`, fuentes, paddings, degradados con ángulo y bordes con glow neón.
                   </li>
                 </ul>
               </div>
@@ -2253,7 +2253,7 @@ export default function CmsStudioEditor({
                     className="cms-mini-icon-btn"
                     title="Eliminar bloque"
                   >
-                    <Trash2 size={15} color="#fb7185" />
+                    <Trash2 size={15} color="#b48cff" />
                   </button>
                 </div>
 
@@ -2335,7 +2335,7 @@ export default function CmsStudioEditor({
                           <button
                             type="button"
                             onClick={() => updateSelectedStyle({ fontSizePx: undefined })}
-                            style={{ background: 'none', border: 'none', color: '#f43f5e', fontSize: '0.7rem', cursor: 'pointer' }}
+                            style={{ background: 'none', border: 'none', color: '#a066ff', fontSize: '0.7rem', cursor: 'pointer' }}
                           >
                             Auto
                           </button>
@@ -2458,7 +2458,7 @@ export default function CmsStudioEditor({
                             updateSelectedStyle({
                               useGradientBg: e.target.checked,
                               bgCustom: selectedBlock.style?.bgCustom || '#4c1d95',
-                              bgGradient2: selectedBlock.style?.bgGradient2 || '#be123c',
+                              bgGradient2: selectedBlock.style?.bgGradient2 || '#3b1b8c',
                             })
                           }
                         />
@@ -2472,7 +2472,7 @@ export default function CmsStudioEditor({
                           <label className="cms-label">Color 2</label>
                           <input
                             type="color"
-                            value={selectedBlock.style?.bgGradient2 || '#be123c'}
+                            value={selectedBlock.style?.bgGradient2 || '#3b1b8c'}
                             onChange={(e) => updateSelectedStyle({ bgGradient2: e.target.value })}
                             style={{ width: '100%', height: 34, border: 'none', background: 'transparent', cursor: 'pointer' }}
                           />
@@ -2679,7 +2679,7 @@ export default function CmsStudioEditor({
                               >
                                 <option value="transparent">Sin fondo</option>
                                 <option value="rgba(168, 85, 247, 0.09)">Cristal Púrpura</option>
-                                <option value="rgba(225, 29, 72, 0.09)">Cristal Carmesí</option>
+                                <option value="rgba(160, 0, 255, 0.09)">Cristal Carmesí</option>
                                 <option value="rgba(15, 23, 42, 0.85)">Pizarra Oscura</option>
                               </select>
                             </div>
@@ -3038,7 +3038,7 @@ export default function CmsStudioEditor({
                                     })
                                   }
                                 >
-                                  <Trash2 size={13} color="#fb7185" />
+                                  <Trash2 size={13} color="#b48cff" />
                                 </button>
                               )}
                             </div>
@@ -3136,7 +3136,7 @@ export default function CmsStudioEditor({
                                   })
                                 }
                               >
-                                <Trash2 size={13} color="#fb7185" />
+                                <Trash2 size={13} color="#b48cff" />
                               </button>
                             </div>
                             <input
@@ -3204,7 +3204,7 @@ export default function CmsStudioEditor({
                                   })
                                 }
                               >
-                                <Trash2 size={13} color="#fb7185" />
+                                <Trash2 size={13} color="#b48cff" />
                               </button>
                             </div>
                             <input
@@ -3311,7 +3311,7 @@ export default function CmsStudioEditor({
                                   })
                                 }
                               >
-                                <Trash2 size={13} color="#fb7185" />
+                                <Trash2 size={13} color="#b48cff" />
                               </button>
                             </div>
                             <input
@@ -3451,7 +3451,7 @@ export default function CmsStudioEditor({
                                   })
                                 }
                               >
-                                <Trash2 size={13} color="#fb7185" />
+                                <Trash2 size={13} color="#b48cff" />
                               </button>
                             </div>
                             <input
@@ -3576,7 +3576,7 @@ export default function CmsStudioEditor({
                                     })
                                   }
                                 >
-                                  <Trash2 size={13} color="#fb7185" />
+                                  <Trash2 size={13} color="#b48cff" />
                                 </button>
                               </div>
                               <input
@@ -3598,7 +3598,7 @@ export default function CmsStudioEditor({
                               updateSelectedBlock({
                                 archNodes: [
                                   ...(selectedBlock.archNodes || []),
-                                  { title: 'Nuevo Nodo', subtitle: 'Microservicio', accent: '#f43f5e' },
+                                  { title: 'Nuevo Nodo', subtitle: 'Microservicio', accent: '#a066ff' },
                                 ],
                               })
                             }
@@ -3701,7 +3701,7 @@ export default function CmsStudioEditor({
                                     })
                                   }
                                 >
-                                  <Trash2 size={13} color="#fb7185" />
+                                  <Trash2 size={13} color="#b48cff" />
                                 </button>
                               </div>
                               <input

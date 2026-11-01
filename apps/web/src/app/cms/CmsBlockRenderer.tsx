@@ -60,7 +60,7 @@ export function renderRichInline(text?: string): React.ReactNode {
         <mark
           key={idx}
           style={{
-            background: 'linear-gradient(90deg, rgba(168,85,247,0.35), rgba(244,63,94,0.35))',
+            background: 'linear-gradient(90deg, rgba(168,85,247,0.35), rgba(160, 102, 255,0.35))',
             color: '#ffffff',
             padding: '0.08rem 0.38rem',
             borderRadius: '4px',
@@ -74,7 +74,7 @@ export function renderRichInline(text?: string): React.ReactNode {
       return (
         <span
           key={idx}
-          style={{ textDecoration: 'underline', textDecorationColor: '#f43f5e', textUnderlineOffset: '3px' }}
+          style={{ textDecoration: 'underline', textDecorationColor: '#a066ff', textUnderlineOffset: '3px' }}
         >
           {part.slice(2, -2)}
         </span>
@@ -146,7 +146,7 @@ function getShadowCss(preset?: BlockBoxStyle['shadowPreset']): string | undefine
     case 'glow-purple':
       return '0 0 32px rgba(168, 85, 247, 0.38)';
     case 'glow-red':
-      return '0 0 32px rgba(244, 63, 94, 0.38)';
+      return '0 0 32px rgba(160, 102, 255, 0.38)';
     case 'glow-cyan':
       return '0 0 32px rgba(34, 211, 238, 0.35)';
     default:
@@ -181,7 +181,7 @@ export default function CmsBlockRenderer({
   const getGradientStyle = (grad?: string): React.CSSProperties => {
     if (grad === 'purple-red') {
       return {
-        background: 'linear-gradient(90deg, #c084fc 0%, #f43f5e 100%)',
+        background: 'linear-gradient(90deg, #c084fc 0%, #a066ff 100%)',
         WebkitBackgroundClip: 'text',
         WebkitTextFillColor: 'transparent',
       };
@@ -236,7 +236,7 @@ export default function CmsBlockRenderer({
         margin: `${st.marginY ?? 0}px 0`,
         background: st.useGradientBg
           ? `linear-gradient(${st.bgAngle ?? 135}deg, ${st.bgCustom || '#4c1d95'}, ${
-              st.bgGradient2 || '#be123c'
+              st.bgGradient2 || '#3b1b8c'
             })`
           : st.bgCustom || 'transparent',
         border:
@@ -256,7 +256,7 @@ export default function CmsBlockRenderer({
         return (
           <h1
             style={{
-              fontFamily: 'Rajdhani, sans-serif',
+              fontFamily: "'Outfit', sans-serif",
               fontSize: 'clamp(2rem, 3.6vw, 2.85rem)',
               fontWeight: 800,
               lineHeight: 1.12,
@@ -275,12 +275,12 @@ export default function CmsBlockRenderer({
         return (
           <h2
             style={{
-              fontFamily: 'Rajdhani, sans-serif',
+              fontFamily: "'Outfit', sans-serif",
               fontSize: 'clamp(1.5rem, 2.6vw, 2.05rem)',
               fontWeight: 700,
               lineHeight: 1.2,
               textAlign: block.align || 'left',
-              color: block.color || '#f43f5e',
+              color: block.color || '#a066ff',
               margin: '0.35rem 0',
               paddingBottom: '0.45rem',
               borderBottom: '1px solid rgba(168, 85, 247, 0.22)',
@@ -310,7 +310,7 @@ export default function CmsBlockRenderer({
             )}
             <h3
               style={{
-                fontFamily: 'Rajdhani, sans-serif',
+                fontFamily: "'Outfit', sans-serif",
                 fontSize: '1.4rem',
                 fontWeight: 700,
                 color: block.color || '#f1f5f9',
@@ -352,7 +352,7 @@ export default function CmsBlockRenderer({
           <div
             style={{
               background:
-                block.bannerGradient || 'linear-gradient(135deg, #4c1d95 0%, #be123c 100%)',
+                block.bannerGradient || 'linear-gradient(135deg, #4c1d95 0%, #3b1b8c 100%)',
               borderRadius: '18px',
               padding: '2.4rem 2.2rem',
               textAlign: block.align || 'left',
@@ -381,7 +381,7 @@ export default function CmsBlockRenderer({
             )}
             <h2
               style={{
-                fontFamily: 'Rajdhani, sans-serif',
+                fontFamily: "'Outfit', sans-serif",
                 fontSize: 'clamp(1.75rem, 3vw, 2.4rem)',
                 fontWeight: 800,
                 color: '#ffffff',
@@ -456,7 +456,7 @@ export default function CmsBlockRenderer({
                       style={{
                         padding: '0.85rem 1.1rem',
                         color: '#ffffff',
-                        fontFamily: 'Rajdhani, sans-serif',
+                        fontFamily: "'Outfit', sans-serif",
                         fontSize: '1.02rem',
                         fontWeight: 700,
                         letterSpacing: '0.06em',
@@ -571,7 +571,7 @@ export default function CmsBlockRenderer({
               >
                 <h4
                   style={{
-                    fontFamily: 'Rajdhani, sans-serif',
+                    fontFamily: "'Outfit', sans-serif",
                     fontSize: '1.22rem',
                     fontWeight: 700,
                     color: col.accent || '#c084fc',
@@ -618,10 +618,10 @@ export default function CmsBlockRenderer({
             icon: <AlertTriangle size={20} color="#fbbf24" />,
           },
           danger: {
-            bg: 'rgba(225, 29, 72, 0.11)',
-            border: 'rgba(225, 29, 72, 0.45)',
+            bg: 'rgba(160, 0, 255, 0.11)',
+            border: 'rgba(160, 0, 255, 0.45)',
             color: '#fecdd3',
-            icon: <ShieldAlert size={20} color="#fb7185" />,
+            icon: <ShieldAlert size={20} color="#b48cff" />,
           },
         }[block.calloutVariant || 'tip'];
 
@@ -894,7 +894,7 @@ export default function CmsBlockRenderer({
                 {block.listStyle === 'check' && (
                   <CheckCircle2
                     size={18}
-                    color="#f43f5e"
+                    color="#a066ff"
                     style={{ marginTop: '4px', flexShrink: 0 }}
                   />
                 )}
@@ -952,7 +952,7 @@ export default function CmsBlockRenderer({
           <div
             style={{
               background: 'rgba(15, 8, 28, 0.92)',
-              border: '1px solid rgba(244, 63, 94, 0.4)',
+              border: '1px solid rgba(160, 102, 255, 0.4)',
               borderRadius: '16px',
               padding: '1.5rem',
             }}
@@ -965,7 +965,7 @@ export default function CmsBlockRenderer({
                 fontFamily: 'monospace',
                 fontSize: '0.76rem',
                 fontWeight: 700,
-                color: '#f43f5e',
+                color: '#a066ff',
                 letterSpacing: '0.14em',
                 marginBottom: '0.65rem',
               }}
@@ -1063,7 +1063,7 @@ export default function CmsBlockRenderer({
               style={{
                 height: '2px',
                 width: '100%',
-                background: 'linear-gradient(90deg, transparent, #9333ea, #e11d48, transparent)',
+                background: 'linear-gradient(90deg, transparent, #9333ea, #a000ff, transparent)',
                 margin: '0.75rem 0',
               }}
             />
@@ -1125,9 +1125,9 @@ export default function CmsBlockRenderer({
                     style={{
                       padding: '0.48rem 1rem',
                       borderRadius: '9px',
-                      border: isAct ? '1px solid #f43f5e' : '1px solid transparent',
+                      border: isAct ? '1px solid #a066ff' : '1px solid transparent',
                       background: isAct
-                        ? 'linear-gradient(90deg, rgba(147,51,234,0.32), rgba(225,29,72,0.28))'
+                        ? 'rgba(160, 102, 255, 0.18)'
                         : 'transparent',
                       color: isAct ? '#ffffff' : '#94a3b8',
                       fontWeight: 700,
@@ -1145,7 +1145,7 @@ export default function CmsBlockRenderer({
                 {activeTab.title && (
                   <h4
                     style={{
-                      fontFamily: 'Rajdhani, sans-serif',
+                      fontFamily: "'Outfit', sans-serif",
                       fontSize: '1.25rem',
                       fontWeight: 700,
                       color: '#ffffff',
@@ -1221,7 +1221,7 @@ export default function CmsBlockRenderer({
                   >
                     <span>{renderRichInline(acc.title)}</span>
                     {isOpen ? (
-                      <ChevronDown size={18} color="#f43f5e" />
+                      <ChevronDown size={18} color="#a066ff" />
                     ) : (
                       <ChevronRight size={18} color="#c084fc" />
                     )}
@@ -1272,11 +1272,11 @@ export default function CmsBlockRenderer({
                       width: 34,
                       height: 34,
                       borderRadius: '50%',
-                      background: 'linear-gradient(135deg, #9333ea, #e11d48)',
+                      background: 'linear-gradient(135deg, #9333ea, #a000ff)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      fontFamily: 'Rajdhani, sans-serif',
+                      fontFamily: "'Outfit', sans-serif",
                       fontWeight: 800,
                       fontSize: '0.95rem',
                       color: '#ffffff',
@@ -1312,7 +1312,7 @@ export default function CmsBlockRenderer({
                         fontSize: '0.7rem',
                         fontWeight: 800,
                         letterSpacing: '0.14em',
-                        color: '#f43f5e',
+                        color: '#a066ff',
                       }}
                     >
                       {step.badge}
@@ -1320,7 +1320,7 @@ export default function CmsBlockRenderer({
                   )}
                   <h4
                     style={{
-                      fontFamily: 'Rajdhani, sans-serif',
+                      fontFamily: "'Outfit', sans-serif",
                       fontSize: '1.2rem',
                       fontWeight: 700,
                       color: '#ffffff',
@@ -1362,7 +1362,7 @@ export default function CmsBlockRenderer({
               >
                 <div
                   style={{
-                    fontFamily: 'Rajdhani, sans-serif',
+                    fontFamily: "'Outfit', sans-serif",
                     fontSize: '2.25rem',
                     fontWeight: 800,
                     color: s.accent || '#c084fc',
@@ -1478,10 +1478,10 @@ export default function CmsBlockRenderer({
                     flexDirection: 'column',
                     justifyContent: 'space-between',
                     background: isFlipped
-                      ? 'linear-gradient(135deg, rgba(147,51,234,0.28), rgba(225,29,72,0.25))'
+                      ? 'linear-gradient(135deg, rgba(147,51,234,0.28), rgba(160, 0, 255,0.25))'
                       : 'rgba(14, 8, 26, 0.92)',
                     border: isFlipped
-                      ? '1px solid #f43f5e'
+                      ? '1px solid #a066ff'
                       : '1px solid rgba(168, 85, 247, 0.35)',
                     transition: 'all 0.25s ease',
                   }}
@@ -1493,7 +1493,7 @@ export default function CmsBlockRenderer({
                         fontSize: '0.68rem',
                         fontWeight: 800,
                         letterSpacing: '0.12em',
-                        color: isFlipped ? '#fda4af' : '#c084fc',
+                        color: isFlipped ? '#c4a5ff' : '#c084fc',
                       }}
                     >
                       {isFlipped ? 'RESPUESTA' : card.tag || 'CONCEPTO'}
@@ -1556,7 +1556,7 @@ export default function CmsBlockRenderer({
                 >
                   <div
                     style={{
-                      fontFamily: 'Rajdhani, sans-serif',
+                      fontFamily: "'Outfit', sans-serif",
                       fontSize: '1.1rem',
                       fontWeight: 800,
                       color: '#ffffff',
@@ -1579,9 +1579,9 @@ export default function CmsBlockRenderer({
                 </div>
                 {idx < nodes.length - 1 &&
                   (isVert ? (
-                    <ArrowDown size={20} color="#f43f5e" />
+                    <ArrowDown size={20} color="#a066ff" />
                   ) : (
-                    <ArrowRight size={20} color="#f43f5e" />
+                    <ArrowRight size={20} color="#a066ff" />
                   ))}
               </React.Fragment>
             ))}
@@ -1647,14 +1647,14 @@ export default function CmsBlockRenderer({
             {btns.map((btn, idx) => {
               const styleByVariant: Record<string, React.CSSProperties> = {
                 gradient: {
-                  background: 'linear-gradient(90deg, #9333ea, #e11d48)',
+                  background: '#a000ff',
                   color: '#ffffff',
                   border: 'none',
                 },
                 outline: {
                   background: 'transparent',
                   color: '#ffffff',
-                  border: '1.5px solid #f43f5e',
+                  border: '1.5px solid #a066ff',
                 },
                 glass: {
                   background: 'rgba(168, 85, 247, 0.16)',
@@ -1679,7 +1679,7 @@ export default function CmsBlockRenderer({
                     gap: '0.45rem',
                     padding: '0.7rem 1.35rem',
                     borderRadius: '10px',
-                    fontFamily: 'Rajdhani, sans-serif',
+                    fontFamily: "'Outfit', sans-serif",
                     fontSize: '0.96rem',
                     fontWeight: 700,
                     letterSpacing: '0.06em',
@@ -1999,7 +1999,7 @@ export default function CmsBlockRenderer({
                   padding: '0.52rem 1.15rem',
                   borderRadius: '8px',
                   border: 'none',
-                  background: 'linear-gradient(90deg, #9333ea, #e11d48)',
+                  background: '#a000ff',
                   color: '#ffffff',
                   fontWeight: 700,
                   fontSize: '0.82rem',

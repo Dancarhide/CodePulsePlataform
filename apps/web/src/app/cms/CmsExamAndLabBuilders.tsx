@@ -120,8 +120,8 @@ export function CmsExamBuilder({
       {/* Cabecera de Plantilla de Examen */}
       <div
         style={{
-          background: 'linear-gradient(135deg, rgba(147, 51, 234, 0.2), rgba(225, 29, 72, 0.18))',
-          border: '1px solid rgba(244, 63, 94, 0.45)',
+          background: 'linear-gradient(135deg, rgba(147, 51, 234, 0.2), rgba(160, 0, 255, 0.18))',
+          border: '1px solid rgba(160, 102, 255, 0.45)',
           borderRadius: '18px',
           padding: '1.75rem 2rem',
         }}
@@ -134,12 +134,12 @@ export function CmsExamBuilder({
               gap: '0.45rem',
               padding: '0.28rem 0.8rem',
               borderRadius: '999px',
-              background: 'rgba(244, 63, 94, 0.2)',
-              border: '1px solid #f43f5e',
+              background: 'rgba(160, 102, 255, 0.2)',
+              border: '1px solid #a066ff',
               fontSize: '0.72rem',
               fontWeight: 800,
               letterSpacing: '0.12em',
-              color: '#fda4af',
+              color: '#c4a5ff',
             }}
           >
             <FileQuestion size={14} /> PLANTILLA EXCLUSIVA DE EXAMEN EVALUABLE
@@ -162,7 +162,7 @@ export function CmsExamBuilder({
             borderRadius: '10px',
             padding: '0.65rem 0.9rem',
             color: '#ffffff',
-            fontFamily: 'Rajdhani, sans-serif',
+            fontFamily: "'Outfit', sans-serif",
             fontSize: '1.55rem',
             fontWeight: 800,
             outline: 'none',
@@ -250,7 +250,7 @@ export function CmsExamBuilder({
           border: '1px solid rgba(168, 85, 247, 0.3)',
         }}
       >
-        <span style={{ fontFamily: 'Rajdhani, sans-serif', fontWeight: 700, fontSize: '0.95rem', color: '#c084fc' }}>
+        <span style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 700, fontSize: '0.95rem', color: '#c084fc' }}>
           AGREGAR PREGUNTA AL EXAMEN:
         </span>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.45rem' }}>
@@ -295,7 +295,7 @@ export function CmsExamBuilder({
               >
                 PREGUNTA {qIdx + 1}
               </span>
-              <span style={{ fontSize: '0.75rem', color: '#f43f5e', fontWeight: 700, textTransform: 'uppercase' }}>
+              <span style={{ fontSize: '0.75rem', color: '#a066ff', fontWeight: 700, textTransform: 'uppercase' }}>
                 {q.kind === 'single'
                   ? 'Opción Única'
                   : q.kind === 'boolean'
@@ -327,7 +327,7 @@ export function CmsExamBuilder({
               </button>
               {exam.preguntas.length > 1 && (
                 <button type="button" onClick={() => removeQuestion(qIdx)} className="cms-mini-icon-btn" title="Eliminar">
-                  <Trash2 size={14} color="#fb7185" />
+                  <Trash2 size={14} color="#b48cff" />
                 </button>
               )}
             </div>
@@ -555,7 +555,7 @@ export function CmsLabBuilder({
             borderRadius: '10px',
             padding: '0.65rem 0.9rem',
             color: '#ffffff',
-            fontFamily: 'Rajdhani, sans-serif',
+            fontFamily: "'Outfit', sans-serif",
             fontSize: '1.55rem',
             fontWeight: 800,
             outline: 'none',
@@ -764,7 +764,7 @@ export function CmsLabBuilder({
                         tokensObligatorios: lab.tokensObligatorios.filter((_, i) => i !== idx),
                       })
                     }
-                    style={{ background: 'none', border: 'none', color: '#fda4af', cursor: 'pointer', padding: 0 }}
+                    style={{ background: 'none', border: 'none', color: '#c4a5ff', cursor: 'pointer', padding: 0 }}
                   >
                     ×
                   </button>
@@ -851,7 +851,7 @@ export function CmsLabBuilder({
                     })
                   }
                 >
-                  <Trash2 size={14} color="#fb7185" />
+                  <Trash2 size={14} color="#b48cff" />
                 </button>
               </div>
             ))}
@@ -982,18 +982,18 @@ export function StudentExamRunner({
       {/* Tarjeta Resumen del Examen */}
       <div
         style={{
-          background: 'linear-gradient(135deg, rgba(147,51,234,0.18), rgba(225,29,72,0.16))',
-          border: '1px solid rgba(244, 63, 94, 0.4)',
+          background: 'linear-gradient(135deg, rgba(147,51,234,0.18), rgba(160, 0, 255,0.16))',
+          border: '1px solid rgba(160, 102, 255, 0.4)',
           borderRadius: '18px',
           padding: '1.75rem',
         }}
       >
         <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: '1rem', alignItems: 'center' }}>
           <div>
-            <span style={{ fontFamily: 'monospace', fontSize: '0.74rem', fontWeight: 800, color: '#fda4af', letterSpacing: '0.12em' }}>
+            <span style={{ fontFamily: 'monospace', fontSize: '0.74rem', fontWeight: 800, color: '#c4a5ff', letterSpacing: '0.12em' }}>
               EVALUACIÓN OFICIAL • VALOR: {pesoPuntos} PTS EN EL CURSO
             </span>
-            <h2 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.85rem', margin: '0.25rem 0 0.5rem' }}>
+            <h2 style={{ fontFamily: "'Outfit', sans-serif", fontSize: '1.85rem', margin: '0.25rem 0 0.5rem' }}>
               {unitTitle}
             </h2>
             <p style={{ color: '#e2e8f0', margin: 0, fontSize: '0.94rem', lineHeight: 1.6 }}>
@@ -1007,7 +1007,7 @@ export function StudentExamRunner({
                 padding: '0.65rem 1.1rem',
                 borderRadius: '12px',
                 background: secondsLeft < 60 ? 'rgba(239,68,68,0.25)' : 'rgba(0,0,0,0.45)',
-                border: `1px solid ${secondsLeft < 60 ? '#ef4444' : '#f43f5e'}`,
+                border: `1px solid ${secondsLeft < 60 ? '#ef4444' : '#a066ff'}`,
                 fontFamily: 'monospace',
                 fontSize: '1.25rem',
                 fontWeight: 800,
@@ -1017,7 +1017,7 @@ export function StudentExamRunner({
                 gap: '0.45rem',
               }}
             >
-              <Clock size={18} color="#f43f5e" />
+              <Clock size={18} color="#a066ff" />
               {formatTimer(secondsLeft)}
             </div>
           )}
@@ -1093,9 +1093,9 @@ export function StudentExamRunner({
               padding: '0.8rem 1.6rem',
               borderRadius: '10px',
               border: 'none',
-              background: 'linear-gradient(90deg, #9333ea, #e11d48)',
+              background: '#a000ff',
               color: '#ffffff',
-              fontFamily: 'Rajdhani, sans-serif',
+              fontFamily: "'Outfit', sans-serif",
               fontSize: '1.05rem',
               fontWeight: 700,
               letterSpacing: '0.06em',
@@ -1126,7 +1126,7 @@ export function StudentExamRunner({
                 <span style={{ fontFamily: 'monospace', fontSize: '0.75rem', color: '#c084fc', fontWeight: 700 }}>
                   REACTIVO {idx + 1} DE {exam.preguntas.length}
                 </span>
-                <span style={{ fontSize: '0.75rem', color: '#f43f5e', fontWeight: 700 }}>
+                <span style={{ fontSize: '0.75rem', color: '#a066ff', fontWeight: 700 }}>
                   {q.puntos} pts
                 </span>
               </div>
@@ -1166,8 +1166,8 @@ export function StudentExamRunner({
                           textAlign: 'left',
                           padding: '0.75rem 1rem',
                           borderRadius: '10px',
-                          border: selected ? '1.5px solid #f43f5e' : '1px solid rgba(255,255,255,0.12)',
-                          background: selected ? 'rgba(244,63,94,0.14)' : 'rgba(255,255,255,0.03)',
+                          border: selected ? '1.5px solid #a066ff' : '1px solid rgba(255,255,255,0.12)',
+                          background: selected ? 'rgba(160, 102, 255,0.14)' : 'rgba(255,255,255,0.03)',
                           color: '#f1f5f9',
                           fontSize: '0.93rem',
                           cursor: 'pointer',
@@ -1249,7 +1249,7 @@ export function StudentExamRunner({
                 border: 'none',
                 background: 'linear-gradient(90deg, #10b981, #059669)',
                 color: '#ffffff',
-                fontFamily: 'Rajdhani, sans-serif',
+                fontFamily: "'Outfit', sans-serif",
                 fontSize: '1.05rem',
                 fontWeight: 800,
                 letterSpacing: '0.06em',
@@ -1267,7 +1267,7 @@ export function StudentExamRunner({
       {/* Retroalimentación tras terminar */}
       {lastResult && exam.mostrarRespuestasAlFinal && !started && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
-          <h4 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.2rem', margin: 0, color: '#c084fc' }}>
+          <h4 style={{ fontFamily: "'Outfit', sans-serif", fontSize: '1.2rem', margin: 0, color: '#c084fc' }}>
             REVISIÓN DE REACTIVOS
           </h4>
           {exam.preguntas.map((q, idx) => {
@@ -1440,7 +1440,7 @@ export function StudentLabWorkspace({
           </span>
         </div>
 
-        <h2 style={{ fontFamily: 'Rajdhani, sans-serif', fontSize: '1.85rem', margin: '0 0 0.65rem' }}>
+        <h2 style={{ fontFamily: "'Outfit', sans-serif", fontSize: '1.85rem', margin: '0 0 0.65rem' }}>
           {unitTitle}
         </h2>
         <p style={{ color: '#e2e8f0', lineHeight: 1.65, margin: '0 0 1rem' }}>
@@ -1555,7 +1555,7 @@ export function StudentLabWorkspace({
             {lab.rubrica.map((r) => (
               <div key={r.id} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.88rem', color: '#cbd5e1' }}>
                 <span>• {r.titulo}</span>
-                <strong style={{ color: '#f43f5e' }}>{r.puntos}%</strong>
+                <strong style={{ color: '#a066ff' }}>{r.puntos}%</strong>
               </div>
             ))}
           </div>
@@ -1711,7 +1711,7 @@ export function StudentLabWorkspace({
                 border: 'none',
                 background: 'linear-gradient(90deg, #0891b2, #9333ea)',
                 color: '#ffffff',
-                fontFamily: 'Rajdhani, sans-serif',
+                fontFamily: "'Outfit', sans-serif",
                 fontSize: '1rem',
                 fontWeight: 800,
                 letterSpacing: '0.06em',
@@ -1735,13 +1735,13 @@ export function StudentLabWorkspace({
                 gap: '0.5rem',
                 padding: '0.8rem 1.4rem',
                 borderRadius: '10px',
-                border: '1px solid #f43f5e',
+                border: '1px solid #a066ff',
                 background:
                   lab.modoCalificacion === 'manual'
-                    ? 'linear-gradient(90deg, #9333ea, #e11d48)'
-                    : 'rgba(244, 63, 94, 0.14)',
+                    ? '#a000ff'
+                    : 'rgba(160, 102, 255, 0.14)',
                 color: '#ffffff',
-                fontFamily: 'Rajdhani, sans-serif',
+                fontFamily: "'Outfit', sans-serif",
                 fontSize: '0.98rem',
                 fontWeight: 700,
                 letterSpacing: '0.06em',
